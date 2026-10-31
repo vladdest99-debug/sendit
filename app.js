@@ -157,6 +157,7 @@ const state={
   storyTimer:null,currentStoryGroup:null,currentStoryIndex:0,pendingStoryMedia:null
 };
 let authMode='login',tempAvatar=null,tempMusic=null,currentGroupSettingsId=null,tempGroupAvatar=null,adminUsersCache=[];
+let currentViewedProfileUid=null;
 const $=id=>document.getElementById(id);
 
 /* ============ УТИЛИТЫ ============ */
@@ -401,6 +402,11 @@ function listenToStories(){
     });
     state.stories=stories;buildStoryGroups();renderStoriesBar();
     if(state.currentStoryGroup)updateStoryReactionsUI();
+    
+    // Обновляем сетку историй в профиле в реальном времени
+    if ($('user-profile-modal').classList.contains('visible') && currentViewedProfileUid) {
+      renderUserProfileStories(currentViewedProfileUid);
+    }
   },err=>console.error('stories listener:',err));
 }
 function buildStoryGroups(){
@@ -442,12 +448,16 @@ function renderStoriesBar(){
   });
 }
 function triggerStoryFileInput(){$('story-file-input').value='';$('story-file-input').click();}
-function openStoryViewer(authorUid){
+function openStoryViewer(authorUid, startIndex = -1){
   const stories=state.storyGroups[authorUid];if(!stories||!stories.length)return;
   state.currentStoryGroup=authorUid;
-  let idx=stories.findIndex(s=>!state.seenStoryIds.has(s.id));
-  if(idx===-1)idx=0;
-  state.currentStoryIndex=idx;
+  if(startIndex>=0 && startIndex<stories.length){
+    state.currentStoryIndex=startIndex;
+  }else{
+    let idx=stories.findIndex(s=>!state.seenStoryIds.has(s.id));
+    if(idx===-1)idx=0;
+    state.currentStoryIndex=idx;
+  }
   $('story-viewer').classList.add('visible');
   showStory();
 }
@@ -629,16 +639,20 @@ function listenToGroupMessages(groups){
   Object.keys(groups).forEach(gid=>{
     if(state.groupUnsubs[gid])return;
     const q=query(collection(db,'messages'),where('toGroupId','==',gid));
+    let groupInitialized=false;
     state.groupUnsubs[gid]=onSnapshot(q,snap=>{
       const arr=[];
       snap.forEach(d=>{const m=d.data();
         arr.push({id:d.id,fromUid:m.fromUid,toGroupId:gid,content:m.content,time:m.time&&m.time.toDate?m.time.toDate().getTime():Date.now(),reactions:m.reactions||{},replyTo:m.replyTo||null});});
       arr.sort((a,b)=>a.time-b.time);
-      const old=state.groupMessages[gid]||[];
-      const oldIds=new Set(old.map(m=>m.id));
-      arr.forEach(m=>{
-        if(!oldIds.has(m.id)&&m.fromUid!==state.uid&&!(state.currentChatType==='group'&&state.currentChat===gid))state.unread[gid]=(state.unread[gid]||0)+1;
-      });
+      if(groupInitialized){
+        const old=state.groupMessages[gid]||[];
+        const oldIds=new Set(old.map(m=>m.id));
+        arr.forEach(m=>{
+          if(!oldIds.has(m.id)&&m.fromUid!==state.uid&&!(state.currentChatType==='group'&&state.currentChat===gid))state.unread[gid]=(state.unread[gid]||0)+1;
+        });
+      }
+      groupInitialized=true;
       state.groupMessages[gid]=arr;renderChatList();
       if(state.currentChatType==='group'&&state.currentChat===gid){renderMessages();scrollToBottom();}
     },err=>console.error('group messages listener:',err));
@@ -799,6 +813,7 @@ function listenToDirectMessages(){
   const{db,collection,onSnapshot,query,where}=window.fb;
   if(state.unsubMessages)state.unsubMessages();
   const groups={from:[],to:[]};
+  let fromReady=false,toReady=false,unreadTrackingReady=false;
   const parse=d=>{const m=d.data();return{id:d.id,fromUid:m.fromUid,toUid:m.toUid,content:m.content,time:m.time&&m.time.toDate?m.time.toDate().getTime():Date.now(),reactions:m.reactions||{},replyTo:m.replyTo||null};};
   const rebuild=()=>{
     const all=[...groups.from,...groups.to];
@@ -807,7 +822,7 @@ function listenToDirectMessages(){
     unique.sort((a,b)=>a.time-b.time);
     const grouped={};
     unique.forEach(m=>{const other=m.fromUid===state.uid?m.toUid:m.fromUid;if(!other)return;if(!grouped[other])grouped[other]=[];grouped[other].push(m);});
-    if(state.messagesLoaded){
+    if(unreadTrackingReady){
       Object.keys(grouped).forEach(other=>{
         const oldIds=new Set((state.messages[other]||[]).map(m=>m.id));
         grouped[other].forEach(m=>{
@@ -815,13 +830,14 @@ function listenToDirectMessages(){
         });
       });
     }
+    if(fromReady&&toReady)unreadTrackingReady=true;
     state.messagesLoaded=true;state.messages=grouped;rebuildUsersList();
     if(state.currentChatType==='user'&&state.currentChat){renderMessages();scrollToBottom();}
   };
   const qFrom=query(collection(db,'messages'),where('fromUid','==',state.uid));
   const qTo=query(collection(db,'messages'),where('toUid','==',state.uid));
-  const u1=onSnapshot(qFrom,s=>{groups.from=[];s.forEach(d=>groups.from.push(parse(d)));rebuild();});
-  const u2=onSnapshot(qTo,s=>{groups.to=[];s.forEach(d=>groups.to.push(parse(d)));rebuild();});
+  const u1=onSnapshot(qFrom,s=>{groups.from=[];s.forEach(d=>groups.from.push(parse(d)));fromReady=true;rebuild();});
+  const u2=onSnapshot(qTo,s=>{groups.to=[];s.forEach(d=>groups.to.push(parse(d)));toReady=true;rebuild();});
   state.unsubMessages=()=>{u1();u2();};
 }
 
@@ -912,28 +928,68 @@ function renderChannelSelector(){
 async function openUserProfile(uid){
   if(!uid||uid===state.uid)return;
   const modal=$('user-profile-modal');if(!modal)return;
+  currentViewedProfileUid = uid;
+  
   $('up-avatar').innerHTML='<span>?</span>';$('up-name').textContent='...';$('up-nickname').textContent='—';
   $('up-bio').style.display='none';$('up-bio').textContent='';$('up-channel').style.display='none';$('up-music').style.display='none';
   const audio=$('up-music-audio');audio.pause();audio.src='';
-  $('up-message').style.display='none';modal.classList.add('visible');
+  $('up-message').style.display='none';
+  $('up-stories-grid').innerHTML='';
+  
+  document.querySelectorAll('.modal.visible').forEach(m=>m.classList.remove('visible'));
+  modal.classList.add('visible');
+  
   try{
     const{db,doc,getDoc}=window.fb;
     const snap=await getDoc(doc(db,'users',uid));
     if(!snap.exists()){toast(t('userNotFound'),'error');modal.classList.remove('visible');return;}
     const d=snap.data();const dn=d.displayName||d.nickname||'?';
+    
     if(d.avatarData)$('up-avatar').innerHTML=`<img src="${d.avatarData}" alt="">`;
     else $('up-avatar').textContent=dn[0].toUpperCase();
     $('up-name').textContent=dn;$('up-nickname').textContent=d.nickname||'?';
-    if(d.bio){$('up-bio').textContent=d.bio;$('up-bio').style.display='';}
-    if(d.musicData&&d.musicName){$('up-music-name').textContent=d.musicName;audio.src=d.musicData;$('up-music').style.display='';}
+    if(d.bio){$('up-bio').textContent=d.bio;$('up-bio').style.display='block';}
+    if(d.musicData&&d.musicName){$('up-music-name').textContent=d.musicName;audio.src=d.musicData;$('up-music').style.display='block';}
+    
     if(d.channelId&&d.channelName){
-      $('up-channel-name').textContent=d.channelName;$('up-channel').style.display='';
+      $('up-channel-name').textContent=d.channelName;$('up-channel').style.display='block';
       $('up-channel-btn').onclick=()=>{audio.pause();modal.classList.remove('visible');
         if(state.groups[d.channelId])openChat(d.channelId,'group');else toast(t('errNotSubscribed'),'error');};
     }else{$('up-channel').style.display='none';}
-    $('up-message').style.display='';
+    
+    $('up-message').style.display='block';
     $('up-message').onclick=()=>{audio.pause();modal.classList.remove('visible');openChat(uid,'user');};
+    
+    renderUserProfileStories(uid);
+    
   }catch(e){console.error(e);toast(t('errProfileLoad'),'error');modal.classList.remove('visible');}
+}
+
+function renderUserProfileStories(uid) {
+  const grid = $('up-stories-grid');
+  if (!grid) return;
+  
+  const stories = state.storyGroups[uid] || [];
+  
+  if (!stories.length) {
+    grid.innerHTML = `<div class="profile-no-stories">${currentLang==='ru'?'Нет историй':'No stories'}</div>`;
+    return;
+  }
+  
+  grid.innerHTML = stories.map((story, index) => {
+    const mediaSrc = story.dataUrl;
+    const inner = story.type === 'image' 
+      ? `<img src="${mediaSrc}" alt="">` 
+      : `<video src="${mediaSrc}" muted></video><div class="video-icon">▶</div>`;
+    
+    return `<div class="story-grid-item" data-index="${index}">${inner}</div>`;
+  }).join('');
+  
+  grid.querySelectorAll('.story-grid-item').forEach(el => {
+    el.addEventListener('click', () => {
+      openStoryViewer(uid, parseInt(el.dataset.index, 10));
+    });
+  });
 }
 
 /* ============ ОТПРАВКА ============ */
@@ -1031,6 +1087,7 @@ function updateChannelUIPermissions(){
 function openChat(id,type){
   state.currentChat=id;state.currentChatType=type;state.unread[id]=0;
   $('empty-chat').style.display='none';$('chat-area').style.display='flex';
+  $('user-profile-modal').classList.remove('visible');
   updateChatHeader(id,type);updateChannelUIPermissions();clearReply();
   renderMessages();renderChatList();
   if(canPostInCurrentChat())$('msg-input').focus();
@@ -1380,7 +1437,11 @@ $('music-input').addEventListener('change',async e=>{
 });
 $('music-remove').addEventListener('click',()=>{tempMusic=null;updateMusicUI();toast(t('okMusicRemoved'),'success');});
 
-$('up-close').addEventListener('click',()=>{$('up-music-audio').pause();$('user-profile-modal').classList.remove('visible');});
+$('up-close').addEventListener('click',()=>{
+  $('up-music-audio').pause();
+  $('user-profile-modal').classList.remove('visible');
+  currentViewedProfileUid=null;
+});
 $('chat-avatar').addEventListener('click',()=>{if(state.currentChatType==='user'&&state.currentChat)openUserProfile(state.currentChat);});
 $('chat-name').addEventListener('click',()=>{if(state.currentChatType==='user'&&state.currentChat)openUserProfile(state.currentChat);});
 $('gs-members').addEventListener('click',e=>{
@@ -1472,6 +1533,8 @@ document.addEventListener('keydown',e=>{
     $('add-menu').classList.remove('visible');
     $('attach-menu').classList.remove('visible');
     $('reaction-picker').classList.remove('visible');
+    $('user-profile-modal').classList.remove('visible');
+    currentViewedProfileUid=null;
   }
 });
 

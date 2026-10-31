@@ -152,6 +152,78 @@
         </div>
       </div>
     </div>
+
+    <div class="profile-panel" id="user-profile-modal">
+      <!-- Обложка и аватар -->
+      <div class="profile-cover">
+        <div class="profile-top-bar">
+          <button class="icon-btn" id="up-close" aria-label="Назад">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          </button>
+        </div>
+        <div class="profile-avatar-wrapper">
+          <div class="avatar" id="up-avatar"></div>
+        </div>
+      </div>
+
+      <!-- Имя и статус -->
+      <div class="profile-header-info">
+        <div class="profile-name-row">
+          <h2 id="up-name">—</h2>
+          <span class="profile-verified-badge">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </span>
+        </div>
+        <div class="profile-status">
+          <span class="status-badge">1</span>
+          <span data-i18n="online">online</span>
+        </div>
+      </div>
+
+      <!-- Основной контент (скроллится) -->
+      <div class="profile-body">
+        
+        <!-- Карточка с информацией -->
+        <div class="profile-info-card">
+          <div class="nickname-row" style="margin-bottom: 12px; justify-content: flex-start;">
+            <span class="lbl">@</span><span id="up-nickname">—</span>
+          </div>
+          <div class="user-profile-bio" id="up-bio" style="display:none; margin-bottom: 12px;"></div>
+          
+          <div class="user-profile-channel" id="up-channel" style="display:none;">
+            <button class="user-profile-channel-btn" id="up-channel-btn">
+              <div class="channel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v3a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
+              <div class="channel-info">
+                <div class="channel-label" data-i18n="channelLabel">Канал</div>
+                <div class="channel-name" id="up-channel-name"></div>
+              </div>
+              <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+
+          <div class="user-profile-music" id="up-music" style="display:none;">
+            <div class="music-box" style="margin-top: 0;">
+              <div class="music-meta">
+                <div class="music-name" id="up-music-name"></div>
+                <audio id="up-music-audio" controls></audio>
+              </div>
+            </div>
+          </div>
+          
+          <button class="profile-msg-btn" id="up-message" data-i18n="messageUser">Написать сообщение</button>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="profile-tabs">
+          <div class="profile-tab active">Истории</div>
+        </div>
+
+        <!-- Сетка историй пользователя -->
+        <div class="profile-stories-grid" id="up-stories-grid">
+          <!-- Заполняется через JS -->
+        </div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -238,40 +310,6 @@
     <div class="modal-actions">
       <button class="cancel" id="prof-cancel" data-i18n="cancel">Отмена</button>
       <button class="save" id="prof-save" data-i18n="save">Сохранить</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="user-profile-modal">
-  <div class="modal-box user-profile-box">
-    <h2 data-i18n="profileTitle">Профиль</h2>
-    <div class="profile-avatar">
-      <div class="avatar" id="up-avatar" style="cursor:default;"><span>?</span></div>
-    </div>
-    <div class="user-profile-name" id="up-name">—</div>
-    <div class="nickname-row"><span class="lbl">@</span><span id="up-nickname">—</span></div>
-    <div class="user-profile-bio" id="up-bio" style="display:none;"></div>
-    <div class="user-profile-channel" id="up-channel" style="display:none;">
-      <button class="user-profile-channel-btn" id="up-channel-btn">
-        <div class="channel-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11v3a1 1 0 0 0 1 1h2l4 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
-        <div class="channel-info">
-          <div class="channel-label" data-i18n="channelLabel">Канал</div>
-          <div class="channel-name" id="up-channel-name"></div>
-        </div>
-        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </button>
-    </div>
-    <div class="user-profile-music" id="up-music" style="display:none;">
-      <div class="music-box">
-        <div class="music-meta">
-          <div class="music-name" id="up-music-name"></div>
-          <audio id="up-music-audio" controls></audio>
-        </div>
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="cancel" id="up-close" data-i18n="close">Закрыть</button>
-      <button class="save" id="up-message" data-i18n="messageUser">Написать сообщение</button>
     </div>
   </div>
 </div>
