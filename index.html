@@ -8,26 +8,37 @@
 </head>
 <body>
 
-<!-- ЭКРАН ВХОДА -->
 <div id="login">
   <div class="login-box">
     <div class="logo">💬</div>
-    <h1>Добро пожаловать</h1>
-    <p>Введите имя, чтобы начать</p>
-    <input type="text" id="username" placeholder="Ваше имя" maxlength="20" autocomplete="off">
-    <button id="login-btn">Войти</button>
+    <h1 id="auth-title">Добро пожаловать</h1>
+    <p id="auth-subtitle">Войдите или создайте аккаунт</p>
+    <div class="auth-tabs">
+      <button id="tab-login" class="active">Вход</button>
+      <button id="tab-register">Регистрация</button>
+    </div>
+    <input type="text" id="username" placeholder="Никнейм" maxlength="20" autocomplete="username">
+    <input type="password" id="password" placeholder="Пароль (мин. 6 символов)" autocomplete="current-password">
+    <input type="password" id="password-confirm" placeholder="Повторите пароль" style="display:none" autocomplete="new-password">
+    <button id="auth-submit">Войти</button>
     <div class="err" id="login-err"></div>
+    <div class="auth-hint">Никнейм: буквы, цифры, _. Пароль: минимум 6 символов.</div>
   </div>
 </div>
 
-<!-- ПРИЛОЖЕНИЕ -->
 <div id="app">
   <aside class="sidebar">
     <div class="sidebar-header">
       <span class="burger">☰</span>
       <div class="search">
         <span style="color:#6c7883">🔍</span>
-        <input type="text" id="search" placeholder="Поиск">
+        <input type="text" id="search" placeholder="Поиск в чатах">
+      </div>
+      <button class="add-btn" id="add-btn" title="Добавить">➕</button>
+      <div class="add-menu" id="add-menu">
+        <button id="menu-find"><span class="em">🔍</span> Найти пользователя</button>
+        <button id="menu-new-group"><span class="em">👥</span> Создать группу</button>
+        <button id="menu-new-channel"><span class="em">📢</span> Создать канал</button>
       </div>
     </div>
     <div class="me-bar" id="me-bar">
@@ -38,6 +49,10 @@
       </div>
       <span class="edit-ico">✏️</span>
     </div>
+
+    <!-- ПОЛОСА ИСТОРИЙ -->
+    <div class="stories-bar" id="stories-bar"></div>
+
     <div class="chat-list" id="chat-list">
       <div class="empty-list">Загрузка...</div>
     </div>
@@ -58,16 +73,14 @@
         </div>
         <div class="actions">
           <button id="back-btn" style="display:none">←</button>
-          <button>📞</button>
-          <button>⋮</button>
+          <button id="group-settings-btn" style="display:none" title="Настройки">⚙️</button>
         </div>
       </div>
 
       <div class="messages" id="messages"></div>
 
-      <div class="typing-indicator" id="typing-ind">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <span id="typing-text"></span>
+      <div class="channel-notice" id="channel-notice" style="display:none;">
+        📢 Только администраторы могут писать в канале
       </div>
 
       <div class="reply-bar" id="reply-bar">
@@ -78,13 +91,12 @@
         <button id="reply-close">✕</button>
       </div>
 
-      <div class="input-panel">
+      <div class="input-panel" id="input-panel">
         <button class="attach-btn" id="attach-btn">📎</button>
         <div class="input-wrap">
           <textarea id="msg-input" rows="1" placeholder="Написать сообщение..."></textarea>
         </div>
         <button class="send-btn" id="send-btn">➤</button>
-
         <div class="attach-menu" id="attach-menu">
           <button data-type="image"><span class="em">🖼️</span> Фото</button>
           <button data-type="video"><span class="em">🎬</span> Видео</button>
@@ -96,21 +108,19 @@
   </main>
 </div>
 
-<!-- Скрытые input -->
 <input type="file" id="file-input" style="display:none">
 <input type="file" id="avatar-input" accept="image/*" style="display:none">
+<input type="file" id="group-avatar-input" accept="image/*" style="display:none">
+<input type="file" id="story-file-input" accept="image/*,video/*" style="display:none">
 
-<!-- Модалка профиля -->
 <div class="modal" id="profile-modal">
   <div class="modal-box">
     <h2>Мой профиль</h2>
     <div class="profile-avatar">
-      <div class="avatar" id="prof-avatar">
-        <span>?</span>
-        <div class="edit-ov">📷</div>
-      </div>
+      <div class="avatar" id="prof-avatar"><span>?</span><div class="edit-ov">📷</div></div>
     </div>
-    <label>Имя</label>
+    <div class="nickname-row"><span class="lbl">Логин:</span><span id="prof-nickname">—</span></div>
+    <label>Отображаемое имя</label>
     <input type="text" id="prof-name" maxlength="30">
     <label>О себе</label>
     <textarea id="prof-bio" maxlength="120" placeholder="Напишите о себе..."></textarea>
@@ -118,16 +128,115 @@
       <button class="cancel" id="prof-cancel">Отмена</button>
       <button class="save" id="prof-save">Сохранить</button>
     </div>
+    <button id="logout-btn" class="logout">Выйти из аккаунта</button>
   </div>
 </div>
 
-<!-- Просмотр медиа -->
+<div class="modal" id="find-modal">
+  <div class="modal-box find-box">
+    <h2>Найти пользователя</h2>
+    <label>Логин</label>
+    <input type="text" id="find-input" maxlength="20" placeholder="Введите логин" autocomplete="off">
+    <div class="find-result" id="find-result"></div>
+    <div class="modal-actions">
+      <button class="cancel" id="find-cancel">Закрыть</button>
+      <button class="save" id="find-search">Найти</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="create-group-modal">
+  <div class="modal-box">
+    <h2 id="cg-title">Новая группа</h2>
+    <label>Название</label>
+    <input type="text" id="cg-name" maxlength="50" placeholder="Например: Команда">
+    <label id="cg-members-label">Участники</label>
+    <div class="cg-contacts" id="cg-contacts"></div>
+    <label class="checkbox-row">
+      <input type="checkbox" id="cg-is-channel">
+      <span>📢 Создать как канал (писать смогут только администраторы)</span>
+    </label>
+    <div class="modal-actions">
+      <button class="cancel" id="cg-cancel">Отмена</button>
+      <button class="save" id="cg-create">Создать</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="group-settings-modal">
+  <div class="modal-box">
+    <h2 id="gs-title">Настройки</h2>
+    <div class="profile-avatar">
+      <div class="avatar" id="gs-avatar" style="width:90px;height:90px;font-size:36px;position:relative;cursor:pointer;">
+        <span>?</span>
+        <div class="edit-ov" id="gs-avatar-edit" style="display:none;">📷</div>
+      </div>
+    </div>
+    <label>Название</label>
+    <input type="text" id="gs-name" maxlength="50">
+    <label>Описание</label>
+    <textarea id="gs-desc" maxlength="200" placeholder="О чём..."></textarea>
+    <label id="gs-members-label">Участники</label>
+    <div class="members-list" id="gs-members"></div>
+    <button id="gs-add-members" class="add-members-btn" style="display:none;">➕ Добавить участника</button>
+    <div class="modal-actions">
+      <button class="cancel" id="gs-close">Закрыть</button>
+      <button class="save" id="gs-save">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="add-members-modal">
+  <div class="modal-box">
+    <h2 id="am-title">Добавить участников</h2>
+    <label id="am-label">Контакты (не в группе)</label>
+    <div class="cg-contacts" id="am-contacts"></div>
+    <div class="modal-actions">
+      <button class="cancel" id="am-cancel">Отмена</button>
+      <button class="save" id="am-add">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<!-- МОДАЛКА СОЗДАНИЯ ИСТОРИИ -->
+<div class="modal" id="story-create-modal">
+  <div class="modal-box">
+    <h2>Новая история</h2>
+    <div class="story-preview" id="story-preview">
+      <div class="story-preview-empty">Выберите фото или видео</div>
+    </div>
+    <label>Подпись (необязательно)</label>
+    <input type="text" id="story-caption" maxlength="100" placeholder="Что происходит?">
+    <div class="modal-actions">
+      <button class="cancel" id="story-create-cancel">Отмена</button>
+      <button class="save" id="story-create-publish">Опубликовать</button>
+    </div>
+  </div>
+</div>
+
 <div class="viewer" id="viewer">
   <span class="close" id="viewer-close">✕</span>
   <div id="viewer-content"></div>
 </div>
 
-<!-- Пикер реакций -->
+<!-- ПОЛНОЭКРАННЫЙ ПРОСМОТР ИСТОРИИ -->
+<div class="story-viewer" id="story-viewer">
+  <div class="story-progress" id="story-progress"></div>
+  <div class="story-viewer-header">
+    <div class="avatar" id="story-viewer-avatar"></div>
+    <div class="story-viewer-meta">
+      <div class="story-viewer-author" id="story-viewer-author"></div>
+      <div class="story-viewer-time" id="story-viewer-time"></div>
+    </div>
+    <button id="story-viewer-close" title="Закрыть">✕</button>
+    <button id="story-viewer-delete" title="Удалить" style="display:none;">🗑</button>
+  </div>
+  <div class="story-viewer-content" id="story-viewer-content"></div>
+  <button class="story-nav story-nav-prev" id="story-nav-prev">‹</button>
+  <button class="story-nav story-nav-next" id="story-nav-next">›</button>
+  <div class="story-viewer-caption" id="story-viewer-caption"></div>
+</div>
+
 <div class="reaction-picker" id="reaction-picker">
   <button data-emoji="👍">👍</button>
   <button data-emoji="❤️">❤️</button>
@@ -139,16 +248,16 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- ===================================================== -->
-<!-- FIREBASE: подключение к базе данных                   -->
-<!-- Этот блок ДОЛЖЕН быть ДО <script src="app.js">        -->
-<!-- ===================================================== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
   import {
-    getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc,
-    onSnapshot, query, orderBy, serverTimestamp
+    getFirestore, collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
+    onSnapshot, query, where, orderBy, serverTimestamp, arrayUnion
   } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC0GuO63_dCwCWWCc4-T-1gDTyYLCmkYkE",
@@ -162,15 +271,16 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
-  // Делаем функции доступными из app.js
   window.fb = {
-    db, collection, doc, addDoc, setDoc, updateDoc, deleteDoc,
-    onSnapshot, query, orderBy, serverTimestamp
+    db, auth,
+    collection, doc, getDoc, getDocs, addDoc, setDoc, updateDoc, deleteDoc,
+    onSnapshot, query, where, orderBy, serverTimestamp, arrayUnion,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged
   };
 </script>
 
-<!-- Ваш основной скрипт — ПОСЛЕ блока Firebase -->
 <script src="app.js"></script>
 </body>
 </html>
