@@ -1,45 +1,238 @@
 /* ============================================
+   i18n
+   ============================================ */
+const TRANSLATIONS = {
+  ru: {
+    welcome:'Добро пожаловать', createAccount:'Создать аккаунт',
+    subtitle:'Войдите или создайте аккаунт', subtitleRegister:'Создайте новый аккаунт',
+    login:'Вход', register:'Регистрация', nickname:'Никнейм',
+    password:'Пароль (мин. 6 символов)', passwordConfirm:'Повторите пароль',
+    signIn:'Войти', signUp:'Зарегистрироваться',
+    authHint:'Никнейм: буквы, цифры, _. Пароль: минимум 6 символов.',
+    searchChats:'Поиск в чатах', findUser:'Найти пользователя',
+    newGroup:'Создать группу', newChannel:'Создать канал', online:'в сети',
+    selectChat:'Выберите чат, чтобы начать общение', writeMessage:'Написать сообщение...',
+    channelOnlyAdmins:'Только администраторы могут писать в канале',
+    myStory:'Моя история', settings:'Настройки', myProfile:'Мой профиль',
+    language:'Язык', logout:'Выйти из аккаунта', close:'Закрыть', cancel:'Отмена', save:'Сохранить',
+    loginLabel:'Логин:', displayName:'Отображаемое имя', aboutMe:'О себе',
+    aboutPlaceholder:'Напишите о себе...',
+    musicLabel:'Музыка', musicNotSelected:'Файл не выбран', musicUpload:'Загрузить музыку',
+    myChannelLabel:'Мой канал', channelLabel:'Канал', noChannel:'— Не выбран —',
+    errNotSubscribed:'Вы не подписаны на этот канал',
+    profileTitle:'Профиль', messageUser:'Написать сообщение',
+    findUserTitle:'Найти пользователя', loginFieldLabel:'Логин', find:'Найти',
+    findInputPlaceholder:'Введите логин',
+    newGroupTitle:'Новая группа', newChannelTitle:'Новый канал',
+    nameLabel:'Название', namePlaceholderGroup:'Например: Команда',
+    namePlaceholderChannel:'Например: Новости',
+    membersLabel:'Участники', subscribersLabel:'Подписчики',
+    createAsChannel:'Создать как канал (писать смогут только администраторы)',
+    create:'Создать', description:'Описание', descriptionPlaceholder:'О чём...',
+    addMember:'Добавить участника', addSubscriber:'Добавить подписчика',
+    addMembersTitle:'Добавить участников', addSubscribersTitle:'Добавить подписчиков',
+    contactsNotInGroup:'Контакты (не в группе)', contactsNotSubscribed:'Контакты (не подписаны)',
+    add:'Добавить', newStory:'Новая история',
+    storyCaptionLabel:'Подпись (необязательно)', storyCaptionPlaceholder:'Что происходит?',
+    publish:'Опубликовать', storyPreviewEmpty:'Выберите фото или видео',
+    emptyChatList:'Пока никого нет.<br><br>Нажмите <b>➕</b> вверху — найти пользователя, создать группу или канал.',
+    nothingFound:'Ничего не найдено', noMessages:'Нет сообщений', youPrefix:'Вы: ',
+    startDialog:'Начните диалог 👋', inChat:'в чате', channelStatusPrefix:'📢 канал · ',
+    errEnterNickname:'Введите никнейм', errEnterPassword:'Введите пароль',
+    errInvalidCredentials:'Неверный никнейм или пароль', errNoInternet:'Нет интернета',
+    errServerConnecting:'Подключение к серверу, подождите',
+    errNicknameTaken:'Этот никнейм уже занят', errWeakPassword:'Слишком простой пароль',
+    errPasswordMin:'Пароль минимум 6 символов', errPasswordsDontMatch:'Пароли не совпадают',
+    errNicknameShort:'Никнейм слишком короткий (мин. 2 символа)',
+    errNicknameLong:'Никнейм слишком длинный (макс. 20)', errNicknameChars:'Только буквы, цифры и _',
+    errNameEmpty:'Имя не может быть пустым', errFileTooBig:'Файл слишком большой (макс 500 КБ)',
+    errFileRead:'Ошибка чтения файла', errSendFailed:'Не удалось отправить',
+    errSendFileFailed:'Не удалось отправить файл', errAddContact:'Не удалось добавить контакт',
+    errSearch:'Ошибка поиска', errCreateGroup:'Не удалось создать',
+    errSaveGroup:'Не удалось сохранить', errAddMembers:'Не удалось добавить',
+    errDeleteMsg:'Не удалось удалить', errReaction:'Не удалось поставить реакцию',
+    errPublishStory:'Не удалось опубликовать', errDeleteStory:'Не удалось удалить',
+    errProfileLoad:'Не удалось загрузить профиль',
+    okContactAdded:'Контакт добавлен', okGroupCreated:'Группа создана',
+    okChannelCreated:'Канал создан', okProfileSaved:'Профиль сохранён',
+    okStoryPublished:'История опубликована', okStoryDeleted:'История удалена',
+    okSaved:'Сохранено', okMusicUploaded:'Музыка загружена', okMusicRemoved:'Музыка удалена',
+    errMusicTooBig:'Музыка слишком большая (макс 500 КБ)', errMusicRead:'Ошибка чтения музыки',
+    errProfileSync:'Профиль сохранён локально, но файл слишком большой для синхронизации',
+    errBanned:'Аккаунт заблокирован администратором',
+    musicFileLabel:'Аудиофайл',
+    confirmLogout:'Выйти из аккаунта?', confirmDeleteMsg:'Удалить сообщение?',
+    confirmDeleteStory:'Удалить эту историю?',
+    confirmRemoveMember:'Удалить из группы?', confirmRemoveFromChannel:'Удалить из канала?',
+    tagPrompt:'Тег для {name} (пусто = без тега):',
+    roleAdminAssigned:'Назначен админом', roleRemoved:'Права сняты',
+    memberRemoved:'Удалён из группы', tagUpdated:'Тег обновлён',
+    addedCount:'Добавлено: {n}',
+    onlyAdminCanEdit:'Только админ может менять настройки',
+    onlyAdminCanAdd:'Только админ может добавлять',
+    selectAtLeastOne:'Выберите хотя бы одного',
+    contactsAlreadyAdded:'Все ваши контакты уже добавлены, либо их нет.',
+    contactsFirst:'Сначала добавьте контакты через «Найти пользователя»',
+    userNotFound:'Пользователь не найден', itIsYourLogin:'Это ваш логин',
+    alreadyInContacts:'уже в контактах',
+    sub1:'подписчик', sub2:'подписчика', sub5:'подписчиков',
+    mem1:'участник', mem2:'участника', mem5:'участников',
+    timeJustNow:'только что', timeMinAgo:'{n} мин назад', timeHourAgo:'{n} ч назад',
+    today:'Сегодня', yesterday:'Вчера',
+    photo:'📷 Фото', video:'🎬 Видео', music:'🎵 Музыка', file:'📎 Файл',
+    photoMenu:'Фото', videoMenu:'Видео', musicMenu:'Музыка', fileMenu:'Файл',
+    langChanged:'Язык изменён',
+    adminBanned:'Пользователь забанен', adminUnbanned:'Разбанен',
+    adminError:'Ошибка', adminConfirmBan:'Забанить @{nick}?',
+    adminConfirmClearMsgs:'Удалить ВСЕ сообщения пользователя @{nick}?',
+    adminMsgsDeleted:'Удалено сообщений: {n}',
+    adminDeleteMsgConfirm:'Удалить сообщение?',
+    adminNoUsers:'Пользователей нет', adminNoMsgs:'Сообщений нет',
+    adminLoadError:'Ошибка загрузки', adminLoading:'Загрузка...',
+    adminTitle:'Админ-панель', adminManage:'Управление пользователями',
+    adminTabUsers:'Пользователи', adminTabMessages:'Сообщения',
+    adminBannedLabel:'забанен', adminBanBtn:'Забанить', adminUnbanBtn:'Разбанить'
+  },
+  en: {
+    welcome:'Welcome', createAccount:'Create account',
+    subtitle:'Sign in or create an account', subtitleRegister:'Create a new account',
+    login:'Sign in', register:'Sign up', nickname:'Nickname',
+    password:'Password (min. 6 chars)', passwordConfirm:'Repeat password',
+    signIn:'Sign in', signUp:'Sign up',
+    authHint:'Nickname: letters, digits, _. Password: at least 6 characters.',
+    searchChats:'Search chats', findUser:'Find user',
+    newGroup:'Create group', newChannel:'Create channel', online:'online',
+    selectChat:'Select a chat to start messaging', writeMessage:'Write a message...',
+    channelOnlyAdmins:'Only admins can post in the channel',
+    myStory:'My story', settings:'Settings', myProfile:'My profile',
+    language:'Language', logout:'Sign out', close:'Close', cancel:'Cancel', save:'Save',
+    loginLabel:'Login:', displayName:'Display name', aboutMe:'About me',
+    aboutPlaceholder:'Tell about yourself...',
+    musicLabel:'Music', musicNotSelected:'No file selected', musicUpload:'Upload music',
+    myChannelLabel:'My channel', channelLabel:'Channel', noChannel:'— None —',
+    errNotSubscribed:'You are not subscribed to this channel',
+    profileTitle:'Profile', messageUser:'Message',
+    findUserTitle:'Find user', loginFieldLabel:'Login', find:'Find',
+    findInputPlaceholder:'Enter login',
+    newGroupTitle:'New group', newChannelTitle:'New channel',
+    nameLabel:'Name', namePlaceholderGroup:'E.g.: Team',
+    namePlaceholderChannel:'E.g.: News',
+    membersLabel:'Members', subscribersLabel:'Subscribers',
+    createAsChannel:'Create as channel (only admins can post)',
+    create:'Create', description:'Description', descriptionPlaceholder:'About...',
+    addMember:'Add member', addSubscriber:'Add subscriber',
+    addMembersTitle:'Add members', addSubscribersTitle:'Add subscribers',
+    contactsNotInGroup:'Contacts (not in group)', contactsNotSubscribed:'Contacts (not subscribed)',
+    add:'Add', newStory:'New story',
+    storyCaptionLabel:'Caption (optional)', storyCaptionPlaceholder:'What is happening?',
+    publish:'Publish', storyPreviewEmpty:'Choose photo or video',
+    emptyChatList:'Nobody here yet.<br><br>Tap <b>➕</b> above — find a user, create a group or channel.',
+    nothingFound:'Nothing found', noMessages:'No messages', youPrefix:'You: ',
+    startDialog:'Start the dialog 👋', inChat:'in chat', channelStatusPrefix:'📢 channel · ',
+    errEnterNickname:'Enter a nickname', errEnterPassword:'Enter a password',
+    errInvalidCredentials:'Invalid nickname or password', errNoInternet:'No internet',
+    errServerConnecting:'Connecting to server, please wait',
+    errNicknameTaken:'This nickname is already taken', errWeakPassword:'Password is too weak',
+    errPasswordMin:'Password must be at least 6 characters', errPasswordsDontMatch:'Passwords do not match',
+    errNicknameShort:'Nickname too short (min. 2 chars)',
+    errNicknameLong:'Nickname too long (max. 20)', errNicknameChars:'Letters, digits and _ only',
+    errNameEmpty:'Name cannot be empty', errFileTooBig:'File too large (max 500 KB)',
+    errFileRead:'Failed to read file', errSendFailed:'Failed to send',
+    errSendFileFailed:'Failed to send file', errAddContact:'Failed to add contact',
+    errSearch:'Search error', errCreateGroup:'Failed to create',
+    errSaveGroup:'Failed to save', errAddMembers:'Failed to add',
+    errDeleteMsg:'Failed to delete', errReaction:'Failed to react',
+    errPublishStory:'Failed to publish', errDeleteStory:'Failed to delete',
+    errProfileLoad:'Failed to load profile',
+    okContactAdded:'Contact added', okGroupCreated:'Group created',
+    okChannelCreated:'Channel created', okProfileSaved:'Profile saved',
+    okStoryPublished:'Story published', okStoryDeleted:'Story deleted',
+    okSaved:'Saved', okMusicUploaded:'Music uploaded', okMusicRemoved:'Music removed',
+    errMusicTooBig:'Music file too large (max 500 KB)', errMusicRead:'Failed to read music',
+    errProfileSync:'Profile saved locally, but file too large to sync',
+    errBanned:'Account blocked by administrator',
+    musicFileLabel:'Audio file',
+    confirmLogout:'Sign out?', confirmDeleteMsg:'Delete message?',
+    confirmDeleteStory:'Delete this story?',
+    confirmRemoveMember:'Remove from group?', confirmRemoveFromChannel:'Remove from channel?',
+    tagPrompt:'Tag for {name} (empty = no tag):',
+    roleAdminAssigned:'Promoted to admin', roleRemoved:'Rights removed',
+    memberRemoved:'Removed from group', tagUpdated:'Tag updated',
+    addedCount:'Added: {n}',
+    onlyAdminCanEdit:'Only admin can change settings',
+    onlyAdminCanAdd:'Only admin can add',
+    selectAtLeastOne:'Select at least one',
+    contactsAlreadyAdded:'All your contacts already added, or none exist.',
+    contactsFirst:'First add contacts via "Find user"',
+    userNotFound:'User not found', itIsYourLogin:'This is your login',
+    alreadyInContacts:'already in contacts',
+    sub1:'subscriber', sub2:'subscribers', sub5:'subscribers',
+    mem1:'member', mem2:'members', mem5:'members',
+    timeJustNow:'just now', timeMinAgo:'{n} min ago', timeHourAgo:'{n} h ago',
+    today:'Today', yesterday:'Yesterday',
+    photo:'📷 Photo', video:'🎬 Video', music:'🎵 Music', file:'📎 File',
+    photoMenu:'Photo', videoMenu:'Video', musicMenu:'Music', fileMenu:'File',
+    langChanged:'Language changed',
+    adminBanned:'User banned', adminUnbanned:'Unbanned',
+    adminError:'Error', adminConfirmBan:'Ban @{nick}?',
+    adminConfirmClearMsgs:'Delete ALL messages of @{nick}?',
+    adminMsgsDeleted:'Deleted messages: {n}',
+    adminDeleteMsgConfirm:'Delete message?',
+    adminNoUsers:'No users', adminNoMsgs:'No messages',
+    adminLoadError:'Load error', adminLoading:'Loading...',
+    adminTitle:'Admin panel', adminManage:'User management',
+    adminTabUsers:'Users', adminTabMessages:'Messages',
+    adminBannedLabel:'banned', adminBanBtn:'Ban', adminUnbanBtn:'Unban'
+  }
+};
+
+let currentLang = 'ru';
+function t(key){
+  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.ru;
+  return dict[key] || TRANSLATIONS.ru[key] || key;
+}
+function tpl(key, params){
+  let s = t(key);
+  Object.keys(params || {}).forEach(k => { s = s.replace(new RegExp('\\{'+k+'\\}','g'), params[k]); });
+  return s;
+}
+function applyTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
+  document.documentElement.lang = currentLang;
+  const lbl = $('settings-language-current');
+  if(lbl) lbl.textContent = currentLang === 'ru' ? 'Русский' : 'English';
+}
+function loadLang(){
+  try { const s = localStorage.getItem('tg-lang'); if(s === 'ru' || s === 'en') currentLang = s; } catch(e){}
+}
+function saveLang(){ try { localStorage.setItem('tg-lang', currentLang); } catch(e){} }
+
+/* ============================================
    СОСТОЯНИЕ
    ============================================ */
 const state = {
-  uid: null,
-  nickname: null,
-  pendingNickname: null,
-  profile: { displayName: '', bio: '', avatarData: null },
-  users: [],
-  messages: {},
-  groupMessages: {},
-  groups: {},
-  currentChat: null,
-  currentChatType: null,
-  unread: {},
-  replyTo: null,
-  reactionTarget: null,
-  pendingFileType: null,
+  uid: null, nickname: null, pendingNickname: null,
+  profile: { displayName:'', bio:'', avatarData:null, music:null, channelId:null, channelName:null },
+  users: [], messages: {}, groupMessages: {}, groups: {},
+  currentChat: null, currentChatType: null,
+  unread: {}, replyTo: null, reactionTarget: null, pendingFileType: null,
   messagesLoaded: false,
-  contactUids: [],
-  profiles: {},
-  contactListeners: {},
-  groupUnsubs: {},
+  contactUids: [], profiles: {}, contactListeners: {}, groupUnsubs: {},
   profileFetching: new Set(),
-  unsubMe: null,
-  unsubMessages: null,
-  unsubGroups: null,
-  // stories
-  stories: {},             // storyId -> story
-  storyGroups: {},         // authorUid -> [story]
-  unsubStories: null,
+  unsubMe: null, unsubMessages: null, unsubGroups: null,
+  stories: {}, storyGroups: {}, unsubStories: null,
   seenStoryIds: new Set(),
-  storyTimer: null,
-  currentStoryGroup: null,
-  currentStoryIndex: 0,
-  pendingStoryMedia: null  // {type:'image'|'video', dataUrl}
+  storyTimer: null, currentStoryGroup: null, currentStoryIndex: 0,
+  pendingStoryMedia: null
 };
 
 let authMode = 'login';
 let tempAvatar = null;
+let tempMusic = null;
 let currentGroupSettingsId = null;
 let tempGroupAvatar = null;
+let adminUsersCache = [];
 
 const $ = (id) => document.getElementById(id);
 
@@ -50,30 +243,50 @@ function escapeHtml(s){
   return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function formatTime(ts){
-  return new Date(ts).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  return new Date(ts).toLocaleTimeString(currentLang === 'ru' ? 'ru-RU' : 'en-US',{hour:'2-digit',minute:'2-digit'});
+}
+function formatDate(ts){
+  const d = new Date(ts);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const yesterday = today - 86400000;
+  const dayTs = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  if(dayTs === today) return t('today');
+  if(dayTs === yesterday) return t('yesterday');
+  return d.toLocaleDateString(currentLang === 'ru' ? 'ru-RU' : 'en-US', { day:'numeric', month:'short' });
 }
 function formatStoryTime(ts){
   const diff = Date.now() - ts;
   const min = Math.floor(diff / 60000);
-  if(min < 1) return 'только что';
-  if(min < 60) return min + ' мин назад';
-  const h = Math.floor(min / 60);
-  return h + ' ч назад';
+  if(min < 1) return t('timeJustNow');
+  if(min < 60) return tpl('timeMinAgo',{n:min});
+  return tpl('timeHourAgo',{n:Math.floor(min/60)});
 }
-function toast(text){
-  const t = $('toast');
-  t.textContent = text;
-  t.classList.add('show');
-  clearTimeout(t._tid);
-  t._tid = setTimeout(() => t.classList.remove('show'), 2200);
+function toast(text, type){
+  const el = $('toast');
+  el.textContent = text;
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.classList.add('show');
+  clearTimeout(el._tid);
+  el._tid = setTimeout(() => el.classList.remove('show'), 2400);
 }
 function scrollToBottom(){
   const el = $('messages');
   if(!el) return;
   requestAnimationFrame(() => {
     el.scrollTop = el.scrollHeight;
-    requestAnimationFrame(() => { el.scrollTop = el.scrollHeight; });
+    requestAnimationFrame(() => {
+      el.scrollTop = el.scrollHeight;
+      updateScrollButton();
+    });
   });
+}
+function updateScrollButton(){
+  const m = $('messages');
+  const btn = $('scroll-to-bottom');
+  if(!m || !btn) return;
+  const distFromBottom = m.scrollHeight - m.scrollTop - m.clientHeight;
+  btn.classList.toggle('visible', distFromBottom > 200);
 }
 function profileKey(){ return 'tg-clone:' + state.uid; }
 function storiesSeenKey(){ return 'tg-stories-seen:' + state.uid; }
@@ -86,9 +299,9 @@ function fileToBase64(file){
   });
 }
 function formatSize(bytes){
-  if(bytes < 1024) return bytes + ' Б';
-  if(bytes < 1048576) return (bytes/1024).toFixed(1) + ' КБ';
-  return (bytes/1048576).toFixed(1) + ' МБ';
+  if(bytes < 1024) return bytes + ' B';
+  if(bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
 }
 function getFileIcon(name){
   const e = name.split('.').pop().toLowerCase();
@@ -105,43 +318,42 @@ function nicknameToEmail(nickname){
   return `u${hex}@sendit.local`;
 }
 function validateNickname(nickname){
-  if(nickname.length < 2) return 'Никнейм слишком короткий (мин. 2 символа)';
-  if(nickname.length > 20) return 'Никнейм слишком длинный (макс. 20)';
-  if(!/^[\p{L}0-9_]+$/u.test(nickname)) return 'Только буквы, цифры и _';
+  if(nickname.length < 2) return t('errNicknameShort');
+  if(nickname.length > 20) return t('errNicknameLong');
+  if(!/^[\p{L}0-9_]+$/u.test(nickname)) return t('errNicknameChars');
   return null;
 }
 function getUserDisplayName(uid){
-  if(uid === state.uid) return 'Вы';
+  if(uid === state.uid) return currentLang === 'ru' ? 'Вы' : 'You';
   const u = state.profiles[uid];
   return u ? u.displayName : '?';
 }
 function plural(n, one, few, many){
+  if(currentLang === 'en') return n === 1 ? one : few;
   const m10 = n % 10, m100 = n % 100;
   if(m10 === 1 && m100 !== 11) return one;
   if(m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
   return many;
 }
-function isChannel(gid){
-  return !!(state.groups[gid] && state.groups[gid].isChannel);
-}
+function isChannel(gid){ return !!(state.groups[gid] && state.groups[gid].isChannel); }
 function isAdminIn(gid){
   const g = state.groups[gid];
   return !!(g && g.members && g.members[state.uid] && g.members[state.uid].role === 'admin');
 }
 function canPostInCurrentChat(){
   if(state.currentChatType !== 'group') return true;
-  const gid = state.currentChat;
-  if(!isChannel(gid)) return true;
-  return isAdminIn(gid);
+  if(!isChannel(state.currentChat)) return true;
+  return isAdminIn(state.currentChat);
 }
+function isSuperAdmin(){ return state.nickname === 'llamx'; }
 
 /* ============================================
-   ПРОФИЛЬ + STORIES SEEN (localStorage)
+   ПРОФИЛЬ (localStorage)
    ============================================ */
 function saveProfile(){
   if(!state.uid) return;
   try { localStorage.setItem(profileKey(), JSON.stringify({ profile: state.profile })); }
-  catch(e){ toast('Не удалось сохранить профиль'); }
+  catch(e){ toast(t('errFileRead'), 'error'); }
 }
 function loadProfile(){
   try {
@@ -174,10 +386,14 @@ function setAuthMode(mode){
   authMode = mode;
   $('tab-login').classList.toggle('active', mode === 'login');
   $('tab-register').classList.toggle('active', mode === 'register');
-  $('auth-submit').textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
+  $('auth-submit').textContent = mode === 'login' ? t('signIn') : t('signUp');
+  $('auth-submit').setAttribute('data-i18n', mode === 'login' ? 'signIn' : 'signUp');
   $('password-confirm').style.display = mode === 'register' ? 'block' : 'none';
   $('login-err').textContent = '';
-  $('auth-title').textContent = mode === 'login' ? 'Добро пожаловать' : 'Создать аккаунт';
+  $('auth-title').textContent = mode === 'login' ? t('welcome') : t('createAccount');
+  $('auth-title').setAttribute('data-i18n', mode === 'login' ? 'welcome' : 'createAccount');
+  $('auth-subtitle').textContent = mode === 'login' ? t('subtitle') : t('subtitleRegister');
+  $('auth-subtitle').setAttribute('data-i18n', mode === 'login' ? 'subtitle' : 'subtitleRegister');
 }
 function showErr(msg){ $('login-err').textContent = msg; }
 
@@ -187,48 +403,40 @@ async function handleRegister(){
   const confirm = $('password-confirm').value;
   const err = validateNickname(nickname);
   if(err){ showErr(err); return; }
-  if(password.length < 6){ showErr('Пароль минимум 6 символов'); return; }
-  if(password !== confirm){ showErr('Пароли не совпадают'); return; }
-  if(!window.fb){ showErr('Подключение к серверу, подождите'); return; }
-
+  if(password.length < 6){ showErr(t('errPasswordMin')); return; }
+  if(password !== confirm){ showErr(t('errPasswordsDontMatch')); return; }
+  if(!window.fb){ showErr(t('errServerConnecting')); return; }
   const { auth, createUserWithEmailAndPassword, db, doc, setDoc, serverTimestamp } = window.fb;
   state.pendingNickname = nickname;
   showErr('');
   try {
     const cred = await createUserWithEmailAndPassword(auth, nicknameToEmail(nickname), password);
     await setDoc(doc(db, 'users', cred.user.uid), {
-      uid: cred.user.uid,
-      nickname: nickname,
-      nicknameLower: nickname.toLowerCase(),
-      displayName: nickname,
-      contacts: [],
-      createdAt: serverTimestamp()
+      uid: cred.user.uid, nickname, nicknameLower: nickname.toLowerCase(),
+      displayName: nickname, contacts: [], createdAt: serverTimestamp()
     });
   } catch(e){
     state.pendingNickname = null;
-    if(e.code === 'auth/email-already-in-use') showErr('Этот никнейм уже занят');
-    else if(e.code === 'auth/weak-password') showErr('Слишком простой пароль');
-    else if(e.code === 'auth/network-request-failed') showErr('Нет интернета');
-    else showErr('Ошибка: ' + (e.message || e.code));
+    if(e.code === 'auth/email-already-in-use') showErr(t('errNicknameTaken'));
+    else if(e.code === 'auth/weak-password') showErr(t('errWeakPassword'));
+    else if(e.code === 'auth/network-request-failed') showErr(t('errNoInternet'));
+    else showErr('Error: ' + (e.message || e.code));
   }
 }
 
 async function handleLogin(){
   const nickname = $('username').value.trim();
   const password = $('password').value;
-  if(!nickname){ showErr('Введите никнейм'); return; }
-  if(!password){ showErr('Введите пароль'); return; }
-  if(!window.fb){ showErr('Подключение к серверу, подождите'); return; }
-
+  if(!nickname){ showErr(t('errEnterNickname')); return; }
+  if(!password){ showErr(t('errEnterPassword')); return; }
+  if(!window.fb){ showErr(t('errServerConnecting')); return; }
   const { auth, signInWithEmailAndPassword } = window.fb;
   showErr('');
-  try {
-    await signInWithEmailAndPassword(auth, nicknameToEmail(nickname), password);
-  } catch(e){
-    if(['auth/user-not-found','auth/wrong-password','auth/invalid-credential','auth/invalid-login-credentials'].includes(e.code)){
-      showErr('Неверный никнейм или пароль');
-    } else if(e.code === 'auth/network-request-failed') showErr('Нет интернета');
-    else showErr('Ошибка: ' + (e.message || e.code));
+  try { await signInWithEmailAndPassword(auth, nicknameToEmail(nickname), password); }
+  catch(e){
+    if(['auth/user-not-found','auth/wrong-password','auth/invalid-credential','auth/invalid-login-credentials'].includes(e.code)) showErr(t('errInvalidCredentials'));
+    else if(e.code === 'auth/network-request-failed') showErr(t('errNoInternet'));
+    else showErr('Error: ' + (e.message || e.code));
   }
 }
 
@@ -243,21 +451,14 @@ async function ensureProfile(uid){
     const snap = await getDoc(doc(db, 'users', uid));
     if(snap.exists()){
       const d = snap.data();
-      state.profiles[uid] = {
-        uid, nickname: d.nickname,
-        displayName: d.displayName || d.nickname,
-        avatar: (d.displayName || d.nickname || '?')[0].toUpperCase()
-      };
+      state.profiles[uid] = { uid, nickname: d.nickname, displayName: d.displayName || d.nickname, avatar: (d.displayName || d.nickname || '?')[0].toUpperCase() };
     } else {
-      state.profiles[uid] = { uid, nickname: '?', displayName: 'Удалённый', avatar: '?' };
+      state.profiles[uid] = { uid, nickname: '?', displayName: '—', avatar: '?' };
     }
     rebuildUsersList();
     if(currentGroupSettingsId) renderGroupSettings();
-  } catch(e){
-    console.error('ensureProfile:', e);
-  } finally {
-    state.profileFetching.delete(uid);
-  }
+  } catch(e){ console.error('ensureProfile:', e); }
+  finally { state.profileFetching.delete(uid); }
 }
 
 function listenToMyContacts(){
@@ -267,33 +468,23 @@ function listenToMyContacts(){
     if(!snap.exists()) return;
     const data = snap.data();
     const newUids = (data.contacts || []).filter(u => u !== state.uid);
-
     Object.keys(state.contactListeners).forEach(uid => {
-      if(!newUids.includes(uid)){
-        state.contactListeners[uid]();
-        delete state.contactListeners[uid];
-      }
+      if(!newUids.includes(uid)){ state.contactListeners[uid](); delete state.contactListeners[uid]; }
     });
-
     newUids.forEach(uid => {
       if(!state.contactListeners[uid]){
         state.contactListeners[uid] = onSnapshot(doc(db, 'users', uid), (s) => {
           if(s.exists()){
             const d = s.data();
-            state.profiles[uid] = {
-              uid, nickname: d.nickname,
-              displayName: d.displayName || d.nickname,
-              avatar: (d.displayName || d.nickname || '?')[0].toUpperCase()
-            };
+            state.profiles[uid] = { uid, nickname: d.nickname, displayName: d.displayName || d.nickname, avatar: (d.displayName || d.nickname || '?')[0].toUpperCase() };
           } else {
-            state.profiles[uid] = { uid, nickname: '?', displayName: 'Удалённый', avatar: '?' };
+            state.profiles[uid] = { uid, nickname: '?', displayName: '—', avatar: '?' };
           }
           rebuildUsersList();
           if(currentGroupSettingsId) renderGroupSettings();
         }, err => console.error('contact listener:', err));
       }
     });
-
     state.contactUids = newUids;
     rebuildUsersList();
     renderStoriesBar();
@@ -304,12 +495,8 @@ function rebuildUsersList(){
   const uids = new Set();
   state.contactUids.forEach(u => uids.add(u));
   Object.keys(state.messages).forEach(u => { if(u && u !== state.uid) uids.add(u); });
-
   const list = [];
-  uids.forEach(uid => {
-    if(state.profiles[uid]) list.push(state.profiles[uid]);
-    else ensureProfile(uid);
-  });
+  uids.forEach(uid => { if(state.profiles[uid]) list.push(state.profiles[uid]); else ensureProfile(uid); });
   state.users = list;
   renderChatList();
 }
@@ -319,11 +506,27 @@ function rebuildUsersList(){
    ============================================ */
 async function findUserByNickname(nickname){
   const { db, collection, query, where, getDocs } = window.fb;
-  const q = query(collection(db, 'users'), where('nicknameLower', '==', nickname.toLowerCase()));
-  const snap = await getDocs(q);
-  if(snap.empty) return null;
-  const d = snap.docs[0].data();
-  return { uid: d.uid, nickname: d.nickname, displayName: d.displayName || d.nickname };
+  const lower = nickname.trim().toLowerCase();
+  if(!lower) return null;
+  try {
+    const q = query(collection(db, 'users'), where('nicknameLower', '==', lower));
+    const snap = await getDocs(q);
+    if(!snap.empty){
+      const d = snap.docs[0].data();
+      return { uid: d.uid || snap.docs[0].id, nickname: d.nickname, displayName: d.displayName || d.nickname };
+    }
+  } catch(e){ console.error('findUser indexed:', e); }
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    let found = null;
+    snap.forEach(d => {
+      if(found) return;
+      const u = d.data();
+      if((u.nickname || '').toLowerCase() === lower) found = { uid: u.uid || d.id, nickname: u.nickname, displayName: u.displayName || u.nickname };
+    });
+    return found;
+  } catch(e){ console.error('findUser fallback:', e); }
+  return null;
 }
 
 async function addContactByUid(uid){
@@ -334,60 +537,38 @@ async function addContactByUid(uid){
 async function doFind(){
   const nickname = $('find-input').value.trim();
   const res = $('find-result');
-  if(!nickname){ res.innerHTML = '<div class="find-error">Введите логин</div>'; return; }
-  res.innerHTML = '<div class="find-empty">Поиск...</div>';
+  if(!nickname){ res.innerHTML = `<div class="find-error">${t('errEnterNickname')}</div>`; return; }
+  res.innerHTML = `<div class="find-empty">${t('searchChats')}...</div>`;
   try {
     const found = await findUserByNickname(nickname);
-    if(!found){ res.innerHTML = '<div class="find-error">Пользователь не найден</div>'; return; }
-    if(found.uid === state.uid){ res.innerHTML = '<div class="find-error">Это ваш логин</div>'; return; }
+    if(!found){ res.innerHTML = `<div class="find-error">${t('userNotFound')}</div>`; return; }
+    if(found.uid === state.uid){ res.innerHTML = `<div class="find-error">${t('itIsYourLogin')}</div>`; return; }
     if(state.contactUids.includes(found.uid)){
-      res.innerHTML = `<div class="find-user">
-        <div class="avatar">${escapeHtml((found.displayName||found.nickname)[0].toUpperCase())}</div>
-        <div class="info">
-          <div class="name">${escapeHtml(found.displayName)}</div>
-          <div class="nick">@${escapeHtml(found.nickname)} · уже в контактах</div>
-        </div>
-      </div>`;
+      res.innerHTML = `<div class="find-user"><div class="avatar">${escapeHtml((found.displayName||found.nickname)[0].toUpperCase())}</div><div class="info"><div class="name">${escapeHtml(found.displayName)}</div><div class="nick">@${escapeHtml(found.nickname)} · ${t('alreadyInContacts')}</div></div></div>`;
       return;
     }
-    res.innerHTML = `<div class="find-user">
-      <div class="avatar">${escapeHtml((found.displayName||found.nickname)[0].toUpperCase())}</div>
-      <div class="info">
-        <div class="name">${escapeHtml(found.displayName)}</div>
-        <div class="nick">@${escapeHtml(found.nickname)}</div>
-      </div>
-      <button id="find-add-btn">Добавить</button>
-    </div>`;
-
+    res.innerHTML = `<div class="find-user"><div class="avatar">${escapeHtml((found.displayName||found.nickname)[0].toUpperCase())}</div><div class="info"><div class="name">${escapeHtml(found.displayName)}</div><div class="nick">@${escapeHtml(found.nickname)}</div></div><button id="find-add-btn">${t('add')}</button></div>`;
     const btn = document.getElementById('find-add-btn');
     btn.addEventListener('click', async () => {
       btn.disabled = true; btn.textContent = '...';
       try {
         await addContactByUid(found.uid);
-        toast('Контакт добавлен ✓');
+        toast(t('okContactAdded'), 'success');
         $('find-modal').classList.remove('visible');
         setTimeout(() => {
           if(!state.contactUids.includes(found.uid)){
-            state.profiles[found.uid] = {
-              uid: found.uid, nickname: found.nickname,
-              displayName: found.displayName,
-              avatar: (found.displayName || found.nickname)[0].toUpperCase()
-            };
-            rebuildUsersList();
-            renderStoriesBar();
+            state.profiles[found.uid] = { uid: found.uid, nickname: found.nickname, displayName: found.displayName, avatar: (found.displayName || found.nickname)[0].toUpperCase() };
+            rebuildUsersList(); renderStoriesBar();
           }
           openChat(found.uid, 'user');
         }, 400);
       } catch(e){
         console.error(e);
-        btn.disabled = false; btn.textContent = 'Добавить';
-        toast('Не удалось добавить контакт');
+        btn.disabled = false; btn.textContent = t('add');
+        toast(t('errAddContact'), 'error');
       }
     });
-  } catch(e){
-    console.error(e);
-    res.innerHTML = '<div class="find-error">Ошибка поиска</div>';
-  }
+  } catch(e){ console.error(e); res.innerHTML = `<div class="find-error">${t('errSearch')}</div>`; }
 }
 
 function openFindModal(){
@@ -404,282 +585,160 @@ function listenToStories(){
   const { db, collection, onSnapshot } = window.fb;
   if(state.unsubStories) state.unsubStories();
   state.unsubStories = onSnapshot(collection(db, 'stories'), (snap) => {
-    const cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24 часа
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
     const stories = {};
     snap.forEach(d => {
       const s = d.data();
       const created = s.createdAt && s.createdAt.toDate ? s.createdAt.toDate().getTime() : 0;
       if(created < cutoff) return;
-      stories[d.id] = {
-        id: d.id,
-        authorUid: s.authorUid,
-        type: s.type,
-        dataUrl: s.dataUrl,
-        caption: s.caption || '',
-        createdAt: created
-      };
+      stories[d.id] = { id: d.id, authorUid: s.authorUid, type: s.type, dataUrl: s.dataUrl, caption: s.caption || '', createdAt: created };
     });
     state.stories = stories;
     buildStoryGroups();
     renderStoriesBar();
   }, err => console.error('stories listener:', err));
 }
-
 function buildStoryGroups(){
   const groups = {};
   Object.values(state.stories).forEach(s => {
     if(!groups[s.authorUid]) groups[s.authorUid] = [];
     groups[s.authorUid].push(s);
   });
-  Object.keys(groups).forEach(uid => {
-    groups[uid].sort((a, b) => a.createdAt - b.createdAt);
-  });
+  Object.keys(groups).forEach(uid => groups[uid].sort((a,b) => a.createdAt - b.createdAt));
   state.storyGroups = groups;
 }
-
 function getVisibleStoryAuthors(){
-  // сначала я, потом контакты с историями
   const result = [];
-  if(state.storyGroups[state.uid] && state.storyGroups[state.uid].length){
-    result.push(state.uid);
-  }
-  state.contactUids.forEach(uid => {
-    if(state.storyGroups[uid] && state.storyGroups[uid].length) result.push(uid);
-  });
+  if(state.storyGroups[state.uid] && state.storyGroups[state.uid].length) result.push(state.uid);
+  state.contactUids.forEach(uid => { if(state.storyGroups[uid] && state.storyGroups[uid].length) result.push(uid); });
   return result;
 }
-
 function renderStoriesBar(){
   const bar = $('stories-bar');
+  if(!bar) return;
   const myStories = state.storyGroups[state.uid] || [];
   const hasMine = myStories.length > 0;
-
-  let html = '';
-
-  // карточка «Моя история»
-  const myFirstStory = hasMine ? myStories[myStories.length - 1] : null;
-  const myThumb = myFirstStory
-    ? (myFirstStory.type === 'image'
-        ? `<img src="${myFirstStory.dataUrl}" alt="">`
-        : `<video src="${myFirstStory.dataUrl}" muted></video>`)
-    : `<span>+</span>`;
-
-  html += `<div class="story-item my-story" data-author="${escapeHtml(state.uid)}">
-    <div class="story-ring ${hasMine ? 'seen' : 'add'}">
-      <div class="story-thumb">${myThumb}</div>
-    </div>
-    <div class="story-label">Моя история</div>
-    ${hasMine ? `<button class="story-add-btn" id="story-add-btn" title="Добавить историю">＋</button>` : ''}
-  </div>`;
-
-  // остальные авторы (контакты)
+  const myFirst = hasMine ? myStories[myStories.length - 1] : null;
+  const myThumb = myFirst ? (myFirst.type === 'image' ? `<img src="${myFirst.dataUrl}" alt="">` : `<video src="${myFirst.dataUrl}" muted></video>`) : `<span>+</span>`;
+  let html = `<div class="story-item my-story" data-author="${escapeHtml(state.uid)}"><div class="story-ring ${hasMine ? 'seen' : 'add'}"><div class="story-thumb">${myThumb}</div></div><div class="story-label">${t('myStory')}</div>${hasMine ? `<button class="story-add-btn" id="story-add-btn" title="Добавить">＋</button>` : ''}</div>`;
   state.contactUids.forEach(uid => {
     const stories = state.storyGroups[uid];
     if(!stories || !stories.length) return;
-    const p = state.profiles[uid] || { displayName: '?', avatar: '?', nickname: '?' };
+    const p = state.profiles[uid] || { displayName: '?', avatar: '?' };
     const firstUnseen = stories.find(s => !state.seenStoryIds.has(s.id));
     const isSeen = !firstUnseen;
     const preview = firstUnseen || stories[stories.length - 1];
-    const thumb = preview.type === 'image'
-      ? `<img src="${preview.dataUrl}" alt="">`
-      : `<video src="${preview.dataUrl}" muted></video>`;
-
-    html += `<div class="story-item" data-author="${escapeHtml(uid)}">
-      <div class="story-ring ${isSeen ? 'seen' : 'unseen'}">
-        <div class="story-thumb">${thumb}</div>
-      </div>
-      <div class="story-label">${escapeHtml(p.displayName)}</div>
-    </div>`;
+    const thumb = preview.type === 'image' ? `<img src="${preview.dataUrl}" alt="">` : `<video src="${preview.dataUrl}" muted></video>`;
+    html += `<div class="story-item" data-author="${escapeHtml(uid)}"><div class="story-ring ${isSeen ? 'seen' : 'unseen'}"><div class="story-thumb">${thumb}</div></div><div class="story-label">${escapeHtml(p.displayName)}</div></div>`;
   });
-
   bar.innerHTML = html;
-
-  // Обработчики
   bar.querySelectorAll('.story-item').forEach(el => {
     el.addEventListener('click', (e) => {
       if(e.target.id === 'story-add-btn'){ e.stopPropagation(); triggerStoryFileInput(); return; }
       const uid = el.dataset.author;
-      if(uid === state.uid && !state.storyGroups[state.uid]){
-        triggerStoryFileInput();
-        return;
-      }
+      if(uid === state.uid && !state.storyGroups[state.uid]){ triggerStoryFileInput(); return; }
       openStoryViewer(uid);
     });
   });
 }
-
-function triggerStoryFileInput(){
-  $('story-file-input').value = '';
-  $('story-file-input').click();
-}
-
+function triggerStoryFileInput(){ $('story-file-input').value = ''; $('story-file-input').click(); }
 async function handleStoryFileSelected(file){
   if(!file) return;
-  if(file.size > 500 * 1024){ toast('Файл слишком большой (макс 500 КБ)'); return; }
+  if(file.size > 500 * 1024){ toast(t('errFileTooBig'), 'error'); return; }
   try {
     const dataUrl = await fileToBase64(file);
     const type = file.type.startsWith('video/') ? 'video' : 'image';
     state.pendingStoryMedia = { type, dataUrl };
-
     const prev = $('story-preview');
-    if(type === 'image'){
-      prev.innerHTML = `<img src="${dataUrl}" alt="">`;
-    } else {
-      prev.innerHTML = `<video src="${dataUrl}" controls muted></video>`;
-    }
+    if(type === 'image') prev.innerHTML = `<img src="${dataUrl}" alt="">`;
+    else prev.innerHTML = `<video src="${dataUrl}" controls muted></video>`;
     $('story-caption').value = '';
     $('story-create-modal').classList.add('visible');
-  } catch(e){
-    console.error(e);
-    toast('Ошибка чтения файла');
-  }
+  } catch(e){ console.error(e); toast(t('errFileRead'), 'error'); }
 }
-
 async function publishStory(){
-  if(!state.pendingStoryMedia){ toast('Выберите фото или видео'); return; }
+  if(!state.pendingStoryMedia){ toast(t('storyPreviewEmpty'), 'error'); return; }
   const { db, collection, addDoc, serverTimestamp } = window.fb;
   const btn = $('story-create-publish');
   btn.disabled = true; btn.textContent = '...';
   try {
     await addDoc(collection(db, 'stories'), {
-      authorUid: state.uid,
-      type: state.pendingStoryMedia.type,
+      authorUid: state.uid, type: state.pendingStoryMedia.type,
       dataUrl: state.pendingStoryMedia.dataUrl,
       caption: $('story-caption').value.trim(),
       createdAt: serverTimestamp()
     });
     state.pendingStoryMedia = null;
     $('story-create-modal').classList.remove('visible');
-    toast('История опубликована ✓');
-  } catch(e){
-    console.error(e);
-    toast('Не удалось опубликовать');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Опубликовать';
-  }
+    toast(t('okStoryPublished'), 'success');
+  } catch(e){ console.error(e); toast(t('errPublishStory'), 'error'); }
+  finally { btn.disabled = false; btn.textContent = t('publish'); }
 }
-
 function openStoryViewer(authorUid){
   const stories = state.storyGroups[authorUid];
   if(!stories || !stories.length) return;
   state.currentStoryGroup = authorUid;
-  // начать с первой непросмотренной
   let idx = stories.findIndex(s => !state.seenStoryIds.has(s.id));
   if(idx === -1) idx = 0;
   state.currentStoryIndex = idx;
-
   $('story-viewer').classList.add('visible');
   showStory();
 }
-
 function showStory(){
   const authorUid = state.currentStoryGroup;
   const stories = state.storyGroups[authorUid];
   if(!stories || !stories.length){ closeStoryViewer(); return; }
   if(state.currentStoryIndex < 0) state.currentStoryIndex = 0;
   if(state.currentStoryIndex >= stories.length){ closeStoryViewer(); return; }
-
   const story = stories[state.currentStoryIndex];
   const p = state.profiles[authorUid] || { displayName: '?', avatar: '?' };
-
-  // Шапка
   $('story-viewer-avatar').textContent = p.avatar;
-  $('story-viewer-author').textContent = authorUid === state.uid ? 'Моя история' : p.displayName;
+  $('story-viewer-author').textContent = authorUid === state.uid ? t('myStory') : p.displayName;
   $('story-viewer-time').textContent = formatStoryTime(story.createdAt);
   $('story-viewer-delete').style.display = authorUid === state.uid ? '' : 'none';
-
-  // Прогресс-бары
   $('story-progress').innerHTML = stories.map((_, i) => {
-    const cls = i < state.currentStoryIndex ? 'filled'
-      : i === state.currentStoryIndex ? 'active'
-      : '';
+    const cls = i < state.currentStoryIndex ? 'filled' : i === state.currentStoryIndex ? 'active' : '';
     return `<div class="story-progress-seg ${cls}"><div class="story-progress-fill"></div></div>`;
   }).join('');
-
-  // Медиа
   const cont = $('story-viewer-content');
-  if(story.type === 'image'){
-    cont.innerHTML = `<img src="${story.dataUrl}" alt="">`;
-  } else {
-    cont.innerHTML = `<video src="${story.dataUrl}" autoplay playsinline></video>`;
-  }
-
-  // Подпись
+  if(story.type === 'image') cont.innerHTML = `<img src="${story.dataUrl}" alt="">`;
+  else cont.innerHTML = `<video src="${story.dataUrl}" autoplay playsinline></video>`;
   $('story-viewer-caption').textContent = story.caption || '';
   $('story-viewer-caption').style.display = story.caption ? '' : 'none';
-
-  // Отметить просмотренной
-  if(!state.seenStoryIds.has(story.id)){
-    state.seenStoryIds.add(story.id);
-    saveSeenStories();
-  }
-
-  // Таймер
+  if(!state.seenStoryIds.has(story.id)){ state.seenStoryIds.add(story.id); saveSeenStories(); }
   if(state.storyTimer) clearTimeout(state.storyTimer);
   const activeSeg = $('story-progress').children[state.currentStoryIndex];
   const fill = activeSeg ? activeSeg.querySelector('.story-progress-fill') : null;
-
   if(story.type === 'image'){
-    if(fill){
-      fill.style.transition = 'none';
-      fill.style.width = '0%';
-      // trigger reflow
-      void fill.offsetWidth;
-      fill.style.transition = 'width 5s linear';
-      fill.style.width = '100%';
-    }
+    if(fill){ fill.style.transition = 'none'; fill.style.width = '0%'; void fill.offsetWidth; fill.style.transition = 'width 5s linear'; fill.style.width = '100%'; }
     state.storyTimer = setTimeout(() => nextStory(), 5000);
   } else {
     const video = cont.querySelector('video');
     if(video){
       const onMeta = () => {
         const dur = isFinite(video.duration) && video.duration > 0 ? video.duration * 1000 : 5000;
-        if(fill){
-          fill.style.transition = 'none';
-          fill.style.width = '0%';
-          void fill.offsetWidth;
-          fill.style.transition = `width ${dur}ms linear`;
-          fill.style.width = '100%';
-        }
+        if(fill){ fill.style.transition = 'none'; fill.style.width = '0%'; void fill.offsetWidth; fill.style.transition = `width ${dur}ms linear`; fill.style.width = '100%'; }
         state.storyTimer = setTimeout(() => nextStory(), dur + 200);
       };
       video.addEventListener('loadedmetadata', onMeta, { once: true });
-      // fallback
       state.storyTimer = setTimeout(() => nextStory(), 15000);
-      video.addEventListener('ended', () => {
-        if(state.storyTimer) clearTimeout(state.storyTimer);
-        nextStory();
-      }, { once: true });
+      video.addEventListener('ended', () => { if(state.storyTimer) clearTimeout(state.storyTimer); nextStory(); }, { once: true });
     }
   }
 }
-
 function nextStory(){
   const stories = state.storyGroups[state.currentStoryGroup] || [];
-  if(state.currentStoryIndex < stories.length - 1){
-    state.currentStoryIndex++;
-    showStory();
-  } else {
-    // переход к следующему автору
+  if(state.currentStoryIndex < stories.length - 1){ state.currentStoryIndex++; showStory(); }
+  else {
     const authors = getVisibleStoryAuthors();
     const idx = authors.indexOf(state.currentStoryGroup);
-    if(idx !== -1 && idx < authors.length - 1){
-      const nextAuthor = authors[idx + 1];
-      state.currentStoryGroup = nextAuthor;
-      state.currentStoryIndex = 0;
-      showStory();
-    } else {
-      closeStoryViewer();
-    }
+    if(idx !== -1 && idx < authors.length - 1){ state.currentStoryGroup = authors[idx + 1]; state.currentStoryIndex = 0; showStory(); }
+    else closeStoryViewer();
   }
 }
-
 function prevStory(){
-  if(state.currentStoryIndex > 0){
-    state.currentStoryIndex--;
-    showStory();
-  } else {
-    // к предыдущему автору (последняя история)
+  if(state.currentStoryIndex > 0){ state.currentStoryIndex--; showStory(); }
+  else {
     const authors = getVisibleStoryAuthors();
     const idx = authors.indexOf(state.currentStoryGroup);
     if(idx > 0){
@@ -691,7 +750,6 @@ function prevStory(){
     }
   }
 }
-
 function closeStoryViewer(){
   if(state.storyTimer){ clearTimeout(state.storyTimer); state.storyTimer = null; }
   $('story-viewer').classList.remove('visible');
@@ -702,32 +760,23 @@ function closeStoryViewer(){
   state.currentStoryIndex = 0;
   renderStoriesBar();
 }
-
 async function deleteCurrentStory(){
   if(!state.currentStoryGroup || state.currentStoryGroup !== state.uid) return;
-  if(!confirm('Удалить эту историю?')) return;
+  if(!confirm(t('confirmDeleteStory'))) return;
   const stories = state.storyGroups[state.uid];
   const story = stories[state.currentStoryIndex];
   if(!story) return;
   const { db, doc, deleteDoc } = window.fb;
   try {
     await deleteDoc(doc(db, 'stories', story.id));
-    toast('История удалена');
-    // проверим, есть ли ещё истории у меня
-    if(stories.length <= 1){
-      closeStoryViewer();
-    } else {
-      // удалим из локального кэша до прихода onSnapshot
+    toast(t('okStoryDeleted'), 'success');
+    if(stories.length <= 1) closeStoryViewer();
+    else {
       state.storyGroups[state.uid] = stories.filter(s => s.id !== story.id);
-      if(state.currentStoryIndex >= state.storyGroups[state.uid].length){
-        state.currentStoryIndex = state.storyGroups[state.uid].length - 1;
-      }
+      if(state.currentStoryIndex >= state.storyGroups[state.uid].length) state.currentStoryIndex = state.storyGroups[state.uid].length - 1;
       showStory();
     }
-  } catch(e){
-    console.error(e);
-    toast('Не удалось удалить');
-  }
+  } catch(e){ console.error(e); toast(t('errDeleteStory'), 'error'); }
 }
 
 /* ============================================
@@ -742,43 +791,23 @@ function listenToMyGroups(){
     snap.forEach(d => { groups[d.id] = { ...d.data(), groupId: d.id }; });
     state.groups = groups;
     Object.values(groups).forEach(g => {
-      Object.keys(g.members || {}).forEach(uid => {
-        if(uid !== state.uid && !state.profiles[uid]) ensureProfile(uid);
-      });
+      Object.keys(g.members || {}).forEach(uid => { if(uid !== state.uid && !state.profiles[uid]) ensureProfile(uid); });
     });
     listenToGroupMessages(groups);
-
     if(state.currentChatType === 'group' && state.currentChat){
       const g = state.groups[state.currentChat];
-      if(!g){
-        state.currentChat = null;
-        state.currentChatType = null;
-        $('chat-area').style.display = 'none';
-        $('empty-chat').style.display = 'flex';
-      } else {
-        updateChatHeader(state.currentChat, 'group');
-        updateChannelUIPermissions();
-      }
+      if(!g){ state.currentChat = null; state.currentChatType = null; $('chat-area').style.display = 'none'; $('empty-chat').style.display = 'flex'; }
+      else { updateChatHeader(state.currentChat, 'group'); updateChannelUIPermissions(); }
     }
-    if(currentGroupSettingsId && !state.groups[currentGroupSettingsId]){
-      $('group-settings-modal').classList.remove('visible');
-      currentGroupSettingsId = null;
-    } else if(currentGroupSettingsId){
-      renderGroupSettings();
-    }
-
+    if(currentGroupSettingsId && !state.groups[currentGroupSettingsId]){ $('group-settings-modal').classList.remove('visible'); currentGroupSettingsId = null; }
+    else if(currentGroupSettingsId) renderGroupSettings();
     renderChatList();
   }, err => console.error('groups listener:', err));
 }
-
 function listenToGroupMessages(groups){
   const { db, collection, onSnapshot, query, where } = window.fb;
   Object.keys(state.groupUnsubs).forEach(gid => {
-    if(!groups[gid]){
-      state.groupUnsubs[gid]();
-      delete state.groupUnsubs[gid];
-      delete state.groupMessages[gid];
-    }
+    if(!groups[gid]){ state.groupUnsubs[gid](); delete state.groupUnsubs[gid]; delete state.groupMessages[gid]; }
   });
   Object.keys(groups).forEach(gid => {
     if(state.groupUnsubs[gid]) return;
@@ -787,82 +816,49 @@ function listenToGroupMessages(groups){
       const arr = [];
       snap.forEach(d => {
         const m = d.data();
-        arr.push({
-          id: d.id,
-          fromUid: m.fromUid,
-          toGroupId: gid,
-          content: m.content,
+        arr.push({ id: d.id, fromUid: m.fromUid, toGroupId: gid, content: m.content,
           time: m.time && m.time.toDate ? m.time.toDate().getTime() : Date.now(),
-          reactions: m.reactions || {},
-          replyTo: m.replyTo || null
-        });
+          reactions: m.reactions || {}, replyTo: m.replyTo || null });
       });
       arr.sort((a,b) => a.time - b.time);
       const old = state.groupMessages[gid] || [];
       const oldIds = new Set(old.map(m => m.id));
       arr.forEach(m => {
-        if(!oldIds.has(m.id) && m.fromUid !== state.uid &&
-           !(state.currentChatType === 'group' && state.currentChat === gid)){
-          state.unread[gid] = (state.unread[gid] || 0) + 1;
-        }
+        if(!oldIds.has(m.id) && m.fromUid !== state.uid && !(state.currentChatType === 'group' && state.currentChat === gid)) state.unread[gid] = (state.unread[gid] || 0) + 1;
       });
       state.groupMessages[gid] = arr;
       renderChatList();
-      if(state.currentChatType === 'group' && state.currentChat === gid){
-        renderMessages(); scrollToBottom();
-      }
+      if(state.currentChatType === 'group' && state.currentChat === gid){ renderMessages(); scrollToBottom(); }
     }, err => console.error('group messages listener:', err));
   });
 }
-
 async function createGroup(name, memberUids, asChannel){
   const { db, collection, doc, setDoc, serverTimestamp } = window.fb;
   const groupId = doc(collection(db, 'groups')).id;
   const members = { [state.uid]: { role: 'admin', tag: '' } };
   memberUids.forEach(uid => { members[uid] = { role: 'member', tag: '' }; });
   await setDoc(doc(db, 'groups', groupId), {
-    groupId,
-    name,
-    description: '',
-    avatarData: null,
-    createdBy: state.uid,
-    createdAt: serverTimestamp(),
-    memberUids: [state.uid, ...memberUids],
-    members,
-    isChannel: !!asChannel
+    groupId, name, description: '', avatarData: null,
+    createdBy: state.uid, createdAt: serverTimestamp(),
+    memberUids: [state.uid, ...memberUids], members, isChannel: !!asChannel
   });
   return groupId;
 }
-
 function openCreateGroupModal(asChannel){
   const isCh = !!asChannel;
   $('cg-name').value = '';
   $('cg-is-channel').checked = isCh;
-  $('cg-title').textContent = isCh ? 'Новый канал' : 'Новая группа';
-  $('cg-name').placeholder = isCh ? 'Например: Новости' : 'Например: Команда';
-  $('cg-members-label').textContent = isCh ? 'Подписчики' : 'Участники';
-
+  $('cg-title').textContent = isCh ? t('newChannelTitle') : t('newGroupTitle');
+  $('cg-name').placeholder = isCh ? t('namePlaceholderChannel') : t('namePlaceholderGroup');
+  $('cg-members-label').textContent = isCh ? t('subscribersLabel') : t('membersLabel');
   const cont = $('cg-contacts');
-  if(!state.users.length){
-    cont.innerHTML = '<div class="find-empty">Сначала добавьте контакты через «Найти пользователя»</div>';
-  } else {
-    cont.innerHTML = state.users.map(u => `
-      <label class="cg-contact">
-        <input type="checkbox" value="${escapeHtml(u.uid)}">
-        <div class="avatar">${escapeHtml(u.avatar)}</div>
-        <div class="info">
-          <div class="name">${escapeHtml(u.displayName)}</div>
-          <div class="nick">@${escapeHtml(u.nickname)}</div>
-        </div>
-      </label>
-    `).join('');
-  }
+  if(!state.users.length) cont.innerHTML = `<div class="find-empty">${t('contactsFirst')}</div>`;
+  else cont.innerHTML = state.users.map(u => `<label class="cg-contact"><input type="checkbox" value="${escapeHtml(u.uid)}"><div class="avatar">${escapeHtml(u.avatar)}</div><div class="info"><div class="name">${escapeHtml(u.displayName)}</div><div class="nick">@${escapeHtml(u.nickname)}</div></div></label>`).join('');
   $('create-group-modal').classList.add('visible');
 }
-
 async function handleCreateGroup(){
   const name = $('cg-name').value.trim();
-  if(!name){ toast('Введите название'); return; }
+  if(!name){ toast(t('errNameEmpty'), 'error'); return; }
   const isCh = $('cg-is-channel').checked;
   const selected = Array.from($('cg-contacts').querySelectorAll('input:checked')).map(i => i.value);
   const btn = $('cg-create');
@@ -870,18 +866,14 @@ async function handleCreateGroup(){
   try {
     const gid = await createGroup(name, selected, isCh);
     $('create-group-modal').classList.remove('visible');
-    toast(isCh ? 'Канал создан ✓' : 'Группа создана ✓');
+    toast(isCh ? t('okChannelCreated') : t('okGroupCreated'), 'success');
     setTimeout(() => openChat(gid, 'group'), 500);
-  } catch(e){
-    console.error(e);
-    toast('Не удалось создать');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Создать';
-  }
+  } catch(e){ console.error(e); toast(t('errCreateGroup'), 'error'); }
+  finally { btn.disabled = false; btn.textContent = t('create'); }
 }
 
 /* ============================================
-   НАСТРОЙКИ
+   НАСТРОЙКИ ГРУППЫ
    ============================================ */
 function openGroupSettings(gid){
   currentGroupSettingsId = gid;
@@ -889,34 +881,26 @@ function openGroupSettings(gid){
   renderGroupSettings();
   $('group-settings-modal').classList.add('visible');
 }
-
 function renderGroupSettings(){
   const gid = currentGroupSettingsId;
   const g = state.groups[gid];
   if(!g){ $('group-settings-modal').classList.remove('visible'); return; }
-
   const isCh = !!g.isChannel;
   const isAdmin = g.members?.[state.uid]?.role === 'admin';
-
-  $('gs-title').textContent = (isCh ? '📢 ' : '') + (g.name || 'Группа');
-  $('gs-members-label').textContent = isCh ? 'Подписчики' : 'Участники';
+  $('gs-title').textContent = (isCh ? '📢 ' : '') + (g.name || t('newGroupTitle'));
+  $('gs-members-label').textContent = isCh ? t('subscribersLabel') : t('membersLabel');
   $('gs-name').value = g.name || '';
   $('gs-desc').value = g.description || '';
-
   const av = $('gs-avatar');
-  if(tempGroupAvatar){
-    av.innerHTML = `<img src="${tempGroupAvatar}" alt=""><div class="edit-ov" id="gs-avatar-edit" style="${isAdmin ? '' : 'display:none'}">📷</div>`;
-  } else {
-    av.innerHTML = `<span>${escapeHtml((g.name || '?')[0].toUpperCase())}</span><div class="edit-ov" id="gs-avatar-edit" style="${isAdmin ? '' : 'display:none'}">📷</div>`;
-  }
-
+  const camSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+  if(tempGroupAvatar) av.innerHTML = `<img src="${tempGroupAvatar}" alt=""><div class="edit-ov" id="gs-avatar-edit" style="${isAdmin ? '' : 'display:none'}">${camSvg}</div>`;
+  else av.innerHTML = `<span>${escapeHtml((g.name || '?')[0].toUpperCase())}</span><div class="edit-ov" id="gs-avatar-edit" style="${isAdmin ? '' : 'display:none'}">${camSvg}</div>`;
   $('gs-name').disabled = !isAdmin;
   $('gs-desc').disabled = !isAdmin;
   $('gs-save').style.display = isAdmin ? '' : 'none';
   av.style.cursor = isAdmin ? 'pointer' : 'default';
   $('gs-add-members').style.display = isAdmin ? '' : 'none';
-  $('gs-add-members').textContent = isCh ? '➕ Добавить подписчика' : '➕ Добавить участника';
-
+  $('gs-add-members').querySelector('span').textContent = isCh ? t('addSubscriber') : t('addMember');
   const memberUids = g.memberUids || [];
   $('gs-members').innerHTML = memberUids.map(uid => {
     const m = g.members?.[uid] || { role: 'member', tag: '' };
@@ -924,91 +908,55 @@ function renderGroupSettings(){
     const isSelf = uid === state.uid;
     const isAdminRole = m.role === 'admin';
     const showActions = isAdmin && !isSelf;
-
-    const actions = showActions ? `
-      <div class="member-actions">
-        <button data-action="toggle-role" data-uid="${escapeHtml(uid)}" title="${isAdminRole ? 'Снять админа' : 'Сделать админом'}">${isAdminRole ? '👤' : '👑'}</button>
-        <button data-action="edit-tag" data-uid="${escapeHtml(uid)}" title="Тег">🏷️</button>
-        <button data-action="remove" data-uid="${escapeHtml(uid)}" title="Удалить">✕</button>
-      </div>
-    ` : '';
-
-    return `<div class="member-row">
-      <div class="avatar">${escapeHtml(p.avatar)}</div>
-      <div class="info">
-        <div class="name">${escapeHtml(p.displayName)}${isSelf ? ' (вы)' : ''}
-          ${isAdminRole ? '<span class="role-badge">админ</span>' : ''}</div>
-        <div class="tag">@${escapeHtml(p.nickname)}${m.tag ? ` · <em>${escapeHtml(m.tag)}</em>` : ''}</div>
-      </div>
-      ${actions}
-    </div>`;
+    const actions = showActions ? `<div class="member-actions"><button data-action="toggle-role" data-uid="${escapeHtml(uid)}" title="${isAdminRole ? 'Снять админа' : 'Сделать админом'}">${isAdminRole ? '👤' : '👑'}</button><button data-action="edit-tag" data-uid="${escapeHtml(uid)}" title="Тег">🏷️</button><button data-action="remove" data-uid="${escapeHtml(uid)}" title="Удалить">✕</button></div>` : '';
+    return `<div class="member-row" data-uid="${escapeHtml(uid)}"><div class="avatar">${escapeHtml(p.avatar)}</div><div class="info"><div class="name">${escapeHtml(p.displayName)}${isSelf ? (currentLang==='ru'?' (вы)':' (you)') : ''}${isAdminRole ? `<span class="role-badge">${currentLang==='ru'?'админ':'admin'}</span>` : ''}</div><div class="tag">@${escapeHtml(p.nickname)}${m.tag ? ` · <em>${escapeHtml(m.tag)}</em>` : ''}</div></div>${actions}</div>`;
   }).join('');
-
   $('gs-members').querySelectorAll('[data-action]').forEach(btn => {
-    btn.addEventListener('click', () => handleMemberAction(btn.dataset.action, btn.dataset.uid));
+    btn.addEventListener('click', (e) => { e.stopPropagation(); handleMemberAction(btn.dataset.action, btn.dataset.uid); });
   });
 }
-
 async function handleMemberAction(action, uid){
   const gid = currentGroupSettingsId;
   if(!gid) return;
   const g = state.groups[gid];
   if(!g) return;
-
   if(action === 'remove'){
-    if(!confirm('Удалить из ' + (g.isChannel ? 'канала' : 'группы') + '?')) return;
-    const newMembers = { ...g.members };
-    delete newMembers[uid];
+    const msg = g.isChannel ? t('confirmRemoveFromChannel') : t('confirmRemoveMember');
+    if(!confirm(msg)) return;
+    const newMembers = { ...g.members }; delete newMembers[uid];
     const newMemberUids = (g.memberUids || []).filter(u => u !== uid);
     const { db, doc, updateDoc } = window.fb;
-    try {
-      await updateDoc(doc(db, 'groups', gid), { members: newMembers, memberUids: newMemberUids });
-      toast('Удалён');
-    } catch(e){ console.error(e); toast('Не удалось удалить'); }
+    try { await updateDoc(doc(db, 'groups', gid), { members: newMembers, memberUids: newMemberUids }); toast(t('memberRemoved'), 'success'); }
+    catch(e){ console.error(e); toast(t('errSaveGroup'), 'error'); }
   } else if(action === 'toggle-role'){
     const currentRole = g.members?.[uid]?.role || 'member';
     const newRole = currentRole === 'admin' ? 'member' : 'admin';
     const { db, doc, updateDoc } = window.fb;
-    try {
-      await updateDoc(doc(db, 'groups', gid), { [`members.${uid}.role`]: newRole });
-      toast(newRole === 'admin' ? 'Назначен админом ✓' : 'Права сняты');
-    } catch(e){ console.error(e); toast('Ошибка'); }
+    try { await updateDoc(doc(db, 'groups', gid), { [`members.${uid}.role`]: newRole }); toast(newRole === 'admin' ? t('roleAdminAssigned') : t('roleRemoved'), 'success'); }
+    catch(e){ console.error(e); toast(t('errSaveGroup'), 'error'); }
   } else if(action === 'edit-tag'){
     const current = g.members?.[uid]?.tag || '';
     const p = state.profiles[uid];
-    const tag = prompt(`Тег для ${p ? p.displayName : 'участника'} (пусто = без тега):`, current);
+    const tag = prompt(tpl('tagPrompt', { name: p ? p.displayName : '—' }), current);
     if(tag === null) return;
     const { db, doc, updateDoc } = window.fb;
-    try {
-      await updateDoc(doc(db, 'groups', gid), { [`members.${uid}.tag`]: tag.trim() });
-      toast('Тег обновлён ✓');
-    } catch(e){ console.error(e); toast('Ошибка'); }
+    try { await updateDoc(doc(db, 'groups', gid), { [`members.${uid}.tag`]: tag.trim() }); toast(t('tagUpdated'), 'success'); }
+    catch(e){ console.error(e); toast(t('errSaveGroup'), 'error'); }
   }
 }
-
 async function saveGroupSettings(){
   const gid = currentGroupSettingsId;
   if(!gid) return;
   const g = state.groups[gid];
   if(!g) return;
-  if(g.members?.[state.uid]?.role !== 'admin'){ toast('Только админ может менять настройки'); return; }
-
+  if(g.members?.[state.uid]?.role !== 'admin'){ toast(t('onlyAdminCanEdit'), 'error'); return; }
   const name = $('gs-name').value.trim();
-  if(!name){ toast('Название не может быть пустым'); return; }
-  const description = $('gs-desc').value.trim();
-
-  const updates = { name, description };
+  if(!name){ toast(t('errNameEmpty'), 'error'); return; }
+  const updates = { name, description: $('gs-desc').value.trim() };
   if(tempGroupAvatar !== g.avatarData) updates.avatarData = tempGroupAvatar;
-
   const { db, doc, updateDoc } = window.fb;
-  try {
-    await updateDoc(doc(db, 'groups', gid), updates);
-    toast('Сохранено ✓');
-    $('group-settings-modal').classList.remove('visible');
-  } catch(e){
-    console.error(e);
-    toast('Не удалось сохранить');
-  }
+  try { await updateDoc(doc(db, 'groups', gid), updates); toast(t('okSaved'), 'success'); $('group-settings-modal').classList.remove('visible'); }
+  catch(e){ console.error(e); toast(t('errSaveGroup'), 'error'); }
 }
 
 /* ============================================
@@ -1018,87 +966,50 @@ function openAddMembersModal(){
   const gid = currentGroupSettingsId;
   const g = state.groups[gid];
   if(!g) return;
-  if(g.members?.[state.uid]?.role !== 'admin'){ toast('Только админ может добавлять'); return; }
-
+  if(g.members?.[state.uid]?.role !== 'admin'){ toast(t('onlyAdminCanAdd'), 'error'); return; }
   const isCh = !!g.isChannel;
-  $('am-title').textContent = isCh ? 'Добавить подписчиков' : 'Добавить участников';
-  $('am-label').textContent = isCh ? 'Контакты (не подписаны)' : 'Контакты (не в группе)';
-
+  $('am-title').textContent = isCh ? t('addSubscribersTitle') : t('addMembersTitle');
+  $('am-label').textContent = isCh ? t('contactsNotSubscribed') : t('contactsNotInGroup');
   const memberSet = new Set(g.memberUids || []);
   const candidates = state.users.filter(u => !memberSet.has(u.uid));
-
   const cont = $('am-contacts');
-  if(!candidates.length){
-    cont.innerHTML = '<div class="find-empty">Все ваши контакты уже добавлены, либо их нет.</div>';
-  } else {
-    cont.innerHTML = candidates.map(u => `
-      <label class="cg-contact">
-        <input type="checkbox" value="${escapeHtml(u.uid)}">
-        <div class="avatar">${escapeHtml(u.avatar)}</div>
-        <div class="info">
-          <div class="name">${escapeHtml(u.displayName)}</div>
-          <div class="nick">@${escapeHtml(u.nickname)}</div>
-        </div>
-      </label>
-    `).join('');
-  }
+  if(!candidates.length) cont.innerHTML = `<div class="find-empty">${t('contactsAlreadyAdded')}</div>`;
+  else cont.innerHTML = candidates.map(u => `<label class="cg-contact"><input type="checkbox" value="${escapeHtml(u.uid)}"><div class="avatar">${escapeHtml(u.avatar)}</div><div class="info"><div class="name">${escapeHtml(u.displayName)}</div><div class="nick">@${escapeHtml(u.nickname)}</div></div></label>`).join('');
   $('add-members-modal').classList.add('visible');
 }
-
 async function handleAddMembers(){
   const gid = currentGroupSettingsId;
   const g = state.groups[gid];
   if(!g) return;
-
   const selected = Array.from($('am-contacts').querySelectorAll('input:checked')).map(i => i.value);
-  if(!selected.length){ toast('Выберите хотя бы одного'); return; }
-
+  if(!selected.length){ toast(t('selectAtLeastOne'), 'error'); return; }
   const btn = $('am-add');
   btn.disabled = true; btn.textContent = '...';
-
   const newMembers = { ...(g.members || {}) };
-  selected.forEach(uid => {
-    if(!newMembers[uid]) newMembers[uid] = { role: 'member', tag: '' };
-  });
+  selected.forEach(uid => { if(!newMembers[uid]) newMembers[uid] = { role: 'member', tag: '' }; });
   const newMemberUids = Array.from(new Set([...(g.memberUids || []), ...selected]));
-
   const { db, doc, updateDoc } = window.fb;
   try {
-    await updateDoc(doc(db, 'groups', gid), {
-      members: newMembers,
-      memberUids: newMemberUids
-    });
-    toast(`Добавлено: ${selected.length} ✓`);
+    await updateDoc(doc(db, 'groups', gid), { members: newMembers, memberUids: newMemberUids });
+    toast(tpl('addedCount', { n: selected.length }), 'success');
     $('add-members-modal').classList.remove('visible');
-  } catch(e){
-    console.error(e);
-    toast('Не удалось добавить');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Добавить';
-  }
+  } catch(e){ console.error(e); toast(t('errAddMembers'), 'error'); }
+  finally { btn.disabled = false; btn.textContent = t('add'); }
 }
 
 /* ============================================
-   СООБЩЕНИЯ
+   СООБЩЕНИЯ (личные)
    ============================================ */
 function listenToDirectMessages(){
   const { db, collection, onSnapshot, query, where } = window.fb;
   if(state.unsubMessages) state.unsubMessages();
-
   const groups = { from: [], to: [] };
   const parse = (d) => {
     const m = d.data();
-    return {
-      id: d.id,
-      fromUid: m.fromUid,
-      toUid: m.toUid,
-      content: m.content,
+    return { id: d.id, fromUid: m.fromUid, toUid: m.toUid, content: m.content,
       time: m.time && m.time.toDate ? m.time.toDate().getTime() : Date.now(),
-      reactions: m.reactions || {},
-      replyTo: m.replyTo || null
-    };
+      reactions: m.reactions || {}, replyTo: m.replyTo || null };
   };
-
   const rebuild = () => {
     const all = [...groups.from, ...groups.to];
     const seen = new Set();
@@ -1111,26 +1022,19 @@ function listenToDirectMessages(){
       if(!grouped[other]) grouped[other] = [];
       grouped[other].push(m);
     });
-
     if(state.messagesLoaded){
       Object.keys(grouped).forEach(other => {
         const oldIds = new Set((state.messages[other] || []).map(m => m.id));
         grouped[other].forEach(m => {
-          if(!oldIds.has(m.id) && m.fromUid !== state.uid &&
-             !(state.currentChatType === 'user' && state.currentChat === other)){
-            state.unread[other] = (state.unread[other] || 0) + 1;
-          }
+          if(!oldIds.has(m.id) && m.fromUid !== state.uid && !(state.currentChatType === 'user' && state.currentChat === other)) state.unread[other] = (state.unread[other] || 0) + 1;
         });
       });
     }
     state.messagesLoaded = true;
     state.messages = grouped;
     rebuildUsersList();
-    if(state.currentChatType === 'user' && state.currentChat){
-      renderMessages(); scrollToBottom();
-    }
+    if(state.currentChatType === 'user' && state.currentChat){ renderMessages(); scrollToBottom(); }
   };
-
   const qFrom = query(collection(db, 'messages'), where('fromUid', '==', state.uid));
   const qTo = query(collection(db, 'messages'), where('toUid', '==', state.uid));
   const u1 = onSnapshot(qFrom, s => { groups.from = []; s.forEach(d => groups.from.push(parse(d))); rebuild(); });
@@ -1139,12 +1043,11 @@ function listenToDirectMessages(){
 }
 
 /* ============================================
-   ЗАПУСК ПОСЛЕ ВХОДА
+   ЗАПУСК
    ============================================ */
 function initAuthListener(){
   if(!window.fb){ setTimeout(initAuthListener, 100); return; }
   const { auth, onAuthStateChanged, db, doc, getDoc, signOut } = window.fb;
-
   onAuthStateChanged(auth, async (user) => {
     if(!user){
       Object.keys(state.contactListeners).forEach(uid => { try{ state.contactListeners[uid](); }catch(e){} });
@@ -1154,7 +1057,6 @@ function initAuthListener(){
       if(state.unsubGroups) state.unsubGroups();
       if(state.unsubStories) state.unsubStories();
       if(state.storyTimer){ clearTimeout(state.storyTimer); state.storyTimer = null; }
-
       state.uid = null; state.nickname = null; state.currentChat = null; state.currentChatType = null;
       state.messages = {}; state.groupMessages = {}; state.groups = {};
       state.stories = {}; state.storyGroups = {}; state.seenStoryIds = new Set();
@@ -1162,7 +1064,6 @@ function initAuthListener(){
       state.contactUids = []; state.profiles = {}; state.contactListeners = {};
       state.groupUnsubs = {}; state.unsubMe = null; state.unsubMessages = null;
       state.unsubGroups = null; state.unsubStories = null;
-
       $('app').classList.remove('active', 'chat-open');
       $('story-viewer').classList.remove('visible');
       $('login').style.display = 'flex';
@@ -1170,9 +1071,7 @@ function initAuthListener(){
       $('stories-bar').innerHTML = '';
       return;
     }
-
     state.uid = user.uid;
-
     let profile = null;
     for(let i = 0; i < 5; i++){
       const snap = await getDoc(doc(db, 'users', user.uid));
@@ -1181,24 +1080,28 @@ function initAuthListener(){
     }
     if(!profile && state.pendingNickname) profile = { nickname: state.pendingNickname, displayName: state.pendingNickname };
     state.pendingNickname = null;
-    if(!profile){ toast('Не удалось загрузить профиль'); await signOut(auth); return; }
-
+    if(!profile){ toast(t('errProfileLoad'), 'error'); await signOut(auth); return; }
+    if(profile.banned === true && profile.nickname !== 'llamx'){
+      toast(t('errBanned'), 'error');
+      await signOut(auth);
+      return;
+    }
     state.nickname = profile.nickname;
     state.profile.displayName = profile.displayName || profile.nickname;
     loadProfile();
     loadSeenStories();
     if(!state.profile.displayName) state.profile.displayName = profile.displayName || profile.nickname;
-
-    state.profiles[state.uid] = {
-      uid: state.uid, nickname: state.nickname,
-      displayName: state.profile.displayName,
-      avatar: (state.profile.displayName || state.nickname || '?')[0].toUpperCase()
-    };
-
+    const updates = {};
+    if(!profile.nicknameLower && profile.nickname) updates.nicknameLower = profile.nickname.toLowerCase();
+    if(!Array.isArray(profile.contacts)) updates.contacts = [];
+    if(Object.keys(updates).length){
+      try { const { doc: d, updateDoc } = window.fb; await updateDoc(d(db, 'users', user.uid), updates); }
+      catch(e){ console.error('auto-migrate:', e); }
+    }
+    state.profiles[state.uid] = { uid: state.uid, nickname: state.nickname, displayName: state.profile.displayName, avatar: (state.profile.displayName || state.nickname || '?')[0].toUpperCase() };
     $('login').style.display = 'none';
     $('app').classList.add('active');
     renderMeBar();
-
     listenToMyContacts();
     listenToDirectMessages();
     listenToMyGroups();
@@ -1214,22 +1117,124 @@ function renderMeBar(){
   const av = $('me-avatar');
   if(state.profile.avatarData) av.innerHTML = `<img src="${state.profile.avatarData}" alt="">`;
   else av.textContent = (state.profile.displayName || state.nickname || '?')[0].toUpperCase();
-  $('me-name').textContent = state.profile.displayName || state.nickname;
+  let nameHtml = escapeHtml(state.profile.displayName || state.nickname || '');
+  if(state.profile.music) nameHtml += ' <span class="music-badge" title="🎵">🎵</span>';
+  $('me-name').innerHTML = nameHtml;
 }
-
 function openProfileModal(){
   tempAvatar = state.profile.avatarData;
+  tempMusic = state.profile.music || null;
   $('prof-name').value = state.profile.displayName;
   $('prof-bio').value = state.profile.bio || '';
   $('prof-nickname').textContent = state.nickname || '—';
   updateProfAvatar();
+  updateMusicUI();
+  renderChannelSelector();
   $('profile-modal').classList.add('visible');
 }
 function updateProfAvatar(){
   const av = $('prof-avatar');
   const initial = (state.profile.displayName || state.nickname || '?')[0].toUpperCase();
-  if(tempAvatar) av.innerHTML = `<img src="${tempAvatar}" alt=""><div class="edit-ov">📷</div>`;
-  else av.innerHTML = `<span>${initial}</span><div class="edit-ov">📷</div>`;
+  const camSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+  if(tempAvatar) av.innerHTML = `<img src="${tempAvatar}" alt=""><div class="edit-ov">${camSvg}</div>`;
+  else av.innerHTML = `<span>${initial}</span><div class="edit-ov">${camSvg}</div>`;
+}
+function updateMusicUI(){
+  const isEmpty = !tempMusic;
+  $('music-empty').style.display = isEmpty ? '' : 'none';
+  $('music-player').style.display = isEmpty ? 'none' : 'flex';
+  $('music-upload-btn').style.display = isEmpty ? '' : 'none';
+  if(!isEmpty){
+    $('music-name').textContent = tempMusic.name || t('musicFileLabel');
+    $('music-audio').src = tempMusic.dataUrl;
+  } else {
+    $('music-audio').pause();
+    $('music-audio').src = '';
+  }
+}
+function renderChannelSelector(){
+  const sel = $('prof-channel-select');
+  if(!sel) return;
+  const myChannels = Object.values(state.groups)
+    .filter(g => g.isChannel && g.members?.[state.uid]?.role === 'admin')
+    .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  const currentId = state.profile.channelId || '';
+  let html = `<option value="">${t('noChannel')}</option>`;
+  let found = false;
+  myChannels.forEach(g => {
+    const selAttr = g.groupId === currentId ? 'selected' : '';
+    if(g.groupId === currentId) found = true;
+    html += `<option value="${escapeHtml(g.groupId)}" ${selAttr}>${escapeHtml(g.name || '📢')}</option>`;
+  });
+  sel.innerHTML = html;
+  if(currentId && !found){
+    state.profile.channelId = null;
+    state.profile.channelName = null;
+    sel.value = '';
+  }
+}
+
+/* ============================================
+   ПРОСМОТР ПРОФИЛЯ ДРУГОГО
+   ============================================ */
+async function openUserProfile(uid){
+  if(!uid || uid === state.uid) return;
+  const modal = $('user-profile-modal');
+  if(!modal) return;
+  $('up-avatar').innerHTML = '<span>?</span>';
+  $('up-name').textContent = '...';
+  $('up-nickname').textContent = '—';
+  $('up-bio').style.display = 'none';
+  $('up-bio').textContent = '';
+  $('up-channel').style.display = 'none';
+  $('up-music').style.display = 'none';
+  const audio = $('up-music-audio');
+  audio.pause();
+  audio.src = '';
+  $('up-message').style.display = 'none';
+  modal.classList.add('visible');
+  try {
+    const { db, doc, getDoc } = window.fb;
+    const snap = await getDoc(doc(db, 'users', uid));
+    if(!snap.exists()){ toast(t('userNotFound'), 'error'); modal.classList.remove('visible'); return; }
+    const d = snap.data();
+    const displayName = d.displayName || d.nickname || '?';
+    if(d.avatarData) $('up-avatar').innerHTML = `<img src="${d.avatarData}" alt="">`;
+    else $('up-avatar').textContent = displayName[0].toUpperCase();
+    $('up-name').textContent = displayName;
+    $('up-nickname').textContent = d.nickname || '?';
+    if(d.bio){ $('up-bio').textContent = d.bio; $('up-bio').style.display = ''; }
+    if(d.musicData && d.musicName){
+      $('up-music-name').textContent = d.musicName;
+      audio.src = d.musicData;
+      $('up-music').style.display = '';
+    }
+    if(d.channelId && d.channelName){
+      $('up-channel-name').textContent = d.channelName;
+      $('up-channel').style.display = '';
+      $('up-channel-btn').onclick = () => {
+        audio.pause();
+        modal.classList.remove('visible');
+        if(state.groups[d.channelId]){
+          openChat(d.channelId, 'group');
+        } else {
+          toast(t('errNotSubscribed'), 'error');
+        }
+      };
+    } else {
+      $('up-channel').style.display = 'none';
+    }
+    $('up-message').style.display = '';
+    $('up-message').onclick = () => {
+      audio.pause();
+      modal.classList.remove('visible');
+      openChat(uid, 'user');
+    };
+  } catch(e){
+    console.error(e);
+    toast(t('errProfileLoad'), 'error');
+    modal.classList.remove('visible');
+  }
 }
 
 /* ============================================
@@ -1239,44 +1244,28 @@ async function sendMessage(){
   const input = $('msg-input');
   const text = input.value.trim();
   if(!text || !state.currentChat) return;
-  if(!canPostInCurrentChat()){
-    toast('Только администраторы могут писать в канале');
-    return;
-  }
+  if(!canPostInCurrentChat()){ toast(t('channelOnlyAdmins'), 'error'); return; }
   const { db, collection, addDoc, serverTimestamp } = window.fb;
-  const data = {
-    fromUid: state.uid,
-    content: { type: 'text', text },
-    time: serverTimestamp(),
-    reactions: {},
-    replyTo: state.replyTo || null
-  };
+  const data = { fromUid: state.uid, content: { type: 'text', text }, time: serverTimestamp(), reactions: {}, replyTo: state.replyTo || null };
   if(state.currentChatType === 'group') data.toGroupId = state.currentChat;
   else data.toUid = state.currentChat;
-
   try {
     await addDoc(collection(db, 'messages'), data);
     input.value = ''; input.style.height = 'auto'; clearReply();
-  } catch(e){ console.error(e); toast('Не удалось отправить: ' + (e.message || e.code)); }
+    updateSendBtnState();
+  } catch(e){ console.error(e); toast(t('errSendFailed'), 'error'); }
 }
-
 async function sendFileContent(content){
   if(!state.currentChat || !window.fb) return;
-  if(!canPostInCurrentChat()){
-    toast('Только администраторы могут писать в канале');
-    return;
-  }
+  if(!canPostInCurrentChat()){ toast(t('channelOnlyAdmins'), 'error'); return; }
   const { db, collection, addDoc, serverTimestamp } = window.fb;
-  const data = {
-    fromUid: state.uid, content,
-    time: serverTimestamp(), reactions: {}, replyTo: state.replyTo || null
-  };
+  const data = { fromUid: state.uid, content, time: serverTimestamp(), reactions: {}, replyTo: state.replyTo || null };
   if(state.currentChatType === 'group') data.toGroupId = state.currentChat;
   else data.toUid = state.currentChat;
   try {
     await addDoc(collection(db, 'messages'), data);
     clearReply();
-  } catch(e){ console.error(e); toast('Не удалось отправить файл'); }
+  } catch(e){ console.error(e); toast(t('errSendFileFailed'), 'error'); }
 }
 
 /* ============================================
@@ -1286,11 +1275,21 @@ function getCurrentMessages(){
   if(state.currentChatType === 'group') return state.groupMessages[state.currentChat] || [];
   return state.messages[state.currentChat] || [];
 }
-
+function renderSkeletonChatList(){
+  const c = $('chat-list');
+  c.innerHTML = Array(6).fill(0).map(() => `
+    <div class="skeleton-chat">
+      <div class="skeleton skeleton-avatar"></div>
+      <div class="skeleton-info">
+        <div class="skeleton skeleton-line-1"></div>
+        <div class="skeleton skeleton-line-2"></div>
+      </div>
+    </div>
+  `).join('');
+}
 function renderChatList(){
   const search = ($('search').value || '').toLowerCase().trim();
   const items = [];
-
   state.users.forEach(u => {
     const msgs = state.messages[u.uid] || [];
     const last = msgs[msgs.length - 1];
@@ -1303,13 +1302,12 @@ function renderChatList(){
       unread: state.unread[u.uid] || 0
     });
   });
-
   Object.values(state.groups).forEach(g => {
     const msgs = state.groupMessages[g.groupId] || [];
     const last = msgs[msgs.length - 1];
     items.push({
       type: 'group', id: g.groupId,
-      name: g.name || (g.isChannel ? 'Канал' : 'Группа'),
+      name: g.name || (g.isChannel ? (currentLang==='ru'?'Канал':'Channel') : (currentLang==='ru'?'Группа':'Group')),
       avatarLetter: (g.name || '?')[0].toUpperCase(),
       avatarData: g.avatarData || null,
       nick: null,
@@ -1318,37 +1316,36 @@ function renderChatList(){
       isChannel: !!g.isChannel
     });
   });
-
+  const c = $('chat-list');
+  if(!state.messagesLoaded && items.length === 0){
+    renderSkeletonChatList();
+    return;
+  }
   const filtered = items.filter(it => {
     const n = it.name.toLowerCase();
     const nn = (it.nick || '').toLowerCase();
     return n.includes(search) || nn.includes(search);
   });
-
-  const c = $('chat-list');
   if(!filtered.length){
     c.innerHTML = state.users.length === 0 && Object.keys(state.groups).length === 0
-      ? '<div class="empty-list">Пока никого нет.<br><br>Нажмите <b>➕</b> вверху — найти пользователя, создать группу или канал.</div>'
-      : '<div class="empty-list">Ничего не найдено</div>';
+      ? `<div class="empty-list">${t('emptyChatList')}</div>`
+      : `<div class="empty-list">${t('nothingFound')}</div>`;
     return;
   }
-
   filtered.sort((a,b) => {
     if(a.lastTime || b.lastTime) return b.lastTime - a.lastTime;
     return a.name.localeCompare(b.name);
   });
-
   c.innerHTML = filtered.map(it => {
     let lastText = '';
     if(it.last){
-      const preview = it.last.content.type === 'text'
-        ? it.last.content.text
-        : it.last.content.type === 'image' ? '📷 Фото'
-        : it.last.content.type === 'video' ? '🎬 Видео'
-        : it.last.content.type === 'audio' ? '🎵 Музыка'
-        : '📎 Файл';
+      const preview = it.last.content.type === 'text' ? it.last.content.text
+        : it.last.content.type === 'image' ? t('photo')
+        : it.last.content.type === 'video' ? t('video')
+        : it.last.content.type === 'audio' ? t('music')
+        : t('file');
       const showSenderName = it.type === 'group' && !it.isChannel;
-      const prefix = it.last.fromUid === state.uid ? 'Вы: '
+      const prefix = it.last.fromUid === state.uid ? t('youPrefix')
         : showSenderName ? (getUserDisplayName(it.last.fromUid) + ': ') : '';
       lastText = prefix + escapeHtml(preview.slice(0, 30));
     }
@@ -1358,12 +1355,11 @@ function renderChatList(){
       ? `<div class="avatar"><img src="${it.avatarData}" alt=""></div>`
       : `<div class="avatar">${escapeHtml(it.avatarLetter)}</div>`;
     const typeIcon = it.type === 'group' ? (it.isChannel ? '📢 ' : '👥 ') : '';
-
     return `<div class="chat-item ${active}" data-id="${escapeHtml(it.id)}" data-type="${it.type}">
       ${avatarHtml}
       <div class="info">
         <div class="name">${typeIcon}${escapeHtml(it.name)}</div>
-        <div class="last">${lastText || '<span style="opacity:.5">Нет сообщений</span>'}</div>
+        <div class="last">${lastText || `<span style="opacity:.5">${t('noMessages')}</span>`}</div>
       </div>
       <div class="meta">
         <div>${lastTime}</div>
@@ -1371,7 +1367,6 @@ function renderChatList(){
       </div>
     </div>`;
   }).join('');
-
   c.querySelectorAll('.chat-item').forEach(el => {
     el.addEventListener('click', () => openChat(el.dataset.id, el.dataset.type));
   });
@@ -1382,54 +1377,50 @@ function renderChatList(){
    ============================================ */
 function updateChatHeader(id, type){
   if(type === 'group'){
+    document.querySelector('.chat-header').classList.remove('clickable');
     const g = state.groups[id];
     if(!g) return;
     $('chat-name').textContent = g.name || '?';
     if(g.avatarData) $('chat-avatar').innerHTML = `<img src="${g.avatarData}" alt="">`;
     else $('chat-avatar').textContent = (g.name || '?')[0].toUpperCase();
-
     const cnt = (g.memberUids || []).length;
-    let countText;
     if(g.isChannel){
-      countText = `${cnt} ${plural(cnt, 'подписчик', 'подписчика', 'подписчиков')}`;
-      $('chat-status').textContent = '📢 канал · ' + countText;
+      const w = plural(cnt, t('sub1'), t('sub2'), t('sub5'));
+      $('chat-status').textContent = t('channelStatusPrefix') + `${cnt} ${w}`;
     } else {
-      countText = `${cnt} ${plural(cnt, 'участник', 'участника', 'участников')}`;
-      $('chat-status').textContent = countText;
+      const w = plural(cnt, t('mem1'), t('mem2'), t('mem5'));
+      $('chat-status').textContent = `${cnt} ${w}`;
     }
     $('group-settings-btn').style.display = '';
   } else {
+    document.querySelector('.chat-header').classList.add('clickable');
     const u = state.profiles[id];
     $('chat-name').textContent = u ? u.displayName : '?';
     $('chat-avatar').textContent = u ? u.avatar : '?';
-    $('chat-status').textContent = 'в чате';
+    $('chat-status').textContent = t('inChat');
     $('group-settings-btn').style.display = 'none';
   }
 }
-
 function updateChannelUIPermissions(){
   const canPost = canPostInCurrentChat();
   $('input-panel').style.display = canPost ? '' : 'none';
   $('channel-notice').style.display = canPost ? 'none' : '';
   $('reply-bar').style.display = 'none';
 }
-
 function openChat(id, type){
   state.currentChat = id;
   state.currentChatType = type;
   state.unread[id] = 0;
-
   $('empty-chat').style.display = 'none';
   $('chat-area').style.display = 'flex';
-
   updateChatHeader(id, type);
   updateChannelUIPermissions();
-
   clearReply();
   renderMessages();
   renderChatList();
   if(canPostInCurrentChat()) $('msg-input').focus();
   $('app').classList.add('chat-open');
+  updateScrollButton();
 }
 
 /* ============================================
@@ -1438,27 +1429,31 @@ function openChat(id, type){
 function getReplyPreview(msg){
   if(!msg || !msg.content) return '';
   if(msg.content.type === 'text') return msg.content.text.slice(0,50);
-  if(msg.content.type === 'image') return '📷 Фото';
-  if(msg.content.type === 'video') return '🎬 Видео';
-  if(msg.content.type === 'audio') return '🎵 Музыка';
-  return '📎 Файл';
+  if(msg.content.type === 'image') return t('photo');
+  if(msg.content.type === 'video') return t('video');
+  if(msg.content.type === 'audio') return t('music');
+  return t('file');
 }
-
 function renderMessages(){
   const c = $('messages');
   const msgs = getCurrentMessages();
   if(!msgs.length){
-    c.innerHTML = '<div style="text-align:center;color:#6c7883;padding:40px;font-size:13px">Начните диалог 👋</div>';
+    c.innerHTML = `<div style="text-align:center;color:var(--text-3);padding:40px;font-size:13px">${t('startDialog')}</div>`;
     return;
   }
-
   const inChannel = state.currentChatType === 'group' && isChannel(state.currentChat);
-
-  c.innerHTML = msgs.map(m => {
+  const inGroup = state.currentChatType === 'group';
+  let html = '';
+  let lastDate = '';
+  msgs.forEach((m) => {
+    const dateStr = formatDate(m.time);
+    if(dateStr !== lastDate){
+      html += `<div class="date-divider"><span>${escapeHtml(dateStr)}</span></div>`;
+      lastDate = dateStr;
+    }
     const isMe = m.fromUid === state.uid;
     const ct = m.content;
     let body = '';
-
     if(ct.type === 'text') body = `<div class="text">${escapeHtml(ct.text)}</div>`;
     else if(ct.type === 'image') body = `<div class="media" data-full="${ct.dataUrl}"><img src="${ct.dataUrl}" alt=""></div>`;
     else if(ct.type === 'video') body = `<div class="media"><video src="${ct.dataUrl}" controls></video></div>`;
@@ -1470,18 +1465,22 @@ function renderMessages(){
           <div class="fname">${escapeHtml(ct.name)}</div>
           <div class="fsize">${formatSize(ct.size)}</div>
         </div>
-        <a href="${ct.dataUrl}" download="${escapeHtml(ct.name)}" title="Скачать">⬇</a>
+        <a href="${ct.dataUrl}" download="${escapeHtml(ct.name)}">⬇</a>
       </div>`;
     }
-
+    let avatarHtml = '';
+    if(inGroup && !isMe && !inChannel){
+      const p = state.profiles[m.fromUid];
+      const letter = p ? p.avatar : '?';
+      avatarHtml = `<div class="msg-avatar" data-uid="${escapeHtml(m.fromUid)}" title="${escapeHtml(getUserDisplayName(m.fromUid))}">${escapeHtml(letter)}</div>`;
+    }
     let senderHtml = '';
-    if(!isMe && state.currentChatType === 'group' && !inChannel){
+    if(!isMe && inGroup && !inChannel){
       const g = state.groups[state.currentChat];
       const tag = g?.members?.[m.fromUid]?.tag;
       const name = getUserDisplayName(m.fromUid);
-      senderHtml = `<div class="sender-name">${escapeHtml(name)}${tag ? ` <span class="sender-tag">${escapeHtml(tag)}</span>` : ''}</div>`;
+      senderHtml = `<div class="sender-name" data-uid="${escapeHtml(m.fromUid)}">${escapeHtml(name)}${tag ? ` <span class="sender-tag">${escapeHtml(tag)}</span>` : ''}</div>`;
     }
-
     let replyHtml = '';
     if(m.replyTo){
       const prev = msgs.find(x => x.id === m.replyTo);
@@ -1492,7 +1491,6 @@ function renderMessages(){
         </div>`;
       }
     }
-
     let reactionsHtml = '';
     const rk = Object.keys(m.reactions || {});
     if(rk.length){
@@ -1502,8 +1500,8 @@ function renderMessages(){
         return `<span class="react ${mine}" data-id="${m.id}" data-emoji="${emoji}">${emoji} ${users.length}</span>`;
       }).join('') + '</div>';
     }
-
-    return `<div class="msg-row ${isMe ? 'me' : 'other'}" data-id="${m.id}">
+    html += `<div class="msg-row ${isMe ? 'me' : 'other'}" data-id="${m.id}">
+      ${avatarHtml}
       <div class="bubble">
         ${senderHtml}
         ${replyHtml}
@@ -1520,14 +1518,19 @@ function renderMessages(){
         ${isMe ? `<button class="tool-del" data-id="${m.id}" title="Удалить">🗑</button>` : ''}
       </div>
     </div>`;
-  }).join('');
-
+  });
+  c.innerHTML = html;
   c.querySelectorAll('.media[data-full]').forEach(el => el.addEventListener('click', () => openViewer(el.dataset.full)));
   c.querySelectorAll('.tool-reply').forEach(el => el.addEventListener('click', () => setReply(el.dataset.id)));
   c.querySelectorAll('.tool-del').forEach(el => el.addEventListener('click', () => deleteMessage(el.dataset.id)));
   c.querySelectorAll('.tool-react').forEach(el => el.addEventListener('click', e => showReactionPicker(el.dataset.id, e.clientX, e.clientY)));
   c.querySelectorAll('.react').forEach(el => el.addEventListener('click', () => toggleReaction(el.dataset.id, el.dataset.emoji)));
-
+  c.querySelectorAll('.msg-avatar, .sender-name').forEach(el => {
+    el.addEventListener('click', () => {
+      const uid = el.dataset.uid;
+      if(uid && uid !== state.uid) openUserProfile(uid);
+    });
+  });
   scrollToBottom();
 }
 
@@ -1539,7 +1542,7 @@ function setReply(id){
   const m = msgs.find(x => x.id === id);
   if(!m) return;
   state.replyTo = id;
-  $('reply-name').textContent = m.fromUid === state.uid ? 'Вы' : getUserDisplayName(m.fromUid);
+  $('reply-name').textContent = m.fromUid === state.uid ? (currentLang==='ru'?'Вы':'You') : getUserDisplayName(m.fromUid);
   $('reply-text').textContent = getReplyPreview(m);
   $('reply-bar').classList.add('visible');
   if(canPostInCurrentChat()) $('msg-input').focus();
@@ -1559,7 +1562,6 @@ function showReactionPicker(id, x, y){
   p.style.top = Math.max(y - 50, 10) + 'px';
   p.classList.add('visible');
 }
-
 async function toggleReaction(id, emoji){
   if(!window.fb) return;
   const msgs = getCurrentMessages();
@@ -1571,45 +1573,43 @@ async function toggleReaction(id, emoji){
   const idx = arr.indexOf(state.uid);
   if(idx === -1) arr.push(state.uid); else arr.splice(idx, 1);
   if(!arr.length) delete reactions[emoji];
-
   const { db, doc, updateDoc } = window.fb;
   try { await updateDoc(doc(db, 'messages', id), { reactions }); }
-  catch(e){ console.error(e); toast('Не удалось поставить реакцию'); }
+  catch(e){ console.error(e); toast(t('errReaction'), 'error'); }
 }
 
 /* ============================================
    УДАЛЕНИЕ
    ============================================ */
 async function deleteMessage(id){
-  if(!confirm('Удалить сообщение?')) return;
+  if(!confirm(t('confirmDeleteMsg'))) return;
   const { db, doc, deleteDoc } = window.fb;
   try { await deleteDoc(doc(db, 'messages', id)); }
-  catch(e){ console.error(e); toast('Не удалось удалить'); }
+  catch(e){ console.error(e); toast(t('errDeleteMsg'), 'error'); }
 }
 
 /* ============================================
    ВЛОЖЕНИЯ
    ============================================ */
 function openFilePicker(type){
-  if(!canPostInCurrentChat()){ toast('Только администраторы могут писать в канале'); return; }
+  if(!canPostInCurrentChat()){ toast(t('channelOnlyAdmins'), 'error'); return; }
   state.pendingFileType = type;
   const fi = $('file-input');
   fi.accept = type === 'image' ? 'image/*' : type === 'video' ? 'video/*' : type === 'audio' ? 'audio/*' : '';
   fi.value = '';
   fi.click();
 }
-
 async function handleFileSelected(file){
   if(!file) return;
   const type = state.pendingFileType;
-  if(file.size > 500 * 1024){ toast('Файл слишком большой (макс 500 КБ)'); return; }
+  if(file.size > 500 * 1024){ toast(t('errFileTooBig'), 'error'); return; }
   try {
     const dataUrl = await fileToBase64(file);
     const ct = { type, dataUrl };
     if(type === 'file' || type === 'audio') ct.name = file.name;
     if(type === 'file') ct.size = file.size;
     await sendFileContent(ct);
-  } catch(e){ console.error(e); toast('Ошибка чтения файла'); }
+  } catch(e){ console.error(e); toast(t('errFileRead'), 'error'); }
 }
 
 /* ============================================
@@ -1622,6 +1622,190 @@ function openViewer(url){
 function closeViewer(){
   $('viewer').classList.remove('visible');
   $('viewer-content').innerHTML = '';
+}
+
+/* ============================================
+   НАСТРОЙКИ
+   ============================================ */
+function openSettings(){
+  $('settings-profile-name').textContent = state.profile.displayName || state.nickname || '—';
+  $('settings-language-current').textContent = currentLang === 'ru' ? 'Русский' : 'English';
+  $('settings-admin').style.display = isSuperAdmin() ? '' : 'none';
+  $('settings-modal').classList.add('visible');
+}
+function openLanguageModal(){
+  $('language-modal').querySelectorAll('.lang-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.lang === currentLang);
+  });
+  $('language-modal').classList.add('visible');
+}
+function changeLanguage(lang){
+  if(lang !== 'ru' && lang !== 'en') return;
+  currentLang = lang;
+  saveLang();
+  applyTranslations();
+  renderStoriesBar();
+  renderChatList();
+  if(state.currentChat){ updateChatHeader(state.currentChat, state.currentChatType); }
+  if(currentGroupSettingsId) renderGroupSettings();
+  if($('settings-modal').classList.contains('visible')){
+    $('settings-language-current').textContent = currentLang === 'ru' ? 'Русский' : 'English';
+  }
+  if($('language-modal').classList.contains('visible')){
+    $('language-modal').querySelectorAll('.lang-item').forEach(el => {
+      el.classList.toggle('active', el.dataset.lang === currentLang);
+    });
+  }
+  if(authMode) setAuthMode(authMode);
+}
+
+/* ============================================
+   АДМИН-ПАНЕЛЬ
+   ============================================ */
+async function openAdminPanel(){
+  if(!isSuperAdmin()) return;
+  $('settings-modal').classList.remove('visible');
+  $('admin-modal').classList.add('visible');
+  await loadAdminStats();
+  await loadAdminUsers();
+}
+async function loadAdminStats(){
+  const { db, collection, getDocs } = window.fb;
+  const stats = $('admin-stats');
+  stats.innerHTML = `<div class="admin-empty">${t('adminLoading')}</div>`;
+  try {
+    const [uSnap, mSnap, gSnap, sSnap] = await Promise.all([
+      getDocs(collection(db, 'users')),
+      getDocs(collection(db, 'messages')),
+      getDocs(collection(db, 'groups')),
+      getDocs(collection(db, 'stories'))
+    ]);
+    stats.innerHTML = `
+      <div class="admin-stat"><div class="admin-stat-num">${uSnap.size}</div><div class="admin-stat-label">Пользователи</div></div>
+      <div class="admin-stat"><div class="admin-stat-num">${mSnap.size}</div><div class="admin-stat-label">Сообщения</div></div>
+      <div class="admin-stat"><div class="admin-stat-num">${gSnap.size}</div><div class="admin-stat-label">Группы</div></div>
+      <div class="admin-stat"><div class="admin-stat-num">${sSnap.size}</div><div class="admin-stat-label">Истории</div></div>
+    `;
+  } catch(e){
+    console.error(e);
+    stats.innerHTML = `<div class="admin-empty">${t('adminLoadError')}</div>`;
+  }
+}
+async function loadAdminUsers(){
+  const { db, collection, getDocs } = window.fb;
+  const c = $('admin-users-list');
+  c.innerHTML = `<div class="admin-empty">${t('adminLoading')}</div>`;
+  try {
+    const snap = await getDocs(collection(db, 'users'));
+    adminUsersCache = [];
+    snap.forEach(d => adminUsersCache.push({ id: d.id, ...d.data() }));
+    adminUsersCache.sort((a, b) => (a.nickname || '').localeCompare(b.nickname || ''));
+    if(!adminUsersCache.length){ c.innerHTML = `<div class="admin-empty">${t('adminNoUsers')}</div>`; return; }
+    c.innerHTML = adminUsersCache.map(u => {
+      const dn = u.displayName || u.nickname || '?';
+      const isBanned = u.banned === true;
+      const isSelf = u.nickname === 'llamx';
+      const avatarHtml = u.avatarData ? `<img src="${u.avatarData}" alt="">` : dn[0].toUpperCase();
+      return `<div class="admin-user-card">
+        <div class="avatar">${avatarHtml}</div>
+        <div class="info">
+          <div class="name">${escapeHtml(dn)}${isSelf ? ' (вы)' : ''} ${isBanned ? `<span class="banned">${t('adminBannedLabel')}</span>` : ''}</div>
+          <div class="nick">@${escapeHtml(u.nickname || '?')}</div>
+        </div>
+        <div class="admin-user-actions">
+          ${!isSelf ? `<button class="admin-btn-clear" data-action="clear-msgs" data-uid="${escapeHtml(u.id)}" data-nick="${escapeHtml(u.nickname || '')}" title="Удалить все сообщения">🧹</button>` : ''}
+          ${!isSelf ? (isBanned
+            ? `<button class="admin-btn-unban" data-action="unban" data-uid="${escapeHtml(u.id)}">${t('adminUnbanBtn')}</button>`
+            : `<button class="admin-btn-ban" data-action="ban" data-uid="${escapeHtml(u.id)}">${t('adminBanBtn')}</button>`) : ''}
+        </div>
+      </div>`;
+    }).join('');
+    c.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => handleAdminAction(btn.dataset.action, btn.dataset.uid, btn.dataset.nick));
+    });
+  } catch(e){
+    console.error(e);
+    c.innerHTML = `<div class="admin-empty">${t('adminLoadError')}</div>`;
+  }
+}
+async function handleAdminAction(action, uid, nick){
+  const { db, doc, updateDoc, collection, getDocs, deleteDoc } = window.fb;
+  if(action === 'ban'){
+    if(!confirm(tpl('adminConfirmBan', { nick }))) return;
+    try { await updateDoc(doc(db, 'users', uid), { banned: true }); toast(t('adminBanned'), 'success'); await loadAdminUsers(); }
+    catch(e){ console.error(e); toast(t('adminError'), 'error'); }
+  } else if(action === 'unban'){
+    try { await updateDoc(doc(db, 'users', uid), { banned: false }); toast(t('adminUnbanned'), 'success'); await loadAdminUsers(); }
+    catch(e){ console.error(e); toast(t('adminError'), 'error'); }
+  } else if(action === 'clear-msgs'){
+    if(!confirm(tpl('adminConfirmClearMsgs', { nick }))) return;
+    try {
+      const snap = await getDocs(collection(db, 'messages'));
+      const promises = [];
+      let deleted = 0;
+      snap.forEach(d => {
+        const m = d.data();
+        if(m.fromUid === uid){ promises.push(deleteDoc(doc(db, 'messages', d.id))); deleted++; }
+      });
+      await Promise.all(promises);
+      toast(tpl('adminMsgsDeleted', { n: deleted }), 'success');
+      await loadAdminStats();
+    } catch(e){ console.error(e); toast(t('adminError'), 'error'); }
+  }
+}
+async function loadAdminMessages(){
+  const { db, collection, getDocs } = window.fb;
+  const c = $('admin-messages-list');
+  c.innerHTML = `<div class="admin-empty">${t('adminLoading')}</div>`;
+  try {
+    const snap = await getDocs(collection(db, 'messages'));
+    const arr = [];
+    snap.forEach(d => {
+      const m = d.data();
+      arr.push({
+        id: d.id, fromUid: m.fromUid,
+        text: m.content && m.content.type === 'text' ? m.content.text : ('[' + (m.content ? m.content.type : '?') + ']'),
+        time: m.time && m.time.toDate ? m.time.toDate().getTime() : 0
+      });
+    });
+    arr.sort((a, b) => b.time - a.time);
+    const recent = arr.slice(0, 100);
+    if(!recent.length){ c.innerHTML = `<div class="admin-empty">${t('adminNoMsgs')}</div>`; return; }
+    const nickMap = {};
+    adminUsersCache.forEach(u => { nickMap[u.id] = u.nickname || '?'; });
+    c.innerHTML = recent.map(m => `<div class="admin-msg-row">
+      <div class="admin-msg-text">${escapeHtml(m.text.slice(0, 80))}</div>
+      <div class="admin-msg-meta">@${escapeHtml(nickMap[m.fromUid] || '?')} · ${formatTime(m.time)}</div>
+      <button class="admin-msg-del" data-id="${escapeHtml(m.id)}">🗑</button>
+    </div>`).join('');
+    c.querySelectorAll('.admin-msg-del').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm(t('adminDeleteMsgConfirm'))) return;
+        try {
+          const { db, doc, deleteDoc } = window.fb;
+          await deleteDoc(doc(db, 'messages', btn.dataset.id));
+          btn.closest('.admin-msg-row').remove();
+        } catch(e){ console.error(e); toast(t('adminError'), 'error'); }
+      });
+    });
+  } catch(e){
+    console.error(e);
+    c.innerHTML = `<div class="admin-empty">${t('adminLoadError')}</div>`;
+  }
+}
+
+/* ============================================
+   КНОПКА ОТПРАВКИ
+   ============================================ */
+const MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
+const SEND_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4 22 12 3.4 3.6 3 10l12 2-12 2z"/></svg>';
+function updateSendBtnState(){
+  const btn = $('send-btn');
+  const input = $('msg-input');
+  if(!btn || !input) return;
+  const isEmpty = !input.value.trim();
+  btn.classList.toggle('is-empty', isEmpty);
+  btn.innerHTML = isEmpty ? MIC_SVG : SEND_SVG;
 }
 
 /* ============================================
@@ -1647,9 +1831,9 @@ $('cg-cancel').addEventListener('click', () => $('create-group-modal').classList
 $('cg-create').addEventListener('click', handleCreateGroup);
 $('cg-is-channel').addEventListener('change', () => {
   const isCh = $('cg-is-channel').checked;
-  $('cg-title').textContent = isCh ? 'Новый канал' : 'Новая группа';
-  $('cg-name').placeholder = isCh ? 'Например: Новости' : 'Например: Команда';
-  $('cg-members-label').textContent = isCh ? 'Подписчики' : 'Участники';
+  $('cg-title').textContent = isCh ? t('newChannelTitle') : t('newGroupTitle');
+  $('cg-name').placeholder = isCh ? t('namePlaceholderChannel') : t('namePlaceholderGroup');
+  $('cg-members-label').textContent = isCh ? t('subscribersLabel') : t('membersLabel');
 });
 
 $('group-settings-btn').addEventListener('click', () => { if(state.currentChatType === 'group') openGroupSettings(state.currentChat); });
@@ -1663,69 +1847,152 @@ $('gs-avatar').addEventListener('click', () => {
 });
 $('group-avatar-input').addEventListener('change', async e => {
   const f = e.target.files[0]; if(!f) return;
-  if(f.size > 500 * 1024){ toast('Аватар группы — макс 500 КБ'); return; }
+  if(f.size > 500 * 1024){ toast(t('errFileTooBig'), 'error'); return; }
   tempGroupAvatar = await fileToBase64(f);
   renderGroupSettings();
 });
-
 $('gs-add-members').addEventListener('click', openAddMembersModal);
 $('am-cancel').addEventListener('click', () => $('add-members-modal').classList.remove('visible'));
 $('am-add').addEventListener('click', handleAddMembers);
 
-$('me-bar').addEventListener('click', openProfileModal);
+// НАСТРОЙКИ
+$('me-bar').addEventListener('click', openSettings);
+$('settings-close').addEventListener('click', () => $('settings-modal').classList.remove('visible'));
+$('settings-profile').addEventListener('click', () => { $('settings-modal').classList.remove('visible'); openProfileModal(); });
+$('settings-language').addEventListener('click', openLanguageModal);
+$('settings-admin').addEventListener('click', openAdminPanel);
+$('settings-logout').addEventListener('click', async () => {
+  if(!confirm(t('confirmLogout'))) return;
+  $('settings-modal').classList.remove('visible');
+  if(window.fb){ try{ await window.fb.signOut(window.fb.auth); }catch(e){} }
+});
+
+// ЯЗЫК
+$('lang-close').addEventListener('click', () => $('language-modal').classList.remove('visible'));
+$('language-modal').querySelectorAll('.lang-item').forEach(el => {
+  el.addEventListener('click', () => {
+    changeLanguage(el.dataset.lang);
+    $('language-modal').classList.remove('visible');
+    toast(t('langChanged'), 'success');
+  });
+});
+
+// ПРОФИЛЬ
 $('prof-avatar').addEventListener('click', () => $('avatar-input').click());
 $('avatar-input').addEventListener('change', async e => {
   const f = e.target.files[0]; if(!f) return;
-  if(f.size > 2*1024*1024){ toast('Аватар слишком большой (макс 2 МБ)'); return; }
+  if(f.size > 2*1024*1024){ toast(t('errFileTooBig'), 'error'); return; }
   tempAvatar = await fileToBase64(f);
   updateProfAvatar();
 });
 $('prof-cancel').addEventListener('click', () => { $('profile-modal').classList.remove('visible'); $('avatar-input').value = ''; });
 $('prof-save').addEventListener('click', async () => {
   const n = $('prof-name').value.trim();
-  if(!n){ toast('Имя не может быть пустым'); return; }
+  if(!n){ toast(t('errNameEmpty'), 'error'); return; }
   state.profile.displayName = n;
   state.profile.bio = $('prof-bio').value.trim();
   state.profile.avatarData = tempAvatar;
+  state.profile.music = tempMusic;
+  const selChannelId = $('prof-channel-select').value || null;
+  const selChannel = selChannelId ? state.groups[selChannelId] : null;
+  state.profile.channelId = selChannelId;
+  state.profile.channelName = selChannel ? (selChannel.name || null) : null;
   renderMeBar(); saveProfile();
   $('profile-modal').classList.remove('visible');
-  toast('Профиль сохранён ✓');
+  toast(t('okProfileSaved'), 'success');
   if(window.fb && state.uid){
     const { db, doc, setDoc } = window.fb;
-    try { await setDoc(doc(db, 'users', state.uid), { displayName: n }, { merge: true }); }
-    catch(e){ console.error(e); }
+    const updates = {
+      displayName: n,
+      bio: state.profile.bio || null,
+      avatarData: tempAvatar || null,
+      musicName: tempMusic ? tempMusic.name : null,
+      musicData: tempMusic ? tempMusic.dataUrl : null,
+      channelId: state.profile.channelId || null,
+      channelName: state.profile.channelName || null
+    };
+    try { await setDoc(doc(db, 'users', state.uid), updates, { merge: true }); }
+    catch(e){
+      console.error('sync profile:', e);
+      if(e.message && (e.message.includes('maximum') || e.code === 'resource-exhausted')) toast(t('errProfileSync'), 'error');
+    }
   }
 });
 
-$('logout-btn').addEventListener('click', async () => {
-  if(!confirm('Выйти из аккаунта?')) return;
-  $('profile-modal').classList.remove('visible');
-  if(window.fb){ try{ await window.fb.signOut(window.fb.auth); }catch(e){} }
+// МУЗЫКА
+$('music-upload-btn').addEventListener('click', () => { $('music-input').value = ''; $('music-input').click(); });
+$('music-input').addEventListener('change', async e => {
+  const f = e.target.files[0]; if(!f) return;
+  if(f.size > 500 * 1024){ toast(t('errMusicTooBig'), 'error'); return; }
+  try {
+    const dataUrl = await fileToBase64(f);
+    tempMusic = { name: f.name, dataUrl };
+    updateMusicUI();
+    toast(t('okMusicUploaded'), 'success');
+  } catch(err){ console.error(err); toast(t('errMusicRead'), 'error'); }
+});
+$('music-remove').addEventListener('click', () => {
+  tempMusic = null;
+  updateMusicUI();
+  toast(t('okMusicRemoved'), 'success');
 });
 
-// STORIES — загрузка файла
+// ПРОСМОТР ПРОФИЛЯ ДРУГОГО
+$('up-close').addEventListener('click', () => {
+  $('up-music-audio').pause();
+  $('user-profile-modal').classList.remove('visible');
+});
+$('chat-avatar').addEventListener('click', () => {
+  if(state.currentChatType === 'user' && state.currentChat) openUserProfile(state.currentChat);
+});
+$('chat-name').addEventListener('click', () => {
+  if(state.currentChatType === 'user' && state.currentChat) openUserProfile(state.currentChat);
+});
+$('gs-members').addEventListener('click', (e) => {
+  if(e.target.closest('.member-actions')) return;
+  const row = e.target.closest('.member-row');
+  if(!row) return;
+  const uid = row.dataset.uid;
+  if(uid && uid !== state.uid) openUserProfile(uid);
+});
+
+// АДМИН-ПАНЕЛЬ
+$('admin-close').addEventListener('click', () => $('admin-modal').classList.remove('visible'));
+$('admin-tab-users').addEventListener('click', () => {
+  $('admin-tab-users').classList.add('active');
+  $('admin-tab-messages').classList.remove('active');
+  $('admin-users-list').style.display = '';
+  $('admin-messages-list').style.display = 'none';
+});
+$('admin-tab-messages').addEventListener('click', () => {
+  $('admin-tab-messages').classList.add('active');
+  $('admin-tab-users').classList.remove('active');
+  $('admin-users-list').style.display = 'none';
+  $('admin-messages-list').style.display = '';
+  loadAdminMessages();
+});
+
+// STORIES
 $('story-file-input').addEventListener('change', e => handleStoryFileSelected(e.target.files[0]));
 $('story-create-cancel').addEventListener('click', () => {
   state.pendingStoryMedia = null;
   $('story-create-modal').classList.remove('visible');
 });
 $('story-create-publish').addEventListener('click', publishStory);
-
-// STORIES — viewer
 $('story-viewer-close').addEventListener('click', closeStoryViewer);
 $('story-nav-prev').addEventListener('click', prevStory);
 $('story-nav-next').addEventListener('click', nextStory);
 $('story-viewer-delete').addEventListener('click', deleteCurrentStory);
+$('story-viewer').addEventListener('click', e => { if(e.target.id === 'story-viewer') closeStoryViewer(); });
 
-// Клик на пустое место в viewer — закрыть (только вне контента)
-$('story-viewer').addEventListener('click', e => {
-  if(e.target.id === 'story-viewer') closeStoryViewer();
-});
-
-// Отправка
+// ОТПРАВКА
 $('send-btn').addEventListener('click', sendMessage);
 $('msg-input').addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
-$('msg-input').addEventListener('input', function(){ this.style.height = 'auto'; this.style.height = Math.min(this.scrollHeight, 120) + 'px'; });
+$('msg-input').addEventListener('input', function(){
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  updateSendBtnState();
+});
 $('reply-close').addEventListener('click', clearReply);
 
 $('attach-btn').addEventListener('click', () => $('attach-menu').classList.toggle('visible'));
@@ -1756,6 +2023,29 @@ $('search').addEventListener('input', renderChatList);
 $('back-btn').addEventListener('click', () => $('app').classList.remove('chat-open'));
 if(window.innerWidth <= 768) $('back-btn').style.display = 'block';
 
+// КНОПКА «НАВЕРХ»
+$('scroll-to-bottom').addEventListener('click', scrollToBottom);
+$('messages').addEventListener('scroll', updateScrollButton);
+
+// FAB НОВЫЙ ЧАТ
+$('fab-new-chat').addEventListener('click', () => {
+  $('add-menu').classList.toggle('visible');
+});
+
+// ESC ЗАКРЫВАЕТ МОДАЛКИ
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    document.querySelectorAll('.modal.visible').forEach(m => m.classList.remove('visible'));
+    $('add-menu').classList.remove('visible');
+    $('attach-menu').classList.remove('visible');
+    $('reaction-picker').classList.remove('visible');
+  }
+});
+
+// СТАРТ
+loadLang();
+applyTranslations();
 initAuthListener();
 setAuthMode('login');
-console.log('✅ Мессенджер с историями загружен');
+setTimeout(updateSendBtnState, 100);
+console.log('✅ Мессенджер загружен');
