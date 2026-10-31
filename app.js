@@ -1,2051 +1,1480 @@
-/* ============================================
-   i18n
-   ============================================ */
+//* ============ i18n ============ */
 const TRANSLATIONS = {
-  ru: {
-    welcome:'Добро пожаловать', createAccount:'Создать аккаунт',
-    subtitle:'Войдите или создайте аккаунт', subtitleRegister:'Создайте новый аккаунт',
-    login:'Вход', register:'Регистрация', nickname:'Никнейм',
-    password:'Пароль (мин. 6 символов)', passwordConfirm:'Повторите пароль',
-    signIn:'Войти', signUp:'Зарегистрироваться',
-    authHint:'Никнейм: буквы, цифры, _. Пароль: минимум 6 символов.',
-    searchChats:'Поиск в чатах', findUser:'Найти пользователя',
-    newGroup:'Создать группу', newChannel:'Создать канал', online:'в сети',
-    selectChat:'Выберите чат, чтобы начать общение', writeMessage:'Написать сообщение...',
-    channelOnlyAdmins:'Только администраторы могут писать в канале',
-    myStory:'Моя история', settings:'Настройки', myProfile:'Мой профиль',
-    language:'Язык', logout:'Выйти из аккаунта', close:'Закрыть', cancel:'Отмена', save:'Сохранить',
-    loginLabel:'Логин:', displayName:'Отображаемое имя', aboutMe:'О себе',
-    aboutPlaceholder:'Напишите о себе...',
-    musicLabel:'Музыка', musicNotSelected:'Файл не выбран', musicUpload:'Загрузить музыку',
-    myChannelLabel:'Мой канал', channelLabel:'Канал', noChannel:'— Не выбран —',
-    errNotSubscribed:'Вы не подписаны на этот канал',
-    profileTitle:'Профиль', messageUser:'Написать сообщение',
-    findUserTitle:'Найти пользователя', loginFieldLabel:'Логин', find:'Найти',
-    findInputPlaceholder:'Введите логин',
-    newGroupTitle:'Новая группа', newChannelTitle:'Новый канал',
-    nameLabel:'Название', namePlaceholderGroup:'Например: Команда',
-    namePlaceholderChannel:'Например: Новости',
-    membersLabel:'Участники', subscribersLabel:'Подписчики',
-    createAsChannel:'Создать как канал (писать смогут только администраторы)',
-    create:'Создать', description:'Описание', descriptionPlaceholder:'О чём...',
-    addMember:'Добавить участника', addSubscriber:'Добавить подписчика',
-    addMembersTitle:'Добавить участников', addSubscribersTitle:'Добавить подписчиков',
-    contactsNotInGroup:'Контакты (не в группе)', contactsNotSubscribed:'Контакты (не подписаны)',
-    add:'Добавить', newStory:'Новая история',
-    storyCaptionLabel:'Подпись (необязательно)', storyCaptionPlaceholder:'Что происходит?',
-    publish:'Опубликовать', storyPreviewEmpty:'Выберите фото или видео',
-    emptyChatList:'Пока никого нет.<br><br>Нажмите <b>➕</b> вверху — найти пользователя, создать группу или канал.',
-    nothingFound:'Ничего не найдено', noMessages:'Нет сообщений', youPrefix:'Вы: ',
-    startDialog:'Начните диалог 👋', inChat:'в чате', channelStatusPrefix:'📢 канал · ',
-    errEnterNickname:'Введите никнейм', errEnterPassword:'Введите пароль',
-    errInvalidCredentials:'Неверный никнейм или пароль', errNoInternet:'Нет интернета',
-    errServerConnecting:'Подключение к серверу, подождите',
-    errNicknameTaken:'Этот никнейм уже занят', errWeakPassword:'Слишком простой пароль',
-    errPasswordMin:'Пароль минимум 6 символов', errPasswordsDontMatch:'Пароли не совпадают',
-    errNicknameShort:'Никнейм слишком короткий (мин. 2 символа)',
-    errNicknameLong:'Никнейм слишком длинный (макс. 20)', errNicknameChars:'Только буквы, цифры и _',
-    errNameEmpty:'Имя не может быть пустым', errFileTooBig:'Файл слишком большой (макс 500 КБ)',
-    errFileRead:'Ошибка чтения файла', errSendFailed:'Не удалось отправить',
-    errSendFileFailed:'Не удалось отправить файл', errAddContact:'Не удалось добавить контакт',
-    errSearch:'Ошибка поиска', errCreateGroup:'Не удалось создать',
-    errSaveGroup:'Не удалось сохранить', errAddMembers:'Не удалось добавить',
-    errDeleteMsg:'Не удалось удалить', errReaction:'Не удалось поставить реакцию',
-    errPublishStory:'Не удалось опубликовать', errDeleteStory:'Не удалось удалить',
-    errProfileLoad:'Не удалось загрузить профиль',
-    okContactAdded:'Контакт добавлен', okGroupCreated:'Группа создана',
-    okChannelCreated:'Канал создан', okProfileSaved:'Профиль сохранён',
-    okStoryPublished:'История опубликована', okStoryDeleted:'История удалена',
-    okSaved:'Сохранено', okMusicUploaded:'Музыка загружена', okMusicRemoved:'Музыка удалена',
-    errMusicTooBig:'Музыка слишком большая (макс 500 КБ)', errMusicRead:'Ошибка чтения музыки',
-    errProfileSync:'Профиль сохранён локально, но файл слишком большой для синхронизации',
-    errBanned:'Аккаунт заблокирован администратором',
-    musicFileLabel:'Аудиофайл',
-    confirmLogout:'Выйти из аккаунта?', confirmDeleteMsg:'Удалить сообщение?',
-    confirmDeleteStory:'Удалить эту историю?',
-    confirmRemoveMember:'Удалить из группы?', confirmRemoveFromChannel:'Удалить из канала?',
-    tagPrompt:'Тег для {name} (пусто = без тега):',
-    roleAdminAssigned:'Назначен админом', roleRemoved:'Права сняты',
-    memberRemoved:'Удалён из группы', tagUpdated:'Тег обновлён',
-    addedCount:'Добавлено: {n}',
-    onlyAdminCanEdit:'Только админ может менять настройки',
-    onlyAdminCanAdd:'Только админ может добавлять',
-    selectAtLeastOne:'Выберите хотя бы одного',
-    contactsAlreadyAdded:'Все ваши контакты уже добавлены, либо их нет.',
-    contactsFirst:'Сначала добавьте контакты через «Найти пользователя»',
-    userNotFound:'Пользователь не найден', itIsYourLogin:'Это ваш логин',
-    alreadyInContacts:'уже в контактах',
-    sub1:'подписчик', sub2:'подписчика', sub5:'подписчиков',
-    mem1:'участник', mem2:'участника', mem5:'участников',
-    timeJustNow:'только что', timeMinAgo:'{n} мин назад', timeHourAgo:'{n} ч назад',
-    today:'Сегодня', yesterday:'Вчера',
-    photo:'📷 Фото', video:'🎬 Видео', music:'🎵 Музыка', file:'📎 Файл',
-    photoMenu:'Фото', videoMenu:'Видео', musicMenu:'Музыка', fileMenu:'Файл',
-    langChanged:'Язык изменён',
-    adminBanned:'Пользователь забанен', adminUnbanned:'Разбанен',
-    adminError:'Ошибка', adminConfirmBan:'Забанить @{nick}?',
-    adminConfirmClearMsgs:'Удалить ВСЕ сообщения пользователя @{nick}?',
-    adminMsgsDeleted:'Удалено сообщений: {n}',
-    adminDeleteMsgConfirm:'Удалить сообщение?',
-    adminNoUsers:'Пользователей нет', adminNoMsgs:'Сообщений нет',
-    adminLoadError:'Ошибка загрузки', adminLoading:'Загрузка...',
-    adminTitle:'Админ-панель', adminManage:'Управление пользователями',
-    adminTabUsers:'Пользователи', adminTabMessages:'Сообщения',
-    adminBannedLabel:'забанен', adminBanBtn:'Забанить', adminUnbanBtn:'Разбанить'
-  },
-  en: {
-    welcome:'Welcome', createAccount:'Create account',
-    subtitle:'Sign in or create an account', subtitleRegister:'Create a new account',
-    login:'Sign in', register:'Sign up', nickname:'Nickname',
-    password:'Password (min. 6 chars)', passwordConfirm:'Repeat password',
-    signIn:'Sign in', signUp:'Sign up',
-    authHint:'Nickname: letters, digits, _. Password: at least 6 characters.',
-    searchChats:'Search chats', findUser:'Find user',
-    newGroup:'Create group', newChannel:'Create channel', online:'online',
-    selectChat:'Select a chat to start messaging', writeMessage:'Write a message...',
-    channelOnlyAdmins:'Only admins can post in the channel',
-    myStory:'My story', settings:'Settings', myProfile:'My profile',
-    language:'Language', logout:'Sign out', close:'Close', cancel:'Cancel', save:'Save',
-    loginLabel:'Login:', displayName:'Display name', aboutMe:'About me',
-    aboutPlaceholder:'Tell about yourself...',
-    musicLabel:'Music', musicNotSelected:'No file selected', musicUpload:'Upload music',
-    myChannelLabel:'My channel', channelLabel:'Channel', noChannel:'— None —',
-    errNotSubscribed:'You are not subscribed to this channel',
-    profileTitle:'Profile', messageUser:'Message',
-    findUserTitle:'Find user', loginFieldLabel:'Login', find:'Find',
-    findInputPlaceholder:'Enter login',
-    newGroupTitle:'New group', newChannelTitle:'New channel',
-    nameLabel:'Name', namePlaceholderGroup:'E.g.: Team',
-    namePlaceholderChannel:'E.g.: News',
-    membersLabel:'Members', subscribersLabel:'Subscribers',
-    createAsChannel:'Create as channel (only admins can post)',
-    create:'Create', description:'Description', descriptionPlaceholder:'About...',
-    addMember:'Add member', addSubscriber:'Add subscriber',
-    addMembersTitle:'Add members', addSubscribersTitle:'Add subscribers',
-    contactsNotInGroup:'Contacts (not in group)', contactsNotSubscribed:'Contacts (not subscribed)',
-    add:'Add', newStory:'New story',
-    storyCaptionLabel:'Caption (optional)', storyCaptionPlaceholder:'What is happening?',
-    publish:'Publish', storyPreviewEmpty:'Choose photo or video',
-    emptyChatList:'Nobody here yet.<br><br>Tap <b>➕</b> above — find a user, create a group or channel.',
-    nothingFound:'Nothing found', noMessages:'No messages', youPrefix:'You: ',
-    startDialog:'Start the dialog 👋', inChat:'in chat', channelStatusPrefix:'📢 channel · ',
-    errEnterNickname:'Enter a nickname', errEnterPassword:'Enter a password',
-    errInvalidCredentials:'Invalid nickname or password', errNoInternet:'No internet',
-    errServerConnecting:'Connecting to server, please wait',
-    errNicknameTaken:'This nickname is already taken', errWeakPassword:'Password is too weak',
-    errPasswordMin:'Password must be at least 6 characters', errPasswordsDontMatch:'Passwords do not match',
-    errNicknameShort:'Nickname too short (min. 2 chars)',
-    errNicknameLong:'Nickname too long (max. 20)', errNicknameChars:'Letters, digits and _ only',
-    errNameEmpty:'Name cannot be empty', errFileTooBig:'File too large (max 500 KB)',
-    errFileRead:'Failed to read file', errSendFailed:'Failed to send',
-    errSendFileFailed:'Failed to send file', errAddContact:'Failed to add contact',
-    errSearch:'Search error', errCreateGroup:'Failed to create',
-    errSaveGroup:'Failed to save', errAddMembers:'Failed to add',
-    errDeleteMsg:'Failed to delete', errReaction:'Failed to react',
-    errPublishStory:'Failed to publish', errDeleteStory:'Failed to delete',
-    errProfileLoad:'Failed to load profile',
-    okContactAdded:'Contact added', okGroupCreated:'Group created',
-    okChannelCreated:'Channel created', okProfileSaved:'Profile saved',
-    okStoryPublished:'Story published', okStoryDeleted:'Story deleted',
-    okSaved:'Saved', okMusicUploaded:'Music uploaded', okMusicRemoved:'Music removed',
-    errMusicTooBig:'Music file too large (max 500 KB)', errMusicRead:'Failed to read music',
-    errProfileSync:'Profile saved locally, but file too large to sync',
-    errBanned:'Account blocked by administrator',
-    musicFileLabel:'Audio file',
-    confirmLogout:'Sign out?', confirmDeleteMsg:'Delete message?',
-    confirmDeleteStory:'Delete this story?',
-    confirmRemoveMember:'Remove from group?', confirmRemoveFromChannel:'Remove from channel?',
-    tagPrompt:'Tag for {name} (empty = no tag):',
-    roleAdminAssigned:'Promoted to admin', roleRemoved:'Rights removed',
-    memberRemoved:'Removed from group', tagUpdated:'Tag updated',
-    addedCount:'Added: {n}',
-    onlyAdminCanEdit:'Only admin can change settings',
-    onlyAdminCanAdd:'Only admin can add',
-    selectAtLeastOne:'Select at least one',
-    contactsAlreadyAdded:'All your contacts already added, or none exist.',
-    contactsFirst:'First add contacts via "Find user"',
-    userNotFound:'User not found', itIsYourLogin:'This is your login',
-    alreadyInContacts:'already in contacts',
-    sub1:'subscriber', sub2:'subscribers', sub5:'subscribers',
-    mem1:'member', mem2:'members', mem5:'members',
-    timeJustNow:'just now', timeMinAgo:'{n} min ago', timeHourAgo:'{n} h ago',
-    today:'Today', yesterday:'Yesterday',
-    photo:'📷 Photo', video:'🎬 Video', music:'🎵 Music', file:'📎 File',
-    photoMenu:'Photo', videoMenu:'Video', musicMenu:'Music', fileMenu:'File',
-    langChanged:'Language changed',
-    adminBanned:'User banned', adminUnbanned:'Unbanned',
-    adminError:'Error', adminConfirmBan:'Ban @{nick}?',
-    adminConfirmClearMsgs:'Delete ALL messages of @{nick}?',
-    adminMsgsDeleted:'Deleted messages: {n}',
-    adminDeleteMsgConfirm:'Delete message?',
-    adminNoUsers:'No users', adminNoMsgs:'No messages',
-    adminLoadError:'Load error', adminLoading:'Loading...',
-    adminTitle:'Admin panel', adminManage:'User management',
-    adminTabUsers:'Users', adminTabMessages:'Messages',
-    adminBannedLabel:'banned', adminBanBtn:'Ban', adminUnbanBtn:'Unban'
-  }
-};
+ru:{
+welcome:'Добро пожаловать',createAccount:'Создать аккаунт',subtitle:'Войдите или создайте аккаунт',
+subtitleRegister:'Создайте новый аккаунт',login:'Вход',register:'Регистрация',nickname:'Никнейм',
+password:'Пароль (мин. 6 символов)',passwordConfirm:'Повторите пароль',signIn:'Войти',signUp:'Зарегистрироваться',
+authHint:'Никнейм: буквы, цифры, _. Пароль: минимум 6 символов.',searchChats:'Поиск в чатах',
+findUser:'Найти пользователя',newGroup:'Создать группу',newChannel:'Создать канал',online:'в сети',
+selectChat:'Выберите чат, чтобы начать общение',writeMessage:'Написать сообщение...',
+channelOnlyAdmins:'Только администраторы могут писать в канале',myStory:'Моя история',
+settings:'Настройки',myProfile:'Мой профиль',language:'Язык',logout:'Выйти из аккаунта',
+close:'Закрыть',cancel:'Отмена',save:'Сохранить',loginLabel:'Логин:',displayName:'Отображаемое имя',
+aboutMe:'О себе',aboutPlaceholder:'Напишите о себе...',musicLabel:'Музыка',
+musicNotSelected:'Файл не выбран',musicUpload:'Загрузить музыку',myChannelLabel:'Мой канал',
+channelLabel:'Канал',noChannel:'— Не выбран —',errNotSubscribed:'Вы не подписаны на этот канал',
+profileTitle:'Профиль',messageUser:'Написать сообщение',findUserTitle:'Найти пользователя',
+loginFieldLabel:'Логин',find:'Найти',findInputPlaceholder:'Введите логин',
+newGroupTitle:'Новая группа',newChannelTitle:'Новый канал',nameLabel:'Название',
+namePlaceholderGroup:'Например: Команда',namePlaceholderChannel:'Например: Новости',
+membersLabel:'Участники',subscribersLabel:'Подписчики',
+createAsChannel:'Создать как канал (писать смогут только администраторы)',create:'Создать',
+description:'Описание',descriptionPlaceholder:'О чём...',addMember:'Добавить участника',
+addSubscriber:'Добавить подписчика',addMembersTitle:'Добавить участников',
+addSubscribersTitle:'Добавить подписчиков',contactsNotInGroup:'Контакты (не в группе)',
+contactsNotSubscribed:'Контакты (не подписаны)',add:'Добавить',newStory:'Новая история',
+storyCaptionLabel:'Подпись (необязательно)',storyCaptionPlaceholder:'Что происходит?',
+publish:'Опубликовать',storyPreviewEmpty:'Выберите фото или видео',
+emptyChatList:'Пока никого нет.<br><br>Нажмите <b>➕</b> вверху — найти пользователя, создать группу или канал.',
+nothingFound:'Ничего не найдено',noMessages:'Нет сообщений',youPrefix:'Вы: ',
+startDialog:'Начните диалог 👋',inChat:'в чате',channelStatusPrefix:'📢 канал · ',
+errEnterNickname:'Введите никнейм',errEnterPassword:'Введите пароль',
+errInvalidCredentials:'Неверный никнейм или пароль',errNoInternet:'Нет интернета',
+errServerConnecting:'Подключение к серверу, подождите',errNicknameTaken:'Этот никнейм уже занят',
+errWeakPassword:'Слишком простой пароль',errPasswordMin:'Пароль минимум 6 символов',
+errPasswordsDontMatch:'Пароли не совпадают',errNicknameShort:'Никнейм слишком короткий (мин. 2 символа)',
+errNicknameLong:'Никнейм слишком длинный (макс. 20)',errNicknameChars:'Только буквы, цифры и _',
+errNameEmpty:'Имя не может быть пустым',errFileTooBig:'Файл слишком большой',
+errFileRead:'Ошибка чтения файла',errSendFailed:'Не удалось отправить',
+errSendFileFailed:'Не удалось отправить файл',errAddContact:'Не удалось добавить контакт',
+errSearch:'Ошибка поиска',errCreateGroup:'Не удалось создать',errSaveGroup:'Не удалось сохранить',
+errAddMembers:'Не удалось добавить',errDeleteMsg:'Не удалось удалить',
+errReaction:'Не удалось поставить реакцию',errPublishStory:'Не удалось опубликовать',
+errDeleteStory:'Не удалось удалить',errProfileLoad:'Не удалось загрузить профиль',
+okContactAdded:'Контакт добавлен',okGroupCreated:'Группа создана',okChannelCreated:'Канал создан',
+okProfileSaved:'Профиль сохранён',okStoryPublished:'История опубликована',
+okStoryDeleted:'История удалена',okSaved:'Сохранено',okMusicUploaded:'Музыка загружена',
+okMusicRemoved:'Музыка удалена',errMusicRead:'Ошибка чтения музыки',
+errProfileSync:'Профиль сохранён, но данные не синхронизированы',
+errBanned:'Аккаунт заблокирован администратором',musicFileLabel:'Аудиофайл',
+confirmLogout:'Выйти из аккаунта?',confirmDeleteMsg:'Удалить сообщение?',
+confirmDeleteStory:'Удалить эту историю?',confirmRemoveMember:'Удалить из группы?',
+confirmRemoveFromChannel:'Удалить из канала?',tagPrompt:'Тег для {name} (пусто = без тега):',
+roleAdminAssigned:'Назначен админом',roleRemoved:'Права сняты',memberRemoved:'Удалён из группы',
+tagUpdated:'Тег обновлён',addedCount:'Добавлено: {n}',onlyAdminCanEdit:'Только админ может менять настройки',
+onlyAdminCanAdd:'Только админ может добавлять',selectAtLeastOne:'Выберите хотя бы одного',
+contactsAlreadyAdded:'Все ваши контакты уже добавлены, либо их нет.',
+contactsFirst:'Сначала добавьте контакты через «Найти пользователя»',
+userNotFound:'Пользователь не найден',itIsYourLogin:'Это ваш логин',
+alreadyInContacts:'уже в контактах',sub1:'подписчик',sub2:'подписчика',sub5:'подписчиков',
+mem1:'участник',mem2:'участника',mem5:'участников',timeJustNow:'только что',
+timeMinAgo:'{n} мин назад',timeHourAgo:'{n} ч назад',today:'Сегодня',yesterday:'Вчера',
+photo:'📷 Фото',video:'🎬 Видео',music:'🎵 Музыка',file:'📎 Файл',
+photoMenu:'Фото',videoMenu:'Видео',musicMenu:'Музыка',fileMenu:'Файл',langChanged:'Язык изменён',
+adminBanned:'Пользователь забанен',adminUnbanned:'Разбанен',adminError:'Ошибка',
+adminConfirmBan:'Забанить @{nick}?',adminConfirmClearMsgs:'Удалить ВСЕ сообщения пользователя @{nick}?',
+adminMsgsDeleted:'Удалено сообщений: {n}',adminDeleteMsgConfirm:'Удалить сообщение?',
+adminNoUsers:'Пользователей нет',adminNoMsgs:'Сообщений нет',adminLoadError:'Ошибка загрузки',
+adminLoading:'Загрузка...',adminBannedLabel:'забанен',adminBanBtn:'Забанить',adminUnbanBtn:'Разбанить',
+noS3Big:'Файл больше 700 КБ — нужен S3. Настройте Cloud.ru.',storyReactionErr:'Не удалось поставить реакцию'
+},
+en:{
+welcome:'Welcome',createAccount:'Create account',subtitle:'Sign in or create an account',
+subtitleRegister:'Create a new account',login:'Sign in',register:'Sign up',nickname:'Nickname',
+password:'Password (min. 6 chars)',passwordConfirm:'Repeat password',signIn:'Sign in',signUp:'Sign up',
+authHint:'Nickname: letters, digits, _. Password: at least 6 characters.',searchChats:'Search chats',
+findUser:'Find user',newGroup:'Create group',newChannel:'Create channel',online:'online',
+selectChat:'Select a chat to start messaging',writeMessage:'Write a message...',
+channelOnlyAdmins:'Only admins can post in the channel',myStory:'My story',settings:'Settings',
+myProfile:'My profile',language:'Language',logout:'Sign out',close:'Close',cancel:'Cancel',save:'Save',
+loginLabel:'Login:',displayName:'Display name',aboutMe:'About me',aboutPlaceholder:'Tell about yourself...',
+musicLabel:'Music',musicNotSelected:'No file selected',musicUpload:'Upload music',
+myChannelLabel:'My channel',channelLabel:'Channel',noChannel:'— None —',
+errNotSubscribed:'You are not subscribed to this channel',profileTitle:'Profile',
+messageUser:'Message',findUserTitle:'Find user',loginFieldLabel:'Login',find:'Find',
+findInputPlaceholder:'Enter login',newGroupTitle:'New group',newChannelTitle:'New channel',
+nameLabel:'Name',namePlaceholderGroup:'E.g.: Team',namePlaceholderChannel:'E.g.: News',
+membersLabel:'Members',subscribersLabel:'Subscribers',
+createAsChannel:'Create as channel (only admins can post)',create:'Create',
+description:'Description',descriptionPlaceholder:'About...',addMember:'Add member',
+addSubscriber:'Add subscriber',addMembersTitle:'Add members',addSubscribersTitle:'Add subscribers',
+contactsNotInGroup:'Contacts (not in group)',contactsNotSubscribed:'Contacts (not subscribed)',
+add:'Add',newStory:'New story',storyCaptionLabel:'Caption (optional)',
+storyCaptionPlaceholder:'What is happening?',publish:'Publish',
+storyPreviewEmpty:'Choose photo or video',
+emptyChatList:'Nobody here yet.<br><br>Tap <b>➕</b> above — find a user, create a group or channel.',
+nothingFound:'Nothing found',noMessages:'No messages',youPrefix:'You: ',
+startDialog:'Start the dialog 👋',inChat:'in chat',channelStatusPrefix:'📢 channel · ',
+errEnterNickname:'Enter a nickname',errEnterPassword:'Enter a password',
+errInvalidCredentials:'Invalid nickname or password',errNoInternet:'No internet',
+errServerConnecting:'Connecting to server, please wait',errNicknameTaken:'This nickname is already taken',
+errWeakPassword:'Password is too weak',errPasswordMin:'Password must be at least 6 characters',
+errPasswordsDontMatch:'Passwords do not match',errNicknameShort:'Nickname too short (min. 2 chars)',
+errNicknameLong:'Nickname too long (max. 20)',errNicknameChars:'Letters, digits and _ only',
+errNameEmpty:'Name cannot be empty',errFileTooBig:'File too large',errFileRead:'Failed to read file',
+errSendFailed:'Failed to send',errSendFileFailed:'Failed to send file',
+errAddContact:'Failed to add contact',errSearch:'Search error',errCreateGroup:'Failed to create',
+errSaveGroup:'Failed to save',errAddMembers:'Failed to add',errDeleteMsg:'Failed to delete',
+errReaction:'Failed to react',errPublishStory:'Failed to publish',errDeleteStory:'Failed to delete',
+errProfileLoad:'Failed to load profile',okContactAdded:'Contact added',okGroupCreated:'Group created',
+okChannelCreated:'Channel created',okProfileSaved:'Profile saved',okStoryPublished:'Story published',
+okStoryDeleted:'Story deleted',okSaved:'Saved',okMusicUploaded:'Music uploaded',
+okMusicRemoved:'Music removed',errMusicRead:'Failed to read music',
+errProfileSync:'Profile saved, but data not synced',errBanned:'Account blocked by administrator',
+musicFileLabel:'Audio file',confirmLogout:'Sign out?',confirmDeleteMsg:'Delete message?',
+confirmDeleteStory:'Delete this story?',confirmRemoveMember:'Remove from group?',
+confirmRemoveFromChannel:'Remove from channel?',tagPrompt:'Tag for {name} (empty = no tag):',
+roleAdminAssigned:'Promoted to admin',roleRemoved:'Rights removed',memberRemoved:'Removed from group',
+tagUpdated:'Tag updated',addedCount:'Added: {n}',onlyAdminCanEdit:'Only admin can change settings',
+onlyAdminCanAdd:'Only admin can add',selectAtLeastOne:'Select at least one',
+contactsAlreadyAdded:'All your contacts already added, or none exist.',
+contactsFirst:'First add contacts via "Find user"',userNotFound:'User not found',
+itIsYourLogin:'This is your login',alreadyInContacts:'already in contacts',
+sub1:'subscriber',sub2:'subscribers',sub5:'subscribers',mem1:'member',mem2:'members',mem5:'members',
+timeJustNow:'just now',timeMinAgo:'{n} min ago',timeHourAgo:'{n} h ago',today:'Today',yesterday:'Yesterday',
+photo:'📷 Photo',video:'🎬 Video',music:'🎵 Music',file:'📎 File',
+photoMenu:'Photo',videoMenu:'Video',musicMenu:'Music',fileMenu:'File',langChanged:'Language changed',
+adminBanned:'User banned',adminUnbanned:'Unbanned',adminError:'Error',adminConfirmBan:'Ban @{nick}?',
+adminConfirmClearMsgs:'Delete ALL messages of @{nick}?',adminMsgsDeleted:'Deleted messages: {n}',
+adminDeleteMsgConfirm:'Delete message?',adminNoUsers:'No users',adminNoMsgs:'No messages',
+adminLoadError:'Load error',adminLoading:'Loading...',adminBannedLabel:'banned',
+adminBanBtn:'Ban',adminUnbanBtn:'Unban',noS3Big:'File > 700 KB needs S3. Configure Cloud.ru.',
+storyReactionErr:'Failed to react'
+}};
 
-let currentLang = 'ru';
-function t(key){
-  const dict = TRANSLATIONS[currentLang] || TRANSLATIONS.ru;
-  return dict[key] || TRANSLATIONS.ru[key] || key;
-}
-function tpl(key, params){
-  let s = t(key);
-  Object.keys(params || {}).forEach(k => { s = s.replace(new RegExp('\\{'+k+'\\}','g'), params[k]); });
-  return s;
-}
+let currentLang='ru';
+function t(k){const d=TRANSLATIONS[currentLang]||TRANSLATIONS.ru;return d[k]||TRANSLATIONS.ru[k]||k;}
+function tpl(k,p){let s=t(k);Object.keys(p||{}).forEach(x=>{s=s.replace(new RegExp('\\{'+x+'\\}','g'),p[x]);});return s;}
 function applyTranslations(){
-  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-placeholder')); });
-  document.documentElement.lang = currentLang;
-  const lbl = $('settings-language-current');
-  if(lbl) lbl.textContent = currentLang === 'ru' ? 'Русский' : 'English';
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.getAttribute('data-i18n'));});
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{el.placeholder=t(el.getAttribute('data-i18n-placeholder'));});
+  document.documentElement.lang=currentLang;
+  const l=$('settings-language-current');if(l)l.textContent=currentLang==='ru'?'Русский':'English';
 }
-function loadLang(){
-  try { const s = localStorage.getItem('tg-lang'); if(s === 'ru' || s === 'en') currentLang = s; } catch(e){}
-}
-function saveLang(){ try { localStorage.setItem('tg-lang', currentLang); } catch(e){} }
+function loadLang(){try{const s=localStorage.getItem('tg-lang');if(s==='ru'||s==='en')currentLang=s;}catch(e){}}
+function saveLang(){try{localStorage.setItem('tg-lang',currentLang);}catch(e){}}
 
-/* ============================================
-   СОСТОЯНИЕ
-   ============================================ */
-const state = {
-  uid: null, nickname: null, pendingNickname: null,
-  profile: { displayName:'', bio:'', avatarData:null, music:null, channelId:null, channelName:null },
-  users: [], messages: {}, groupMessages: {}, groups: {},
-  currentChat: null, currentChatType: null,
-  unread: {}, replyTo: null, reactionTarget: null, pendingFileType: null,
-  messagesLoaded: false,
-  contactUids: [], profiles: {}, contactListeners: {}, groupUnsubs: {},
-  profileFetching: new Set(),
-  unsubMe: null, unsubMessages: null, unsubGroups: null,
-  stories: {}, storyGroups: {}, unsubStories: null,
-  seenStoryIds: new Set(),
-  storyTimer: null, currentStoryGroup: null, currentStoryIndex: 0,
-  pendingStoryMedia: null
+/* ============ СОСТОЯНИЕ ============ */
+const state={
+  uid:null,nickname:null,pendingNickname:null,
+  profile:{displayName:'',bio:'',avatarData:null,music:null,channelId:null,channelName:null},
+  users:[],messages:{},groupMessages:{},groups:{},
+  currentChat:null,currentChatType:null,
+  unread:{},replyTo:null,reactionTarget:null,pendingFileType:null,messagesLoaded:false,
+  contactUids:[],profiles:{},contactListeners:{},groupUnsubs:{},profileFetching:new Set(),
+  unsubMe:null,unsubMessages:null,unsubGroups:null,
+  stories:{},storyGroups:{},unsubStories:null,seenStoryIds:new Set(),
+  storyTimer:null,currentStoryGroup:null,currentStoryIndex:0,pendingStoryMedia:null
 };
+let authMode='login',tempAvatar=null,tempMusic=null,currentGroupSettingsId=null,tempGroupAvatar=null,adminUsersCache=[];
+const $=id=>document.getElementById(id);
 
-let authMode = 'login';
-let tempAvatar = null;
-let tempMusic = null;
-let currentGroupSettingsId = null;
-let tempGroupAvatar = null;
-let adminUsersCache = [];
-
-const $ = (id) => document.getElementById(id);
-
-/* ============================================
-   УТИЛИТЫ
-   ============================================ */
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function formatTime(ts){
-  return new Date(ts).toLocaleTimeString(currentLang === 'ru' ? 'ru-RU' : 'en-US',{hour:'2-digit',minute:'2-digit'});
-}
+/* ============ УТИЛИТЫ ============ */
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function formatTime(ts){return new Date(ts).toLocaleTimeString(currentLang==='ru'?'ru-RU':'en-US',{hour:'2-digit',minute:'2-digit'});}
 function formatDate(ts){
-  const d = new Date(ts);
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const yesterday = today - 86400000;
-  const dayTs = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  if(dayTs === today) return t('today');
-  if(dayTs === yesterday) return t('yesterday');
-  return d.toLocaleDateString(currentLang === 'ru' ? 'ru-RU' : 'en-US', { day:'numeric', month:'short' });
+  const d=new Date(ts),now=new Date();
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
+  const yest=today-86400000;
+  const dayTs=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
+  if(dayTs===today)return t('today');
+  if(dayTs===yest)return t('yesterday');
+  return d.toLocaleDateString(currentLang==='ru'?'ru-RU':'en-US',{day:'numeric',month:'short'});
 }
 function formatStoryTime(ts){
-  const diff = Date.now() - ts;
-  const min = Math.floor(diff / 60000);
-  if(min < 1) return t('timeJustNow');
-  if(min < 60) return tpl('timeMinAgo',{n:min});
+  const diff=Date.now()-ts,min=Math.floor(diff/60000);
+  if(min<1)return t('timeJustNow');
+  if(min<60)return tpl('timeMinAgo',{n:min});
   return tpl('timeHourAgo',{n:Math.floor(min/60)});
 }
-function toast(text, type){
-  const el = $('toast');
-  el.textContent = text;
-  el.className = 'toast' + (type ? ' ' + type : '');
-  el.classList.add('show');
-  clearTimeout(el._tid);
-  el._tid = setTimeout(() => el.classList.remove('show'), 2400);
+function toast(text,type){
+  const el=$('toast');el.textContent=text;el.className='toast'+(type?' '+type:'');
+  el.classList.add('show');clearTimeout(el._tid);
+  el._tid=setTimeout(()=>el.classList.remove('show'),2400);
 }
 function scrollToBottom(){
-  const el = $('messages');
-  if(!el) return;
-  requestAnimationFrame(() => {
-    el.scrollTop = el.scrollHeight;
-    requestAnimationFrame(() => {
-      el.scrollTop = el.scrollHeight;
-      updateScrollButton();
-    });
-  });
+  const el=$('messages');if(!el)return;
+  requestAnimationFrame(()=>{el.scrollTop=el.scrollHeight;requestAnimationFrame(()=>{el.scrollTop=el.scrollHeight;updateScrollButton();});});
 }
 function updateScrollButton(){
-  const m = $('messages');
-  const btn = $('scroll-to-bottom');
-  if(!m || !btn) return;
-  const distFromBottom = m.scrollHeight - m.scrollTop - m.clientHeight;
-  btn.classList.toggle('visible', distFromBottom > 200);
+  const m=$('messages'),b=$('scroll-to-bottom');if(!m||!b)return;
+  const d=m.scrollHeight-m.scrollTop-m.clientHeight;
+  b.classList.toggle('visible',d>200);
 }
-function profileKey(){ return 'tg-clone:' + state.uid; }
-function storiesSeenKey(){ return 'tg-stories-seen:' + state.uid; }
-function fileToBase64(file){
-  return new Promise((res, rej)=>{
-    const r = new FileReader();
-    r.onload = () => res(r.result);
-    r.onerror = rej;
-    r.readAsDataURL(file);
-  });
-}
-function formatSize(bytes){
-  if(bytes < 1024) return bytes + ' B';
-  if(bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
-  return (bytes/1048576).toFixed(1) + ' MB';
-}
-function getFileIcon(name){
-  const e = name.split('.').pop().toLowerCase();
-  if(e === 'pdf') return '📕';
-  if(['doc','docx'].includes(e)) return '📘';
-  if(['xls','xlsx'].includes(e)) return '📗';
-  if(['zip','rar','7z'].includes(e)) return '🗜️';
-  if(e === 'txt') return '📄';
-  return '📎';
-}
-function nicknameToEmail(nickname){
-  const lower = nickname.toLowerCase();
-  const hex = Array.from(lower).map(c => c.codePointAt(0).toString(16)).join('x');
-  return `u${hex}@sendit.local`;
-}
-function validateNickname(nickname){
-  if(nickname.length < 2) return t('errNicknameShort');
-  if(nickname.length > 20) return t('errNicknameLong');
-  if(!/^[\p{L}0-9_]+$/u.test(nickname)) return t('errNicknameChars');
+function profileKey(){return 'tg-clone:'+state.uid;}
+function storiesSeenKey(){return 'tg-stories-seen:'+state.uid;}
+function fileToBase64(f){return new Promise((r,j)=>{const rd=new FileReader();rd.onload=()=>r(rd.result);rd.onerror=j;rd.readAsDataURL(f);});}
+function formatSize(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(1)+' MB';}
+function getFileIcon(n){const e=n.split('.').pop().toLowerCase();
+  if(e==='pdf')return '📕';if(['doc','docx'].includes(e))return '📘';
+  if(['xls','xlsx'].includes(e))return '📗';if(['zip','rar','7z'].includes(e))return '🗜️';
+  if(e==='txt')return '📄';return '📎';}
+function nicknameToEmail(n){const l=n.toLowerCase();const h=Array.from(l).map(c=>c.codePointAt(0).toString(16)).join('x');return `u${h}@sendit.local`;}
+function validateNickname(n){
+  if(n.length<2)return t('errNicknameShort');
+  if(n.length>20)return t('errNicknameLong');
+  if(!/^[\p{L}0-9_]+$/u.test(n))return t('errNicknameChars');
   return null;
 }
-function getUserDisplayName(uid){
-  if(uid === state.uid) return currentLang === 'ru' ? 'Вы' : 'You';
-  const u = state.profiles[uid];
-  return u ? u.displayName : '?';
-}
-function plural(n, one, few, many){
-  if(currentLang === 'en') return n === 1 ? one : few;
-  const m10 = n % 10, m100 = n % 100;
-  if(m10 === 1 && m100 !== 11) return one;
-  if(m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+function getUserDisplayName(uid){if(uid===state.uid)return currentLang==='ru'?'Вы':'You';const u=state.profiles[uid];return u?u.displayName:'?';}
+function plural(n,one,few,many){
+  if(currentLang==='en')return n===1?one:few;
+  const m10=n%10,m100=n%100;
+  if(m10===1&&m100!==11)return one;
+  if(m10>=2&&m10<=4&&(m100<10||m100>=20))return few;
   return many;
 }
-function isChannel(gid){ return !!(state.groups[gid] && state.groups[gid].isChannel); }
-function isAdminIn(gid){
-  const g = state.groups[gid];
-  return !!(g && g.members && g.members[state.uid] && g.members[state.uid].role === 'admin');
-}
+function isChannel(gid){return !!(state.groups[gid]&&state.groups[gid].isChannel);}
+function isAdminIn(gid){const g=state.groups[gid];return !!(g&&g.members&&g.members[state.uid]&&g.members[state.uid].role==='admin');}
 function canPostInCurrentChat(){
-  if(state.currentChatType !== 'group') return true;
-  if(!isChannel(state.currentChat)) return true;
+  if(state.currentChatType!=='group')return true;
+  if(!isChannel(state.currentChat))return true;
   return isAdminIn(state.currentChat);
 }
-function isSuperAdmin(){ return state.nickname === 'llamx'; }
+function isSuperAdmin(){return state.nickname==='llamx';}
 
-/* ============================================
-   ПРОФИЛЬ (localStorage)
-   ============================================ */
-function saveProfile(){
-  if(!state.uid) return;
-  try { localStorage.setItem(profileKey(), JSON.stringify({ profile: state.profile })); }
-  catch(e){ toast(t('errFileRead'), 'error'); }
-}
-function loadProfile(){
-  try {
-    const raw = localStorage.getItem(profileKey());
-    if(!raw) return;
-    const d = JSON.parse(raw);
-    if(d.profile) state.profile = { ...state.profile, ...d.profile };
-  } catch(e){}
-}
-function saveSeenStories(){
-  if(!state.uid) return;
-  try {
-    const arr = Array.from(state.seenStoryIds).slice(-500);
-    localStorage.setItem(storiesSeenKey(), JSON.stringify(arr));
-  } catch(e){}
-}
-function loadSeenStories(){
-  try {
-    const raw = localStorage.getItem(storiesSeenKey());
-    if(!raw) return;
-    const arr = JSON.parse(raw);
-    if(Array.isArray(arr)) state.seenStoryIds = new Set(arr);
-  } catch(e){}
+async function uploadFileToStorage(file,path){
+  const{s3,s3Ready,S3_CONFIG}=window.fb;
+  if(!s3Ready||!s3)throw new Error('S3 не настроен');
+  const params={Bucket:S3_CONFIG.bucket,Key:path,Body:file,ContentType:file.type,ACL:'public-read'};
+  const data=await s3.upload(params).promise();
+  return data.Location;
 }
 
-/* ============================================
-   ЭКРАН ВХОДА
-   ============================================ */
+function saveProfile(){if(!state.uid)return;try{localStorage.setItem(profileKey(),JSON.stringify({profile:state.profile}));}catch(e){toast(t('errFileRead'),'error');}}
+function loadProfile(){try{const r=localStorage.getItem(profileKey());if(!r)return;const d=JSON.parse(r);if(d.profile)state.profile={...state.profile,...d.profile};}catch(e){}}
+function saveSeenStories(){if(!state.uid)return;try{const a=Array.from(state.seenStoryIds).slice(-500);localStorage.setItem(storiesSeenKey(),JSON.stringify(a));}catch(e){}}
+function loadSeenStories(){try{const r=localStorage.getItem(storiesSeenKey());if(!r)return;const a=JSON.parse(r);if(Array.isArray(a))state.seenStoryIds=new Set(a);}catch(e){}}/* ============ ВХОД ============ */
 function setAuthMode(mode){
-  authMode = mode;
-  $('tab-login').classList.toggle('active', mode === 'login');
-  $('tab-register').classList.toggle('active', mode === 'register');
-  $('auth-submit').textContent = mode === 'login' ? t('signIn') : t('signUp');
-  $('auth-submit').setAttribute('data-i18n', mode === 'login' ? 'signIn' : 'signUp');
-  $('password-confirm').style.display = mode === 'register' ? 'block' : 'none';
-  $('login-err').textContent = '';
-  $('auth-title').textContent = mode === 'login' ? t('welcome') : t('createAccount');
-  $('auth-title').setAttribute('data-i18n', mode === 'login' ? 'welcome' : 'createAccount');
-  $('auth-subtitle').textContent = mode === 'login' ? t('subtitle') : t('subtitleRegister');
-  $('auth-subtitle').setAttribute('data-i18n', mode === 'login' ? 'subtitle' : 'subtitleRegister');
+  authMode=mode;
+  $('tab-login').classList.toggle('active',mode==='login');
+  $('tab-register').classList.toggle('active',mode==='register');
+  $('auth-submit').textContent=mode==='login'?t('signIn'):t('signUp');
+  $('auth-submit').setAttribute('data-i18n',mode==='login'?'signIn':'signUp');
+  $('password-confirm').style.display=mode==='register'?'block':'none';
+  $('login-err').textContent='';
+  $('auth-title').textContent=mode==='login'?t('welcome'):t('createAccount');
+  $('auth-title').setAttribute('data-i18n',mode==='login'?'welcome':'createAccount');
+  $('auth-subtitle').textContent=mode==='login'?t('subtitle'):t('subtitleRegister');
+  $('auth-subtitle').setAttribute('data-i18n',mode==='login'?'subtitle':'subtitleRegister');
 }
-function showErr(msg){ $('login-err').textContent = msg; }
+function showErr(m){$('login-err').textContent=m;}
 
 async function handleRegister(){
-  const nickname = $('username').value.trim();
-  const password = $('password').value;
-  const confirm = $('password-confirm').value;
-  const err = validateNickname(nickname);
-  if(err){ showErr(err); return; }
-  if(password.length < 6){ showErr(t('errPasswordMin')); return; }
-  if(password !== confirm){ showErr(t('errPasswordsDontMatch')); return; }
-  if(!window.fb){ showErr(t('errServerConnecting')); return; }
-  const { auth, createUserWithEmailAndPassword, db, doc, setDoc, serverTimestamp } = window.fb;
-  state.pendingNickname = nickname;
-  showErr('');
-  try {
-    const cred = await createUserWithEmailAndPassword(auth, nicknameToEmail(nickname), password);
-    await setDoc(doc(db, 'users', cred.user.uid), {
-      uid: cred.user.uid, nickname, nicknameLower: nickname.toLowerCase(),
-      displayName: nickname, contacts: [], createdAt: serverTimestamp()
-    });
-  } catch(e){
-    state.pendingNickname = null;
-    if(e.code === 'auth/email-already-in-use') showErr(t('errNicknameTaken'));
-    else if(e.code === 'auth/weak-password') showErr(t('errWeakPassword'));
-    else if(e.code === 'auth/network-request-failed') showErr(t('errNoInternet'));
-    else showErr('Error: ' + (e.message || e.code));
+  const nick=$('username').value.trim(),pass=$('password').value,conf=$('password-confirm').value;
+  const err=validateNickname(nick);if(err){showErr(err);return;}
+  if(pass.length<6){showErr(t('errPasswordMin'));return;}
+  if(pass!==conf){showErr(t('errPasswordsDontMatch'));return;}
+  if(!window.fb){showErr(t('errServerConnecting'));return;}
+  const{auth,createUserWithEmailAndPassword,db,doc,setDoc,serverTimestamp}=window.fb;
+  state.pendingNickname=nick;showErr('');
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,nicknameToEmail(nick),pass);
+    await setDoc(doc(db,'users',cred.user.uid),{uid:cred.user.uid,nickname:nick,nicknameLower:nick.toLowerCase(),displayName:nick,contacts:[],createdAt:serverTimestamp()});
+  }catch(e){
+    state.pendingNickname=null;
+    if(e.code==='auth/email-already-in-use')showErr(t('errNicknameTaken'));
+    else if(e.code==='auth/weak-password')showErr(t('errWeakPassword'));
+    else if(e.code==='auth/network-request-failed')showErr(t('errNoInternet'));
+    else showErr('Error: '+(e.message||e.code));
   }
 }
-
 async function handleLogin(){
-  const nickname = $('username').value.trim();
-  const password = $('password').value;
-  if(!nickname){ showErr(t('errEnterNickname')); return; }
-  if(!password){ showErr(t('errEnterPassword')); return; }
-  if(!window.fb){ showErr(t('errServerConnecting')); return; }
-  const { auth, signInWithEmailAndPassword } = window.fb;
-  showErr('');
-  try { await signInWithEmailAndPassword(auth, nicknameToEmail(nickname), password); }
+  const nick=$('username').value.trim(),pass=$('password').value;
+  if(!nick){showErr(t('errEnterNickname'));return;}
+  if(!pass){showErr(t('errEnterPassword'));return;}
+  if(!window.fb){showErr(t('errServerConnecting'));return;}
+  const{auth,signInWithEmailAndPassword}=window.fb;showErr('');
+  try{await signInWithEmailAndPassword(auth,nicknameToEmail(nick),pass);}
   catch(e){
-    if(['auth/user-not-found','auth/wrong-password','auth/invalid-credential','auth/invalid-login-credentials'].includes(e.code)) showErr(t('errInvalidCredentials'));
-    else if(e.code === 'auth/network-request-failed') showErr(t('errNoInternet'));
-    else showErr('Error: ' + (e.message || e.code));
+    if(['auth/user-not-found','auth/wrong-password','auth/invalid-credential','auth/invalid-login-credentials'].includes(e.code))showErr(t('errInvalidCredentials'));
+    else if(e.code==='auth/network-request-failed')showErr(t('errNoInternet'));
+    else showErr('Error: '+(e.message||e.code));
   }
 }
 
-/* ============================================
-   ПРОФИЛИ
-   ============================================ */
+/* ============ ПРОФИЛИ ============ */
 async function ensureProfile(uid){
-  if(state.profiles[uid] || state.profileFetching.has(uid)) return;
+  if(state.profiles[uid]||state.profileFetching.has(uid))return;
   state.profileFetching.add(uid);
-  try {
-    const { db, doc, getDoc } = window.fb;
-    const snap = await getDoc(doc(db, 'users', uid));
+  try{
+    const{db,doc,getDoc}=window.fb;
+    const snap=await getDoc(doc(db,'users',uid));
     if(snap.exists()){
-      const d = snap.data();
-      state.profiles[uid] = { uid, nickname: d.nickname, displayName: d.displayName || d.nickname, avatar: (d.displayName || d.nickname || '?')[0].toUpperCase() };
-    } else {
-      state.profiles[uid] = { uid, nickname: '?', displayName: '—', avatar: '?' };
-    }
-    rebuildUsersList();
-    if(currentGroupSettingsId) renderGroupSettings();
-  } catch(e){ console.error('ensureProfile:', e); }
-  finally { state.profileFetching.delete(uid); }
+      const d=snap.data();
+      state.profiles[uid]={uid,nickname:d.nickname,displayName:d.displayName||d.nickname,avatar:(d.displayName||d.nickname||'?')[0].toUpperCase(),avatarData:d.avatarData||null};
+    }else{state.profiles[uid]={uid,nickname:'?',displayName:'—',avatar:'?',avatarData:null};}
+    rebuildUsersList();if(currentGroupSettingsId)renderGroupSettings();
+  }catch(e){console.error('ensureProfile:',e);}
+  finally{state.profileFetching.delete(uid);}
 }
-
 function listenToMyContacts(){
-  const { db, doc, onSnapshot } = window.fb;
-  if(state.unsubMe) state.unsubMe();
-  state.unsubMe = onSnapshot(doc(db, 'users', state.uid), (snap) => {
-    if(!snap.exists()) return;
-    const data = snap.data();
-    const newUids = (data.contacts || []).filter(u => u !== state.uid);
-    Object.keys(state.contactListeners).forEach(uid => {
-      if(!newUids.includes(uid)){ state.contactListeners[uid](); delete state.contactListeners[uid]; }
+  const{db,doc,onSnapshot}=window.fb;
+  if(state.unsubMe)state.unsubMe();
+  state.unsubMe=onSnapshot(doc(db,'users',state.uid),(snap)=>{
+    if(!snap.exists())return;
+    const data=snap.data();
+    const newUids=(data.contacts||[]).filter(u=>u!==state.uid);
+    Object.keys(state.contactListeners).forEach(uid=>{
+      if(!newUids.includes(uid)){state.contactListeners[uid]();delete state.contactListeners[uid];}
     });
-    newUids.forEach(uid => {
+    newUids.forEach(uid=>{
       if(!state.contactListeners[uid]){
-        state.contactListeners[uid] = onSnapshot(doc(db, 'users', uid), (s) => {
+        state.contactListeners[uid]=onSnapshot(doc(db,'users',uid),(s)=>{
           if(s.exists()){
-            const d = s.data();
-            state.profiles[uid] = { uid, nickname: d.nickname, displayName: d.displayName || d.nickname, avatar: (d.displayName || d.nickname || '?')[0].toUpperCase() };
-          } else {
-            state.profiles[uid] = { uid, nickname: '?', displayName: '—', avatar: '?' };
-          }
-          rebuildUsersList();
-          if(currentGroupSettingsId) renderGroupSettings();
-        }, err => console.error('contact listener:', err));
+            const d=s.data();
+            state.profiles[uid]={uid,nickname:d.nickname,displayName:d.displayName||d.nickname,avatar:(d.displayName||d.nickname||'?')[0].toUpperCase(),avatarData:d.avatarData||null};
+          }else{state.profiles[uid]={uid,nickname:'?',displayName:'—',avatar:'?',avatarData:null};}
+          rebuildUsersList();if(currentGroupSettingsId)renderGroupSettings();
+          if(state.currentChatType==='user'&&state.currentChat===uid)updateChatHeader(uid,'user');
+        },err=>console.error('contact listener:',err));
       }
     });
-    state.contactUids = newUids;
-    rebuildUsersList();
-    renderStoriesBar();
-  }, err => console.error('my user listener:', err));
+    state.contactUids=newUids;rebuildUsersList();renderStoriesBar();
+  },err=>console.error('my user listener:',err));
 }
-
 function rebuildUsersList(){
-  const uids = new Set();
-  state.contactUids.forEach(u => uids.add(u));
-  Object.keys(state.messages).forEach(u => { if(u && u !== state.uid) uids.add(u); });
-  const list = [];
-  uids.forEach(uid => { if(state.profiles[uid]) list.push(state.profiles[uid]); else ensureProfile(uid); });
-  state.users = list;
-  renderChatList();
+  const uids=new Set();
+  state.contactUids.forEach(u=>uids.add(u));
+  Object.keys(state.messages).forEach(u=>{if(u&&u!==state.uid)uids.add(u);});
+  const list=[];
+  uids.forEach(uid=>{if(state.profiles[uid])list.push(state.profiles[uid]);else ensureProfile(uid);});
+  state.users=list;renderChatList();
 }
 
-/* ============================================
-   ПОИСК ПО ЛОГИНУ
-   ============================================ */
 async function findUserByNickname(nickname){
-  const { db, collection, query, where, getDocs } = window.fb;
-  const lower = nickname.trim().toLowerCase();
-  if(!lower) return null;
-  try {
-    const q = query(collection(db, 'users'), where('nicknameLower', '==', lower));
-    const snap = await getDocs(q);
-    if(!snap.empty){
-      const d = snap.docs[0].data();
-      return { uid: d.uid || snap.docs[0].id, nickname: d.nickname, displayName: d.displayName || d.nickname };
-    }
-  } catch(e){ console.error('findUser indexed:', e); }
-  try {
-    const snap = await getDocs(collection(db, 'users'));
-    let found = null;
-    snap.forEach(d => {
-      if(found) return;
-      const u = d.data();
-      if((u.nickname || '').toLowerCase() === lower) found = { uid: u.uid || d.id, nickname: u.nickname, displayName: u.displayName || u.nickname };
-    });
+  const{db,collection,query,where,getDocs}=window.fb;
+  const lower=nickname.trim().toLowerCase();if(!lower)return null;
+  try{
+    const q=query(collection(db,'users'),where('nicknameLower','==',lower));
+    const snap=await getDocs(q);
+    if(!snap.empty){const d=snap.docs[0].data();return{uid:d.uid||snap.docs[0].id,nickname:d.nickname,displayName:d.displayName||d.nickname,avatarData:d.avatarData||null};}
+  }catch(e){console.error('findUser indexed:',e);}
+  try{
+    const snap=await getDocs(collection(db,'users'));
+    let found=null;
+    snap.forEach(d=>{if(found)return;const u=d.data();
+      if((u.nickname||'').toLowerCase()===lower)found={uid:u.uid||d.id,nickname:u.nickname,displayName:u.displayName||u.nickname,avatarData:u.avatarData||null};});
     return found;
-  } catch(e){ console.error('findUser fallback:', e); }
+  }catch(e){console.error('findUser fallback:',e);}
   return null;
 }
-
 async function addContactByUid(uid){
-  const { db, doc, updateDoc, arrayUnion } = window.fb;
-  await updateDoc(doc(db, 'users', state.uid), { contacts: arrayUnion(uid) });
+  const{db,doc,updateDoc,arrayUnion}=window.fb;
+  await updateDoc(doc(db,'users',state.uid),{contacts:arrayUnion(uid)});
 }
-
 async function doFind(){
-  const nickname = $('find-input').value.trim();
-  const res = $('find-result');
-  if(!nickname){ res.innerHTML = `<div class="find-error">${t('errEnterNickname')}</div>`; return; }
-  res.innerHTML = `<div class="find-empty">${t('searchChats')}...</div>`;
-  try {
-    const found = await findUserByNickname(nickname);
-    if(!found){ res.innerHTML = `<div class="find-error">${t('userNotFound')}</div>`; return; }
-    if(found.uid === state.uid){ res.innerHTML = `<div class="find-error">${t('itIsYourLogin')}</div>`; return; }
+  const nickname=$('find-input').value.trim(),res=$('find-result');
+  if(!nickname){res.innerHTML=`<div class="find-error">${t('errEnterNickname')}</div>`;return;}
+  res.innerHTML=`<div class="find-empty">${t('searchChats')}...</div>`;
+  try{
+    const found=await findUserByNickname(nickname);
+    if(!found){res.innerHTML=`<div class="find-error">${t('userNotFound')}</div>`;return;}
+    if(found.uid===state.uid){res.innerHTML=`<div class="find-error">${t('itIsYourLogin')}</div>`;return;}
+    const letter=(found.displayName||found.nickname||'?')[0].toUpperCase();
+    const avInner=found.avatarData?`<img src="${found.avatarData}" alt="">`:escapeHtml(letter);
     if(state.contactUids.includes(found.uid)){
-      res.innerHTML = `<div class="find-user"><div class="avatar">${escapeHtml((found.displayName||found.nickname)[0].toUpperCase())}</div><div class="info"><div class="name">${escapeHtml(found.displayName)}</div><div class="nick">@${escapeHtml(found.nickname)} · ${t('alreadyInContacts')}</div></div></div>`;
+      res.innerHTML=`<div class="find-user"><div class="avatar">${avInner}</div><div class="info"><div class="name">${escapeHtml(found.displayName)}</div><div class="nick">@${escapeHtml(found.nickname)} · ${t('alreadyInContacts')}</div></div></div>`;
       return;
     }
-    res.innerHTML = `<div class="find-user"><div class="avatar">${escapeHtml((found.displayName||found.nickname)[0].toUpperCase())}</div><div class="info"><div class="name">${escapeHtml(found.displayName)}</div><div class="nick">@${escapeHtml(found.nickname)}</div></div><button id="find-add-btn">${t('add')}</button></div>`;
-    const btn = document.getElementById('find-add-btn');
-    btn.addEventListener('click', async () => {
-      btn.disabled = true; btn.textContent = '...';
-      try {
-        await addContactByUid(found.uid);
-        toast(t('okContactAdded'), 'success');
+    res.innerHTML=`<div class="find-user"><div class="avatar">${avInner}</div><div class="info"><div class="name">${escapeHtml(found.displayName)}</div><div class="nick">@${escapeHtml(found.nickname)}</div></div><button id="find-add-btn">${t('add')}</button></div>`;
+    const btn=document.getElementById('find-add-btn');
+    btn.addEventListener('click',async()=>{
+      btn.disabled=true;btn.textContent='...';
+      try{
+        await addContactByUid(found.uid);toast(t('okContactAdded'),'success');
         $('find-modal').classList.remove('visible');
-        setTimeout(() => {
+        setTimeout(()=>{
           if(!state.contactUids.includes(found.uid)){
-            state.profiles[found.uid] = { uid: found.uid, nickname: found.nickname, displayName: found.displayName, avatar: (found.displayName || found.nickname)[0].toUpperCase() };
-            rebuildUsersList(); renderStoriesBar();
+            state.profiles[found.uid]={uid:found.uid,nickname:found.nickname,displayName:found.displayName,avatar:letter,avatarData:found.avatarData||null};
+            rebuildUsersList();renderStoriesBar();
           }
-          openChat(found.uid, 'user');
-        }, 400);
-      } catch(e){
-        console.error(e);
-        btn.disabled = false; btn.textContent = t('add');
-        toast(t('errAddContact'), 'error');
-      }
+          openChat(found.uid,'user');
+        },400);
+      }catch(e){console.error(e);btn.disabled=false;btn.textContent=t('add');toast(t('errAddContact'),'error');}
     });
-  } catch(e){ console.error(e); res.innerHTML = `<div class="find-error">${t('errSearch')}</div>`; }
+  }catch(e){console.error(e);res.innerHTML=`<div class="find-error">${t('errSearch')}</div>`;}
 }
+function openFindModal(){$('find-input').value='';$('find-result').innerHTML='';$('find-modal').classList.add('visible');setTimeout(()=>$('find-input').focus(),50);}
 
-function openFindModal(){
-  $('find-input').value = '';
-  $('find-result').innerHTML = '';
-  $('find-modal').classList.add('visible');
-  setTimeout(() => $('find-input').focus(), 50);
-}
-
-/* ============================================
-   ИСТОРИИ
-   ============================================ */
+/* ============ ИСТОРИИ ============ */
 function listenToStories(){
-  const { db, collection, onSnapshot } = window.fb;
-  if(state.unsubStories) state.unsubStories();
-  state.unsubStories = onSnapshot(collection(db, 'stories'), (snap) => {
-    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
-    const stories = {};
-    snap.forEach(d => {
-      const s = d.data();
-      const created = s.createdAt && s.createdAt.toDate ? s.createdAt.toDate().getTime() : 0;
-      if(created < cutoff) return;
-      stories[d.id] = { id: d.id, authorUid: s.authorUid, type: s.type, dataUrl: s.dataUrl, caption: s.caption || '', createdAt: created };
+  const{db,collection,onSnapshot}=window.fb;
+  if(state.unsubStories)state.unsubStories();
+  state.unsubStories=onSnapshot(collection(db,'stories'),(snap)=>{
+    const cutoff=Date.now()-24*60*60*1000;const stories={};
+    snap.forEach(d=>{
+      const s=d.data();
+      const created=s.createdAt&&s.createdAt.toDate?s.createdAt.toDate().getTime():0;
+      if(created<cutoff)return;
+      stories[d.id]={id:d.id,authorUid:s.authorUid,type:s.type,dataUrl:s.dataUrl,caption:s.caption||'',createdAt:created,reactions:s.reactions||{}};
     });
-    state.stories = stories;
-    buildStoryGroups();
-    renderStoriesBar();
-  }, err => console.error('stories listener:', err));
+    state.stories=stories;buildStoryGroups();renderStoriesBar();
+    if(state.currentStoryGroup)updateStoryReactionsUI();
+  },err=>console.error('stories listener:',err));
 }
 function buildStoryGroups(){
-  const groups = {};
-  Object.values(state.stories).forEach(s => {
-    if(!groups[s.authorUid]) groups[s.authorUid] = [];
-    groups[s.authorUid].push(s);
-  });
-  Object.keys(groups).forEach(uid => groups[uid].sort((a,b) => a.createdAt - b.createdAt));
-  state.storyGroups = groups;
+  const groups={};
+  Object.values(state.stories).forEach(s=>{if(!groups[s.authorUid])groups[s.authorUid]=[];groups[s.authorUid].push(s);});
+  Object.keys(groups).forEach(uid=>groups[uid].sort((a,b)=>a.createdAt-b.createdAt));
+  state.storyGroups=groups;
 }
 function getVisibleStoryAuthors(){
-  const result = [];
-  if(state.storyGroups[state.uid] && state.storyGroups[state.uid].length) result.push(state.uid);
-  state.contactUids.forEach(uid => { if(state.storyGroups[uid] && state.storyGroups[uid].length) result.push(uid); });
-  return result;
+  const r=[];
+  if(state.storyGroups[state.uid]&&state.storyGroups[state.uid].length)r.push(state.uid);
+  state.contactUids.forEach(uid=>{if(state.storyGroups[uid]&&state.storyGroups[uid].length)r.push(uid);});
+  return r;
 }
 function renderStoriesBar(){
-  const bar = $('stories-bar');
-  if(!bar) return;
-  const myStories = state.storyGroups[state.uid] || [];
-  const hasMine = myStories.length > 0;
-  const myFirst = hasMine ? myStories[myStories.length - 1] : null;
-  const myThumb = myFirst ? (myFirst.type === 'image' ? `<img src="${myFirst.dataUrl}" alt="">` : `<video src="${myFirst.dataUrl}" muted></video>`) : `<span>+</span>`;
-  let html = `<div class="story-item my-story" data-author="${escapeHtml(state.uid)}"><div class="story-ring ${hasMine ? 'seen' : 'add'}"><div class="story-thumb">${myThumb}</div></div><div class="story-label">${t('myStory')}</div>${hasMine ? `<button class="story-add-btn" id="story-add-btn" title="Добавить">＋</button>` : ''}</div>`;
-  state.contactUids.forEach(uid => {
-    const stories = state.storyGroups[uid];
-    if(!stories || !stories.length) return;
-    const p = state.profiles[uid] || { displayName: '?', avatar: '?' };
-    const firstUnseen = stories.find(s => !state.seenStoryIds.has(s.id));
-    const isSeen = !firstUnseen;
-    const preview = firstUnseen || stories[stories.length - 1];
-    const thumb = preview.type === 'image' ? `<img src="${preview.dataUrl}" alt="">` : `<video src="${preview.dataUrl}" muted></video>`;
-    html += `<div class="story-item" data-author="${escapeHtml(uid)}"><div class="story-ring ${isSeen ? 'seen' : 'unseen'}"><div class="story-thumb">${thumb}</div></div><div class="story-label">${escapeHtml(p.displayName)}</div></div>`;
+  const bar=$('stories-bar');if(!bar)return;
+  const myStories=state.storyGroups[state.uid]||[];
+  const hasMine=myStories.length>0;
+  const myFirst=hasMine?myStories[myStories.length-1]:null;
+  const myThumb=myFirst?(myFirst.type==='image'?`<img src="${myFirst.dataUrl}" alt="">`:`<video src="${myFirst.dataUrl}" muted></video>`):`<span>+</span>`;
+  let html=`<div class="story-item my-story" data-author="${escapeHtml(state.uid)}"><div class="story-ring ${hasMine?'seen':'add'}"><div class="story-thumb">${myThumb}</div></div><div class="story-label">${t('myStory')}</div>${hasMine?`<button class="story-add-btn" id="story-add-btn" title="Добавить">＋</button>`:''}</div>`;
+  state.contactUids.forEach(uid=>{
+    const stories=state.storyGroups[uid];if(!stories||!stories.length)return;
+    const p=state.profiles[uid]||{displayName:'?',avatar:'?'};
+    const firstUnseen=stories.find(s=>!state.seenStoryIds.has(s.id));
+    const isSeen=!firstUnseen;
+    const preview=firstUnseen||stories[stories.length-1];
+    const thumb=preview.type==='image'?`<img src="${preview.dataUrl}" alt="">`:`<video src="${preview.dataUrl}" muted></video>`;
+    html+=`<div class="story-item" data-author="${escapeHtml(uid)}"><div class="story-ring ${isSeen?'seen':'unseen'}"><div class="story-thumb">${thumb}</div></div><div class="story-label">${escapeHtml(p.displayName)}</div></div>`;
   });
-  bar.innerHTML = html;
-  bar.querySelectorAll('.story-item').forEach(el => {
-    el.addEventListener('click', (e) => {
-      if(e.target.id === 'story-add-btn'){ e.stopPropagation(); triggerStoryFileInput(); return; }
-      const uid = el.dataset.author;
-      if(uid === state.uid && !state.storyGroups[state.uid]){ triggerStoryFileInput(); return; }
+  bar.innerHTML=html;
+  bar.querySelectorAll('.story-item').forEach(el=>{
+    el.addEventListener('click',e=>{
+      if(e.target.id==='story-add-btn'){e.stopPropagation();triggerStoryFileInput();return;}
+      const uid=el.dataset.author;
+      if(uid===state.uid&&!state.storyGroups[state.uid]){triggerStoryFileInput();return;}
       openStoryViewer(uid);
     });
   });
 }
-function triggerStoryFileInput(){ $('story-file-input').value = ''; $('story-file-input').click(); }
-async function handleStoryFileSelected(file){
-  if(!file) return;
-  if(file.size > 500 * 1024){ toast(t('errFileTooBig'), 'error'); return; }
-  try {
-    const dataUrl = await fileToBase64(file);
-    const type = file.type.startsWith('video/') ? 'video' : 'image';
-    state.pendingStoryMedia = { type, dataUrl };
-    const prev = $('story-preview');
-    if(type === 'image') prev.innerHTML = `<img src="${dataUrl}" alt="">`;
-    else prev.innerHTML = `<video src="${dataUrl}" controls muted></video>`;
-    $('story-caption').value = '';
-    $('story-create-modal').classList.add('visible');
-  } catch(e){ console.error(e); toast(t('errFileRead'), 'error'); }
-}
-async function publishStory(){
-  if(!state.pendingStoryMedia){ toast(t('storyPreviewEmpty'), 'error'); return; }
-  const { db, collection, addDoc, serverTimestamp } = window.fb;
-  const btn = $('story-create-publish');
-  btn.disabled = true; btn.textContent = '...';
-  try {
-    await addDoc(collection(db, 'stories'), {
-      authorUid: state.uid, type: state.pendingStoryMedia.type,
-      dataUrl: state.pendingStoryMedia.dataUrl,
-      caption: $('story-caption').value.trim(),
-      createdAt: serverTimestamp()
-    });
-    state.pendingStoryMedia = null;
-    $('story-create-modal').classList.remove('visible');
-    toast(t('okStoryPublished'), 'success');
-  } catch(e){ console.error(e); toast(t('errPublishStory'), 'error'); }
-  finally { btn.disabled = false; btn.textContent = t('publish'); }
-}
+function triggerStoryFileInput(){$('story-file-input').value='';$('story-file-input').click();}
 function openStoryViewer(authorUid){
-  const stories = state.storyGroups[authorUid];
-  if(!stories || !stories.length) return;
-  state.currentStoryGroup = authorUid;
-  let idx = stories.findIndex(s => !state.seenStoryIds.has(s.id));
-  if(idx === -1) idx = 0;
-  state.currentStoryIndex = idx;
+  const stories=state.storyGroups[authorUid];if(!stories||!stories.length)return;
+  state.currentStoryGroup=authorUid;
+  let idx=stories.findIndex(s=>!state.seenStoryIds.has(s.id));
+  if(idx===-1)idx=0;
+  state.currentStoryIndex=idx;
   $('story-viewer').classList.add('visible');
   showStory();
 }
 function showStory(){
-  const authorUid = state.currentStoryGroup;
-  const stories = state.storyGroups[authorUid];
-  if(!stories || !stories.length){ closeStoryViewer(); return; }
-  if(state.currentStoryIndex < 0) state.currentStoryIndex = 0;
-  if(state.currentStoryIndex >= stories.length){ closeStoryViewer(); return; }
-  const story = stories[state.currentStoryIndex];
-  const p = state.profiles[authorUid] || { displayName: '?', avatar: '?' };
-  $('story-viewer-avatar').textContent = p.avatar;
-  $('story-viewer-author').textContent = authorUid === state.uid ? t('myStory') : p.displayName;
-  $('story-viewer-time').textContent = formatStoryTime(story.createdAt);
-  $('story-viewer-delete').style.display = authorUid === state.uid ? '' : 'none';
-  $('story-progress').innerHTML = stories.map((_, i) => {
-    const cls = i < state.currentStoryIndex ? 'filled' : i === state.currentStoryIndex ? 'active' : '';
+  const authorUid=state.currentStoryGroup;
+  const stories=state.storyGroups[authorUid];
+  if(!stories||!stories.length){closeStoryViewer();return;}
+  if(state.currentStoryIndex<0)state.currentStoryIndex=0;
+  if(state.currentStoryIndex>=stories.length){closeStoryViewer();return;}
+  const story=stories[state.currentStoryIndex];
+  const p=state.profiles[authorUid]||{displayName:'?',avatar:'?',avatarData:null};
+  if(p.avatarData)$('story-viewer-avatar').innerHTML=`<img src="${p.avatarData}" alt="">`;
+  else $('story-viewer-avatar').textContent=p.avatar;
+  $('story-viewer-author').textContent=authorUid===state.uid?t('myStory'):p.displayName;
+  $('story-viewer-time').textContent=formatStoryTime(story.createdAt);
+  $('story-viewer-delete').style.display=authorUid===state.uid?'':'none';
+  $('story-progress').innerHTML=stories.map((_,i)=>{
+    const cls=i<state.currentStoryIndex?'filled':i===state.currentStoryIndex?'active':'';
     return `<div class="story-progress-seg ${cls}"><div class="story-progress-fill"></div></div>`;
   }).join('');
-  const cont = $('story-viewer-content');
-  if(story.type === 'image') cont.innerHTML = `<img src="${story.dataUrl}" alt="">`;
-  else cont.innerHTML = `<video src="${story.dataUrl}" autoplay playsinline></video>`;
-  $('story-viewer-caption').textContent = story.caption || '';
-  $('story-viewer-caption').style.display = story.caption ? '' : 'none';
-  if(!state.seenStoryIds.has(story.id)){ state.seenStoryIds.add(story.id); saveSeenStories(); }
-  if(state.storyTimer) clearTimeout(state.storyTimer);
-  const activeSeg = $('story-progress').children[state.currentStoryIndex];
-  const fill = activeSeg ? activeSeg.querySelector('.story-progress-fill') : null;
-  if(story.type === 'image'){
-    if(fill){ fill.style.transition = 'none'; fill.style.width = '0%'; void fill.offsetWidth; fill.style.transition = 'width 5s linear'; fill.style.width = '100%'; }
-    state.storyTimer = setTimeout(() => nextStory(), 5000);
-  } else {
-    const video = cont.querySelector('video');
+  const cont=$('story-viewer-content');
+  if(story.type==='image')cont.innerHTML=`<img src="${story.dataUrl}" alt="">`;
+  else cont.innerHTML=`<video src="${story.dataUrl}" autoplay playsinline></video>`;
+  $('story-viewer-caption').textContent=story.caption||'';
+  $('story-viewer-caption').style.display=story.caption?'':'none';
+  if(!state.seenStoryIds.has(story.id)){state.seenStoryIds.add(story.id);saveSeenStories();}
+  if(state.storyTimer)clearTimeout(state.storyTimer);
+  const activeSeg=$('story-progress').children[state.currentStoryIndex];
+  const fill=activeSeg?activeSeg.querySelector('.story-progress-fill'):null;
+  if(story.type==='image'){
+    if(fill){fill.style.transition='none';fill.style.width='0%';void fill.offsetWidth;fill.style.transition='width 5s linear';fill.style.width='100%';}
+    state.storyTimer=setTimeout(()=>nextStory(),5000);
+  }else{
+    const video=cont.querySelector('video');
     if(video){
-      const onMeta = () => {
-        const dur = isFinite(video.duration) && video.duration > 0 ? video.duration * 1000 : 5000;
-        if(fill){ fill.style.transition = 'none'; fill.style.width = '0%'; void fill.offsetWidth; fill.style.transition = `width ${dur}ms linear`; fill.style.width = '100%'; }
-        state.storyTimer = setTimeout(() => nextStory(), dur + 200);
+      const onMeta=()=>{
+        const dur=isFinite(video.duration)&&video.duration>0?video.duration*1000:5000;
+        if(fill){fill.style.transition='none';fill.style.width='0%';void fill.offsetWidth;fill.style.transition=`width ${dur}ms linear`;fill.style.width='100%';}
+        state.storyTimer=setTimeout(()=>nextStory(),dur+200);
       };
-      video.addEventListener('loadedmetadata', onMeta, { once: true });
-      state.storyTimer = setTimeout(() => nextStory(), 15000);
-      video.addEventListener('ended', () => { if(state.storyTimer) clearTimeout(state.storyTimer); nextStory(); }, { once: true });
+      video.addEventListener('loadedmetadata',onMeta,{once:true});
+      state.storyTimer=setTimeout(()=>nextStory(),15000);
+      video.addEventListener('ended',()=>{if(state.storyTimer)clearTimeout(state.storyTimer);nextStory();},{once:true});
     }
   }
+  updateStoryReactionsUI();
 }
 function nextStory(){
-  const stories = state.storyGroups[state.currentStoryGroup] || [];
-  if(state.currentStoryIndex < stories.length - 1){ state.currentStoryIndex++; showStory(); }
-  else {
-    const authors = getVisibleStoryAuthors();
-    const idx = authors.indexOf(state.currentStoryGroup);
-    if(idx !== -1 && idx < authors.length - 1){ state.currentStoryGroup = authors[idx + 1]; state.currentStoryIndex = 0; showStory(); }
+  const stories=state.storyGroups[state.currentStoryGroup]||[];
+  if(state.currentStoryIndex<stories.length-1){state.currentStoryIndex++;showStory();}
+  else{
+    const authors=getVisibleStoryAuthors();
+    const idx=authors.indexOf(state.currentStoryGroup);
+    if(idx!==-1&&idx<authors.length-1){state.currentStoryGroup=authors[idx+1];state.currentStoryIndex=0;showStory();}
     else closeStoryViewer();
   }
 }
 function prevStory(){
-  if(state.currentStoryIndex > 0){ state.currentStoryIndex--; showStory(); }
-  else {
-    const authors = getVisibleStoryAuthors();
-    const idx = authors.indexOf(state.currentStoryGroup);
-    if(idx > 0){
-      const prevAuthor = authors[idx - 1];
-      const prevStories = state.storyGroups[prevAuthor] || [];
-      state.currentStoryGroup = prevAuthor;
-      state.currentStoryIndex = Math.max(0, prevStories.length - 1);
+  if(state.currentStoryIndex>0){state.currentStoryIndex--;showStory();}
+  else{
+    const authors=getVisibleStoryAuthors();
+    const idx=authors.indexOf(state.currentStoryGroup);
+    if(idx>0){
+      const prevAuthor=authors[idx-1];
+      const prevStories=state.storyGroups[prevAuthor]||[];
+      state.currentStoryGroup=prevAuthor;
+      state.currentStoryIndex=Math.max(0,prevStories.length-1);
       showStory();
     }
   }
 }
 function closeStoryViewer(){
-  if(state.storyTimer){ clearTimeout(state.storyTimer); state.storyTimer = null; }
+  if(state.storyTimer){clearTimeout(state.storyTimer);state.storyTimer=null;}
   $('story-viewer').classList.remove('visible');
-  $('story-viewer-content').innerHTML = '';
-  $('story-progress').innerHTML = '';
-  $('story-viewer-caption').textContent = '';
-  state.currentStoryGroup = null;
-  state.currentStoryIndex = 0;
+  $('story-viewer-content').innerHTML='';
+  $('story-progress').innerHTML='';
+  $('story-viewer-caption').textContent='';
+  $('story-reactions').innerHTML='';
+  $('story-reactions').classList.add('hidden');
+  $('story-reactions-count').innerHTML='';
+  state.currentStoryGroup=null;
+  state.currentStoryIndex=0;
   renderStoriesBar();
 }
 async function deleteCurrentStory(){
-  if(!state.currentStoryGroup || state.currentStoryGroup !== state.uid) return;
-  if(!confirm(t('confirmDeleteStory'))) return;
-  const stories = state.storyGroups[state.uid];
-  const story = stories[state.currentStoryIndex];
-  if(!story) return;
-  const { db, doc, deleteDoc } = window.fb;
-  try {
-    await deleteDoc(doc(db, 'stories', story.id));
-    toast(t('okStoryDeleted'), 'success');
-    if(stories.length <= 1) closeStoryViewer();
-    else {
-      state.storyGroups[state.uid] = stories.filter(s => s.id !== story.id);
-      if(state.currentStoryIndex >= state.storyGroups[state.uid].length) state.currentStoryIndex = state.storyGroups[state.uid].length - 1;
+  if(!state.currentStoryGroup||state.currentStoryGroup!==state.uid)return;
+  if(!confirm(t('confirmDeleteStory')))return;
+  const stories=state.storyGroups[state.uid];
+  const story=stories[state.currentStoryIndex];if(!story)return;
+  const{db,doc,deleteDoc}=window.fb;
+  try{
+    await deleteDoc(doc(db,'stories',story.id));
+    toast(t('okStoryDeleted'),'success');
+    if(stories.length<=1)closeStoryViewer();
+    else{
+      state.storyGroups[state.uid]=stories.filter(s=>s.id!==story.id);
+      if(state.currentStoryIndex>=state.storyGroups[state.uid].length)state.currentStoryIndex=state.storyGroups[state.uid].length-1;
       showStory();
     }
-  } catch(e){ console.error(e); toast(t('errDeleteStory'), 'error'); }
+  }catch(e){console.error(e);toast(t('errDeleteStory'),'error');}
 }
 
-/* ============================================
-   ГРУППЫ И КАНАЛЫ
-   ============================================ */
-function listenToMyGroups(){
-  const { db, collection, onSnapshot, query, where } = window.fb;
-  if(state.unsubGroups) state.unsubGroups();
-  const q = query(collection(db, 'groups'), where('memberUids', 'array-contains', state.uid));
-  state.unsubGroups = onSnapshot(q, snap => {
-    const groups = {};
-    snap.forEach(d => { groups[d.id] = { ...d.data(), groupId: d.id }; });
-    state.groups = groups;
-    Object.values(groups).forEach(g => {
-      Object.keys(g.members || {}).forEach(uid => { if(uid !== state.uid && !state.profiles[uid]) ensureProfile(uid); });
+/* ============ РЕАКЦИИ НА ИСТОРИИ ============ */
+const STORY_REACTIONS=['❤️','🔥','😂','😮','😢','👍'];
+
+function updateStoryReactionsUI(){
+  const btnsCont=$('story-reactions');
+  const countCont=$('story-reactions-count');
+  if(!btnsCont||!countCont)return;
+  const authorUid=state.currentStoryGroup;
+  const stories=authorUid?state.storyGroups[authorUid]:null;
+  const story=(stories&&stories[state.currentStoryIndex])?stories[state.currentStoryIndex]:null;
+  if(!story){btnsCont.innerHTML='';btnsCont.classList.add('hidden');countCont.innerHTML='';return;}
+  const isMine=authorUid===state.uid;
+  const reactions=story.reactions||{};
+  const countHtml=Object.keys(reactions).map(emoji=>{
+    const users=reactions[emoji];
+    if(!users.length)return '';
+    const mine=users.includes(state.uid)?'mine':'';
+    return `<span class="rc ${mine}">${emoji} ${users.length}</span>`;
+  }).join('');
+  countCont.innerHTML=countHtml;
+  if(isMine){
+    btnsCont.innerHTML='';
+    btnsCont.classList.add('hidden');
+  }else{
+    btnsCont.classList.remove('hidden');
+    btnsCont.innerHTML=STORY_REACTIONS.map(emoji=>{
+      const users=reactions[emoji]||[];
+      const active=users.includes(state.uid)?'active':'';
+      return `<button class="story-reaction-btn ${active}" data-emoji="${emoji}">${emoji}</button>`;
+    }).join('');
+    btnsCont.querySelectorAll('.story-reaction-btn').forEach(btn=>{
+      btn.addEventListener('click',(e)=>{e.stopPropagation();toggleStoryReaction(story.id,btn.dataset.emoji);});
     });
+  }
+}
+async function toggleStoryReaction(storyId,emoji){
+  if(!window.fb)return;
+  const story=state.stories[storyId];if(!story)return;
+  if(story.authorUid===state.uid)return;
+  const{db,doc,updateDoc}=window.fb;
+  const reactions=JSON.parse(JSON.stringify(story.reactions||{}));
+  if(!reactions[emoji])reactions[emoji]=[];
+  const arr=reactions[emoji];
+  const idx=arr.indexOf(state.uid);
+  if(idx===-1)arr.push(state.uid);else arr.splice(idx,1);
+  if(!arr.length)delete reactions[emoji];
+  try{
+    await updateDoc(doc(db,'stories',storyId),{reactions});
+    story.reactions=reactions;
+    updateStoryReactionsUI();
+  }catch(e){console.error(e);toast(t('storyReactionErr'),'error');}
+}/* ============ ГРУППЫ ============ */
+function listenToMyGroups(){
+  const{db,collection,onSnapshot,query,where}=window.fb;
+  if(state.unsubGroups)state.unsubGroups();
+  const q=query(collection(db,'groups'),where('memberUids','array-contains',state.uid));
+  state.unsubGroups=onSnapshot(q,snap=>{
+    const groups={};snap.forEach(d=>{groups[d.id]={...d.data(),groupId:d.id};});
+    state.groups=groups;
+    Object.values(groups).forEach(g=>{Object.keys(g.members||{}).forEach(uid=>{if(uid!==state.uid&&!state.profiles[uid])ensureProfile(uid);});});
     listenToGroupMessages(groups);
-    if(state.currentChatType === 'group' && state.currentChat){
-      const g = state.groups[state.currentChat];
-      if(!g){ state.currentChat = null; state.currentChatType = null; $('chat-area').style.display = 'none'; $('empty-chat').style.display = 'flex'; }
-      else { updateChatHeader(state.currentChat, 'group'); updateChannelUIPermissions(); }
+    if(state.currentChatType==='group'&&state.currentChat){
+      const g=state.groups[state.currentChat];
+      if(!g){state.currentChat=null;state.currentChatType=null;$('chat-area').style.display='none';$('empty-chat').style.display='flex';}
+      else{updateChatHeader(state.currentChat,'group');updateChannelUIPermissions();}
     }
-    if(currentGroupSettingsId && !state.groups[currentGroupSettingsId]){ $('group-settings-modal').classList.remove('visible'); currentGroupSettingsId = null; }
-    else if(currentGroupSettingsId) renderGroupSettings();
+    if(currentGroupSettingsId&&!state.groups[currentGroupSettingsId]){$('group-settings-modal').classList.remove('visible');currentGroupSettingsId=null;}
+    else if(currentGroupSettingsId)renderGroupSettings();
     renderChatList();
-  }, err => console.error('groups listener:', err));
+  },err=>console.error('groups listener:',err));
 }
 function listenToGroupMessages(groups){
-  const { db, collection, onSnapshot, query, where } = window.fb;
-  Object.keys(state.groupUnsubs).forEach(gid => {
-    if(!groups[gid]){ state.groupUnsubs[gid](); delete state.groupUnsubs[gid]; delete state.groupMessages[gid]; }
+  const{db,collection,onSnapshot,query,where}=window.fb;
+  Object.keys(state.groupUnsubs).forEach(gid=>{
+    if(!groups[gid]){state.groupUnsubs[gid]();delete state.groupUnsubs[gid];delete state.groupMessages[gid];}
   });
-  Object.keys(groups).forEach(gid => {
-    if(state.groupUnsubs[gid]) return;
-    const q = query(collection(db, 'messages'), where('toGroupId', '==', gid));
-    state.groupUnsubs[gid] = onSnapshot(q, snap => {
-      const arr = [];
-      snap.forEach(d => {
-        const m = d.data();
-        arr.push({ id: d.id, fromUid: m.fromUid, toGroupId: gid, content: m.content,
-          time: m.time && m.time.toDate ? m.time.toDate().getTime() : Date.now(),
-          reactions: m.reactions || {}, replyTo: m.replyTo || null });
+  Object.keys(groups).forEach(gid=>{
+    if(state.groupUnsubs[gid])return;
+    const q=query(collection(db,'messages'),where('toGroupId','==',gid));
+    state.groupUnsubs[gid]=onSnapshot(q,snap=>{
+      const arr=[];
+      snap.forEach(d=>{const m=d.data();
+        arr.push({id:d.id,fromUid:m.fromUid,toGroupId:gid,content:m.content,time:m.time&&m.time.toDate?m.time.toDate().getTime():Date.now(),reactions:m.reactions||{},replyTo:m.replyTo||null});});
+      arr.sort((a,b)=>a.time-b.time);
+      const old=state.groupMessages[gid]||[];
+      const oldIds=new Set(old.map(m=>m.id));
+      arr.forEach(m=>{
+        if(!oldIds.has(m.id)&&m.fromUid!==state.uid&&!(state.currentChatType==='group'&&state.currentChat===gid))state.unread[gid]=(state.unread[gid]||0)+1;
       });
-      arr.sort((a,b) => a.time - b.time);
-      const old = state.groupMessages[gid] || [];
-      const oldIds = new Set(old.map(m => m.id));
-      arr.forEach(m => {
-        if(!oldIds.has(m.id) && m.fromUid !== state.uid && !(state.currentChatType === 'group' && state.currentChat === gid)) state.unread[gid] = (state.unread[gid] || 0) + 1;
-      });
-      state.groupMessages[gid] = arr;
-      renderChatList();
-      if(state.currentChatType === 'group' && state.currentChat === gid){ renderMessages(); scrollToBottom(); }
-    }, err => console.error('group messages listener:', err));
+      state.groupMessages[gid]=arr;renderChatList();
+      if(state.currentChatType==='group'&&state.currentChat===gid){renderMessages();scrollToBottom();}
+    },err=>console.error('group messages listener:',err));
   });
 }
-async function createGroup(name, memberUids, asChannel){
-  const { db, collection, doc, setDoc, serverTimestamp } = window.fb;
-  const groupId = doc(collection(db, 'groups')).id;
-  const members = { [state.uid]: { role: 'admin', tag: '' } };
-  memberUids.forEach(uid => { members[uid] = { role: 'member', tag: '' }; });
-  await setDoc(doc(db, 'groups', groupId), {
-    groupId, name, description: '', avatarData: null,
-    createdBy: state.uid, createdAt: serverTimestamp(),
-    memberUids: [state.uid, ...memberUids], members, isChannel: !!asChannel
-  });
+async function createGroup(name,memberUids,asChannel){
+  const{db,collection,doc,setDoc,serverTimestamp}=window.fb;
+  const groupId=doc(collection(db,'groups')).id;
+  const members={[state.uid]:{role:'admin',tag:''}};
+  memberUids.forEach(uid=>{members[uid]={role:'member',tag:''};});
+  await setDoc(doc(db,'groups',groupId),{groupId,name,description:'',avatarData:null,createdBy:state.uid,createdAt:serverTimestamp(),memberUids:[state.uid,...memberUids],members,isChannel:!!asChannel});
   return groupId;
 }
 function openCreateGroupModal(asChannel){
-  const isCh = !!asChannel;
-  $('cg-name').value = '';
-  $('cg-is-channel').checked = isCh;
-  $('cg-title').textContent = isCh ? t('newChannelTitle') : t('newGroupTitle');
-  $('cg-name').placeholder = isCh ? t('namePlaceholderChannel') : t('namePlaceholderGroup');
-  $('cg-members-label').textContent = isCh ? t('subscribersLabel') : t('membersLabel');
-  const cont = $('cg-contacts');
-  if(!state.users.length) cont.innerHTML = `<div class="find-empty">${t('contactsFirst')}</div>`;
-  else cont.innerHTML = state.users.map(u => `<label class="cg-contact"><input type="checkbox" value="${escapeHtml(u.uid)}"><div class="avatar">${escapeHtml(u.avatar)}</div><div class="info"><div class="name">${escapeHtml(u.displayName)}</div><div class="nick">@${escapeHtml(u.nickname)}</div></div></label>`).join('');
+  const isCh=!!asChannel;
+  $('cg-name').value='';$('cg-is-channel').checked=isCh;
+  $('cg-title').textContent=isCh?t('newChannelTitle'):t('newGroupTitle');
+  $('cg-name').placeholder=isCh?t('namePlaceholderChannel'):t('namePlaceholderGroup');
+  $('cg-members-label').textContent=isCh?t('subscribersLabel'):t('membersLabel');
+  const cont=$('cg-contacts');
+  if(!state.users.length)cont.innerHTML=`<div class="find-empty">${t('contactsFirst')}</div>`;
+  else cont.innerHTML=state.users.map(u=>{
+    const letter=(u.displayName||u.nickname||'?')[0].toUpperCase();
+    const avInner=u.avatarData?`<img src="${u.avatarData}" alt="">`:escapeHtml(letter);
+    return `<label class="cg-contact"><input type="checkbox" value="${escapeHtml(u.uid)}"><div class="avatar">${avInner}</div><div class="info"><div class="name">${escapeHtml(u.displayName)}</div><div class="nick">@${escapeHtml(u.nickname)}</div></div></label>`;
+  }).join('');
   $('create-group-modal').classList.add('visible');
 }
 async function handleCreateGroup(){
-  const name = $('cg-name').value.trim();
-  if(!name){ toast(t('errNameEmpty'), 'error'); return; }
-  const isCh = $('cg-is-channel').checked;
-  const selected = Array.from($('cg-contacts').querySelectorAll('input:checked')).map(i => i.value);
-  const btn = $('cg-create');
-  btn.disabled = true; btn.textContent = '...';
-  try {
-    const gid = await createGroup(name, selected, isCh);
+  const name=$('cg-name').value.trim();
+  if(!name){toast(t('errNameEmpty'),'error');return;}
+  const isCh=$('cg-is-channel').checked;
+  const selected=Array.from($('cg-contacts').querySelectorAll('input:checked')).map(i=>i.value);
+  const btn=$('cg-create');btn.disabled=true;btn.textContent='...';
+  try{
+    const gid=await createGroup(name,selected,isCh);
     $('create-group-modal').classList.remove('visible');
-    toast(isCh ? t('okChannelCreated') : t('okGroupCreated'), 'success');
-    setTimeout(() => openChat(gid, 'group'), 500);
-  } catch(e){ console.error(e); toast(t('errCreateGroup'), 'error'); }
-  finally { btn.disabled = false; btn.textContent = t('create'); }
+    toast(isCh?t('okChannelCreated'):t('okGroupCreated'),'success');
+    setTimeout(()=>openChat(gid,'group'),500);
+  }catch(e){console.error(e);toast(t('errCreateGroup'),'error');}
+  finally{btn.disabled=false;btn.textContent=t('create');}
 }
 
-/* ============================================
-   НАСТРОЙКИ ГРУППЫ
-   ============================================ */
+/* ============ НАСТРОЙКИ ГРУППЫ ============ */
 function openGroupSettings(gid){
-  currentGroupSettingsId = gid;
-  tempGroupAvatar = state.groups[gid]?.avatarData || null;
+  currentGroupSettingsId=gid;
+  tempGroupAvatar=state.groups[gid]?.avatarData||null;
   renderGroupSettings();
   $('group-settings-modal').classList.add('visible');
 }
 function renderGroupSettings(){
-  const gid = currentGroupSettingsId;
-  const g = state.groups[gid];
-  if(!g){ $('group-settings-modal').classList.remove('visible'); return; }
-  const isCh = !!g.isChannel;
-  const isAdmin = g.members?.[state.uid]?.role === 'admin';
-  $('gs-title').textContent = (isCh ? '📢 ' : '') + (g.name || t('newGroupTitle'));
-  $('gs-members-label').textContent = isCh ? t('subscribersLabel') : t('membersLabel');
-  $('gs-name').value = g.name || '';
-  $('gs-desc').value = g.description || '';
-  const av = $('gs-avatar');
-  const camSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
-  if(tempGroupAvatar) av.innerHTML = `<img src="${tempGroupAvatar}" alt=""><div class="edit-ov" id="gs-avatar-edit" style="${isAdmin ? '' : 'display:none'}">${camSvg}</div>`;
-  else av.innerHTML = `<span>${escapeHtml((g.name || '?')[0].toUpperCase())}</span><div class="edit-ov" id="gs-avatar-edit" style="${isAdmin ? '' : 'display:none'}">${camSvg}</div>`;
-  $('gs-name').disabled = !isAdmin;
-  $('gs-desc').disabled = !isAdmin;
-  $('gs-save').style.display = isAdmin ? '' : 'none';
-  av.style.cursor = isAdmin ? 'pointer' : 'default';
-  $('gs-add-members').style.display = isAdmin ? '' : 'none';
-  $('gs-add-members').querySelector('span').textContent = isCh ? t('addSubscriber') : t('addMember');
-  const memberUids = g.memberUids || [];
-  $('gs-members').innerHTML = memberUids.map(uid => {
-    const m = g.members?.[uid] || { role: 'member', tag: '' };
-    const p = state.profiles[uid] || { displayName: '?', nickname: '?', avatar: '?' };
-    const isSelf = uid === state.uid;
-    const isAdminRole = m.role === 'admin';
-    const showActions = isAdmin && !isSelf;
-    const actions = showActions ? `<div class="member-actions"><button data-action="toggle-role" data-uid="${escapeHtml(uid)}" title="${isAdminRole ? 'Снять админа' : 'Сделать админом'}">${isAdminRole ? '👤' : '👑'}</button><button data-action="edit-tag" data-uid="${escapeHtml(uid)}" title="Тег">🏷️</button><button data-action="remove" data-uid="${escapeHtml(uid)}" title="Удалить">✕</button></div>` : '';
-    return `<div class="member-row" data-uid="${escapeHtml(uid)}"><div class="avatar">${escapeHtml(p.avatar)}</div><div class="info"><div class="name">${escapeHtml(p.displayName)}${isSelf ? (currentLang==='ru'?' (вы)':' (you)') : ''}${isAdminRole ? `<span class="role-badge">${currentLang==='ru'?'админ':'admin'}</span>` : ''}</div><div class="tag">@${escapeHtml(p.nickname)}${m.tag ? ` · <em>${escapeHtml(m.tag)}</em>` : ''}</div></div>${actions}</div>`;
+  const gid=currentGroupSettingsId,g=state.groups[gid];
+  if(!g){$('group-settings-modal').classList.remove('visible');return;}
+  const isCh=!!g.isChannel,isAdmin=g.members?.[state.uid]?.role==='admin';
+  $('gs-title').textContent=(isCh?'📢 ':'')+(g.name||t('newGroupTitle'));
+  $('gs-members-label').textContent=isCh?t('subscribersLabel'):t('membersLabel');
+  $('gs-name').value=g.name||'';$('gs-desc').value=g.description||'';
+  const av=$('gs-avatar');
+  const camSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+  if(tempGroupAvatar)av.innerHTML=`<img src="${tempGroupAvatar}" alt=""><div class="edit-ov" id="gs-avatar-edit" style="${isAdmin?'':'display:none'}">${camSvg}</div>`;
+  else av.innerHTML=`<span>${escapeHtml((g.name||'?')[0].toUpperCase())}</span><div class="edit-ov" id="gs-avatar-edit" style="${isAdmin?'':'display:none'}">${camSvg}</div>`;
+  $('gs-name').disabled=!isAdmin;$('gs-desc').disabled=!isAdmin;
+  $('gs-save').style.display=isAdmin?'':'none';
+  av.style.cursor=isAdmin?'pointer':'default';
+  $('gs-add-members').style.display=isAdmin?'':'none';
+  $('gs-add-members').querySelector('span').textContent=isCh?t('addSubscriber'):t('addMember');
+  const memberUids=g.memberUids||[];
+  $('gs-members').innerHTML=memberUids.map(uid=>{
+    const m=g.members?.[uid]||{role:'member',tag:''};
+    const p=state.profiles[uid]||{displayName:'?',nickname:'?',avatar:'?',avatarData:null};
+    const isSelf=uid===state.uid,isAdminRole=m.role==='admin';
+    const showActions=isAdmin&&!isSelf;
+    const actions=showActions?`<div class="member-actions"><button data-action="toggle-role" data-uid="${escapeHtml(uid)}">${isAdminRole?'👤':'👑'}</button><button data-action="edit-tag" data-uid="${escapeHtml(uid)}">🏷️</button><button data-action="remove" data-uid="${escapeHtml(uid)}">✕</button></div>`:'';
+    const avInner=p.avatarData?`<img src="${p.avatarData}" alt="">`:escapeHtml(p.avatar);
+    return `<div class="member-row" data-uid="${escapeHtml(uid)}"><div class="avatar">${avInner}</div><div class="info"><div class="name">${escapeHtml(p.displayName)}${isSelf?' (вы)':''}${isAdminRole?`<span class="role-badge">${currentLang==='ru'?'админ':'admin'}</span>`:''}</div><div class="tag">@${escapeHtml(p.nickname)}${m.tag?` · <em>${escapeHtml(m.tag)}</em>`:''}</div></div>${actions}</div>`;
   }).join('');
-  $('gs-members').querySelectorAll('[data-action]').forEach(btn => {
-    btn.addEventListener('click', (e) => { e.stopPropagation(); handleMemberAction(btn.dataset.action, btn.dataset.uid); });
+  $('gs-members').querySelectorAll('[data-action]').forEach(btn=>{
+    btn.addEventListener('click',e=>{e.stopPropagation();handleMemberAction(btn.dataset.action,btn.dataset.uid);});
   });
 }
-async function handleMemberAction(action, uid){
-  const gid = currentGroupSettingsId;
-  if(!gid) return;
-  const g = state.groups[gid];
-  if(!g) return;
-  if(action === 'remove'){
-    const msg = g.isChannel ? t('confirmRemoveFromChannel') : t('confirmRemoveMember');
-    if(!confirm(msg)) return;
-    const newMembers = { ...g.members }; delete newMembers[uid];
-    const newMemberUids = (g.memberUids || []).filter(u => u !== uid);
-    const { db, doc, updateDoc } = window.fb;
-    try { await updateDoc(doc(db, 'groups', gid), { members: newMembers, memberUids: newMemberUids }); toast(t('memberRemoved'), 'success'); }
-    catch(e){ console.error(e); toast(t('errSaveGroup'), 'error'); }
-  } else if(action === 'toggle-role'){
-    const currentRole = g.members?.[uid]?.role || 'member';
-    const newRole = currentRole === 'admin' ? 'member' : 'admin';
-    const { db, doc, updateDoc } = window.fb;
-    try { await updateDoc(doc(db, 'groups', gid), { [`members.${uid}.role`]: newRole }); toast(newRole === 'admin' ? t('roleAdminAssigned') : t('roleRemoved'), 'success'); }
-    catch(e){ console.error(e); toast(t('errSaveGroup'), 'error'); }
-  } else if(action === 'edit-tag'){
-    const current = g.members?.[uid]?.tag || '';
-    const p = state.profiles[uid];
-    const tag = prompt(tpl('tagPrompt', { name: p ? p.displayName : '—' }), current);
-    if(tag === null) return;
-    const { db, doc, updateDoc } = window.fb;
-    try { await updateDoc(doc(db, 'groups', gid), { [`members.${uid}.tag`]: tag.trim() }); toast(t('tagUpdated'), 'success'); }
-    catch(e){ console.error(e); toast(t('errSaveGroup'), 'error'); }
+async function handleMemberAction(action,uid){
+  const gid=currentGroupSettingsId;if(!gid)return;
+  const g=state.groups[gid];if(!g)return;
+  if(action==='remove'){
+    if(!confirm(g.isChannel?t('confirmRemoveFromChannel'):t('confirmRemoveMember')))return;
+    const newMembers={...g.members};delete newMembers[uid];
+    const newMemberUids=(g.memberUids||[]).filter(u=>u!==uid);
+    const{db,doc,updateDoc}=window.fb;
+    try{await updateDoc(doc(db,'groups',gid),{members:newMembers,memberUids:newMemberUids});toast(t('memberRemoved'),'success');}
+    catch(e){console.error(e);toast(t('errSaveGroup'),'error');}
+  }else if(action==='toggle-role'){
+    const cur=g.members?.[uid]?.role||'member';
+    const newRole=cur==='admin'?'member':'admin';
+    const{db,doc,updateDoc}=window.fb;
+    try{await updateDoc(doc(db,'groups',gid),{[`members.${uid}.role`]:newRole});toast(newRole==='admin'?t('roleAdminAssigned'):t('roleRemoved'),'success');}
+    catch(e){console.error(e);toast(t('errSaveGroup'),'error');}
+  }else if(action==='edit-tag'){
+    const cur=g.members?.[uid]?.tag||'';
+    const p=state.profiles[uid];
+    const tag=prompt(tpl('tagPrompt',{name:p?p.displayName:'—'}),cur);
+    if(tag===null)return;
+    const{db,doc,updateDoc}=window.fb;
+    try{await updateDoc(doc(db,'groups',gid),{[`members.${uid}.tag`]:tag.trim()});toast(t('tagUpdated'),'success');}
+    catch(e){console.error(e);toast(t('errSaveGroup'),'error');}
   }
 }
 async function saveGroupSettings(){
-  const gid = currentGroupSettingsId;
-  if(!gid) return;
-  const g = state.groups[gid];
-  if(!g) return;
-  if(g.members?.[state.uid]?.role !== 'admin'){ toast(t('onlyAdminCanEdit'), 'error'); return; }
-  const name = $('gs-name').value.trim();
-  if(!name){ toast(t('errNameEmpty'), 'error'); return; }
-  const updates = { name, description: $('gs-desc').value.trim() };
-  if(tempGroupAvatar !== g.avatarData) updates.avatarData = tempGroupAvatar;
-  const { db, doc, updateDoc } = window.fb;
-  try { await updateDoc(doc(db, 'groups', gid), updates); toast(t('okSaved'), 'success'); $('group-settings-modal').classList.remove('visible'); }
-  catch(e){ console.error(e); toast(t('errSaveGroup'), 'error'); }
+  const gid=currentGroupSettingsId;if(!gid)return;
+  const g=state.groups[gid];if(!g)return;
+  if(g.members?.[state.uid]?.role!=='admin'){toast(t('onlyAdminCanEdit'),'error');return;}
+  const name=$('gs-name').value.trim();
+  if(!name){toast(t('errNameEmpty'),'error');return;}
+  const updates={name,description:$('gs-desc').value.trim()};
+  if(tempGroupAvatar!==g.avatarData)updates.avatarData=tempGroupAvatar;
+  const{db,doc,updateDoc}=window.fb;
+  try{await updateDoc(doc(db,'groups',gid),updates);toast(t('okSaved'),'success');$('group-settings-modal').classList.remove('visible');}
+  catch(e){console.error(e);toast(t('errSaveGroup'),'error');}
 }
 
-/* ============================================
-   ДОБАВЛЕНИЕ УЧАСТНИКОВ
-   ============================================ */
 function openAddMembersModal(){
-  const gid = currentGroupSettingsId;
-  const g = state.groups[gid];
-  if(!g) return;
-  if(g.members?.[state.uid]?.role !== 'admin'){ toast(t('onlyAdminCanAdd'), 'error'); return; }
-  const isCh = !!g.isChannel;
-  $('am-title').textContent = isCh ? t('addSubscribersTitle') : t('addMembersTitle');
-  $('am-label').textContent = isCh ? t('contactsNotSubscribed') : t('contactsNotInGroup');
-  const memberSet = new Set(g.memberUids || []);
-  const candidates = state.users.filter(u => !memberSet.has(u.uid));
-  const cont = $('am-contacts');
-  if(!candidates.length) cont.innerHTML = `<div class="find-empty">${t('contactsAlreadyAdded')}</div>`;
-  else cont.innerHTML = candidates.map(u => `<label class="cg-contact"><input type="checkbox" value="${escapeHtml(u.uid)}"><div class="avatar">${escapeHtml(u.avatar)}</div><div class="info"><div class="name">${escapeHtml(u.displayName)}</div><div class="nick">@${escapeHtml(u.nickname)}</div></div></label>`).join('');
+  const gid=currentGroupSettingsId,g=state.groups[gid];
+  if(!g)return;
+  if(g.members?.[state.uid]?.role!=='admin'){toast(t('onlyAdminCanAdd'),'error');return;}
+  const isCh=!!g.isChannel;
+  $('am-title').textContent=isCh?t('addSubscribersTitle'):t('addMembersTitle');
+  $('am-label').textContent=isCh?t('contactsNotSubscribed'):t('contactsNotInGroup');
+  const memberSet=new Set(g.memberUids||[]);
+  const candidates=state.users.filter(u=>!memberSet.has(u.uid));
+  const cont=$('am-contacts');
+  if(!candidates.length)cont.innerHTML=`<div class="find-empty">${t('contactsAlreadyAdded')}</div>`;
+  else cont.innerHTML=candidates.map(u=>{
+    const letter=(u.displayName||u.nickname||'?')[0].toUpperCase();
+    const avInner=u.avatarData?`<img src="${u.avatarData}" alt="">`:escapeHtml(letter);
+    return `<label class="cg-contact"><input type="checkbox" value="${escapeHtml(u.uid)}"><div class="avatar">${avInner}</div><div class="info"><div class="name">${escapeHtml(u.displayName)}</div><div class="nick">@${escapeHtml(u.nickname)}</div></div></label>`;
+  }).join('');
   $('add-members-modal').classList.add('visible');
 }
 async function handleAddMembers(){
-  const gid = currentGroupSettingsId;
-  const g = state.groups[gid];
-  if(!g) return;
-  const selected = Array.from($('am-contacts').querySelectorAll('input:checked')).map(i => i.value);
-  if(!selected.length){ toast(t('selectAtLeastOne'), 'error'); return; }
-  const btn = $('am-add');
-  btn.disabled = true; btn.textContent = '...';
-  const newMembers = { ...(g.members || {}) };
-  selected.forEach(uid => { if(!newMembers[uid]) newMembers[uid] = { role: 'member', tag: '' }; });
-  const newMemberUids = Array.from(new Set([...(g.memberUids || []), ...selected]));
-  const { db, doc, updateDoc } = window.fb;
-  try {
-    await updateDoc(doc(db, 'groups', gid), { members: newMembers, memberUids: newMemberUids });
-    toast(tpl('addedCount', { n: selected.length }), 'success');
+  const gid=currentGroupSettingsId,g=state.groups[gid];
+  if(!g)return;
+  const selected=Array.from($('am-contacts').querySelectorAll('input:checked')).map(i=>i.value);
+  if(!selected.length){toast(t('selectAtLeastOne'),'error');return;}
+  const btn=$('am-add');btn.disabled=true;btn.textContent='...';
+  const newMembers={...g.members||{}};
+  selected.forEach(uid=>{if(!newMembers[uid])newMembers[uid]={role:'member',tag:''};});
+  const newMemberUids=Array.from(new Set([...(g.memberUids||[]),...selected]));
+  const{db,doc,updateDoc}=window.fb;
+  try{
+    await updateDoc(doc(db,'groups',gid),{members:newMembers,memberUids:newMemberUids});
+    toast(tpl('addedCount',{n:selected.length}),'success');
     $('add-members-modal').classList.remove('visible');
-  } catch(e){ console.error(e); toast(t('errAddMembers'), 'error'); }
-  finally { btn.disabled = false; btn.textContent = t('add'); }
+  }catch(e){console.error(e);toast(t('errAddMembers'),'error');}
+  finally{btn.disabled=false;btn.textContent=t('add');}
 }
 
-/* ============================================
-   СООБЩЕНИЯ (личные)
-   ============================================ */
+/* ============ ЛИЧНЫЕ СООБЩЕНИЯ ============ */
 function listenToDirectMessages(){
-  const { db, collection, onSnapshot, query, where } = window.fb;
-  if(state.unsubMessages) state.unsubMessages();
-  const groups = { from: [], to: [] };
-  const parse = (d) => {
-    const m = d.data();
-    return { id: d.id, fromUid: m.fromUid, toUid: m.toUid, content: m.content,
-      time: m.time && m.time.toDate ? m.time.toDate().getTime() : Date.now(),
-      reactions: m.reactions || {}, replyTo: m.replyTo || null };
-  };
-  const rebuild = () => {
-    const all = [...groups.from, ...groups.to];
-    const seen = new Set();
-    const unique = all.filter(m => { if(seen.has(m.id)) return false; seen.add(m.id); return true; });
-    unique.sort((a,b) => a.time - b.time);
-    const grouped = {};
-    unique.forEach(m => {
-      const other = m.fromUid === state.uid ? m.toUid : m.fromUid;
-      if(!other) return;
-      if(!grouped[other]) grouped[other] = [];
-      grouped[other].push(m);
-    });
+  const{db,collection,onSnapshot,query,where}=window.fb;
+  if(state.unsubMessages)state.unsubMessages();
+  const groups={from:[],to:[]};
+  const parse=d=>{const m=d.data();return{id:d.id,fromUid:m.fromUid,toUid:m.toUid,content:m.content,time:m.time&&m.time.toDate?m.time.toDate().getTime():Date.now(),reactions:m.reactions||{},replyTo:m.replyTo||null};};
+  const rebuild=()=>{
+    const all=[...groups.from,...groups.to];
+    const seen=new Set();
+    const unique=all.filter(m=>{if(seen.has(m.id))return false;seen.add(m.id);return true;});
+    unique.sort((a,b)=>a.time-b.time);
+    const grouped={};
+    unique.forEach(m=>{const other=m.fromUid===state.uid?m.toUid:m.fromUid;if(!other)return;if(!grouped[other])grouped[other]=[];grouped[other].push(m);});
     if(state.messagesLoaded){
-      Object.keys(grouped).forEach(other => {
-        const oldIds = new Set((state.messages[other] || []).map(m => m.id));
-        grouped[other].forEach(m => {
-          if(!oldIds.has(m.id) && m.fromUid !== state.uid && !(state.currentChatType === 'user' && state.currentChat === other)) state.unread[other] = (state.unread[other] || 0) + 1;
+      Object.keys(grouped).forEach(other=>{
+        const oldIds=new Set((state.messages[other]||[]).map(m=>m.id));
+        grouped[other].forEach(m=>{
+          if(!oldIds.has(m.id)&&m.fromUid!==state.uid&&!(state.currentChatType==='user'&&state.currentChat===other))state.unread[other]=(state.unread[other]||0)+1;
         });
       });
     }
-    state.messagesLoaded = true;
-    state.messages = grouped;
-    rebuildUsersList();
-    if(state.currentChatType === 'user' && state.currentChat){ renderMessages(); scrollToBottom(); }
+    state.messagesLoaded=true;state.messages=grouped;rebuildUsersList();
+    if(state.currentChatType==='user'&&state.currentChat){renderMessages();scrollToBottom();}
   };
-  const qFrom = query(collection(db, 'messages'), where('fromUid', '==', state.uid));
-  const qTo = query(collection(db, 'messages'), where('toUid', '==', state.uid));
-  const u1 = onSnapshot(qFrom, s => { groups.from = []; s.forEach(d => groups.from.push(parse(d))); rebuild(); });
-  const u2 = onSnapshot(qTo, s => { groups.to = []; s.forEach(d => groups.to.push(parse(d))); rebuild(); });
-  state.unsubMessages = () => { u1(); u2(); };
+  const qFrom=query(collection(db,'messages'),where('fromUid','==',state.uid));
+  const qTo=query(collection(db,'messages'),where('toUid','==',state.uid));
+  const u1=onSnapshot(qFrom,s=>{groups.from=[];s.forEach(d=>groups.from.push(parse(d)));rebuild();});
+  const u2=onSnapshot(qTo,s=>{groups.to=[];s.forEach(d=>groups.to.push(parse(d)));rebuild();});
+  state.unsubMessages=()=>{u1();u2();};
 }
 
-/* ============================================
-   ЗАПУСК
-   ============================================ */
+/* ============ ЗАПУСК ============ */
 function initAuthListener(){
-  if(!window.fb){ setTimeout(initAuthListener, 100); return; }
-  const { auth, onAuthStateChanged, db, doc, getDoc, signOut } = window.fb;
-  onAuthStateChanged(auth, async (user) => {
+  if(!window.fb){setTimeout(initAuthListener,100);return;}
+  const{auth,onAuthStateChanged,db,doc,getDoc,signOut}=window.fb;
+  onAuthStateChanged(auth,async(user)=>{
     if(!user){
-      Object.keys(state.contactListeners).forEach(uid => { try{ state.contactListeners[uid](); }catch(e){} });
-      Object.keys(state.groupUnsubs).forEach(gid => { try{ state.groupUnsubs[gid](); }catch(e){} });
-      if(state.unsubMe) state.unsubMe();
-      if(state.unsubMessages) state.unsubMessages();
-      if(state.unsubGroups) state.unsubGroups();
-      if(state.unsubStories) state.unsubStories();
-      if(state.storyTimer){ clearTimeout(state.storyTimer); state.storyTimer = null; }
-      state.uid = null; state.nickname = null; state.currentChat = null; state.currentChatType = null;
-      state.messages = {}; state.groupMessages = {}; state.groups = {};
-      state.stories = {}; state.storyGroups = {}; state.seenStoryIds = new Set();
-      state.users = []; state.unread = {}; state.messagesLoaded = false;
-      state.contactUids = []; state.profiles = {}; state.contactListeners = {};
-      state.groupUnsubs = {}; state.unsubMe = null; state.unsubMessages = null;
-      state.unsubGroups = null; state.unsubStories = null;
-      $('app').classList.remove('active', 'chat-open');
-      $('story-viewer').classList.remove('visible');
-      $('login').style.display = 'flex';
-      $('username').value = ''; $('password').value = ''; $('password-confirm').value = '';
-      $('stories-bar').innerHTML = '';
+      Object.keys(state.contactListeners).forEach(uid=>{try{state.contactListeners[uid]();}catch(e){}});
+      Object.keys(state.groupUnsubs).forEach(gid=>{try{state.groupUnsubs[gid]();}catch(e){}});
+      if(state.unsubMe)state.unsubMe();if(state.unsubMessages)state.unsubMessages();
+      if(state.unsubGroups)state.unsubGroups();if(state.unsubStories)state.unsubStories();
+      if(state.storyTimer){clearTimeout(state.storyTimer);state.storyTimer=null;}
+      state.uid=null;state.nickname=null;state.currentChat=null;state.currentChatType=null;
+      state.messages={};state.groupMessages={};state.groups={};state.stories={};state.storyGroups={};state.seenStoryIds=new Set();
+      state.users=[];state.unread={};state.messagesLoaded=false;state.contactUids=[];state.profiles={};
+      state.contactListeners={};state.groupUnsubs={};state.unsubMe=null;state.unsubMessages=null;state.unsubGroups=null;state.unsubStories=null;
+      $('app').classList.remove('active','chat-open');$('story-viewer').classList.remove('visible');
+      $('login').style.display='flex';$('username').value='';$('password').value='';$('password-confirm').value='';$('stories-bar').innerHTML='';
       return;
     }
-    state.uid = user.uid;
-    let profile = null;
-    for(let i = 0; i < 5; i++){
-      const snap = await getDoc(doc(db, 'users', user.uid));
-      if(snap.exists()){ profile = snap.data(); break; }
-      await new Promise(r => setTimeout(r, 200));
-    }
-    if(!profile && state.pendingNickname) profile = { nickname: state.pendingNickname, displayName: state.pendingNickname };
-    state.pendingNickname = null;
-    if(!profile){ toast(t('errProfileLoad'), 'error'); await signOut(auth); return; }
-    if(profile.banned === true && profile.nickname !== 'llamx'){
-      toast(t('errBanned'), 'error');
-      await signOut(auth);
-      return;
-    }
-    state.nickname = profile.nickname;
-    state.profile.displayName = profile.displayName || profile.nickname;
-    loadProfile();
-    loadSeenStories();
-    if(!state.profile.displayName) state.profile.displayName = profile.displayName || profile.nickname;
-    const updates = {};
-    if(!profile.nicknameLower && profile.nickname) updates.nicknameLower = profile.nickname.toLowerCase();
-    if(!Array.isArray(profile.contacts)) updates.contacts = [];
-    if(Object.keys(updates).length){
-      try { const { doc: d, updateDoc } = window.fb; await updateDoc(d(db, 'users', user.uid), updates); }
-      catch(e){ console.error('auto-migrate:', e); }
-    }
-    state.profiles[state.uid] = { uid: state.uid, nickname: state.nickname, displayName: state.profile.displayName, avatar: (state.profile.displayName || state.nickname || '?')[0].toUpperCase() };
-    $('login').style.display = 'none';
-    $('app').classList.add('active');
-    renderMeBar();
-    listenToMyContacts();
-    listenToDirectMessages();
-    listenToMyGroups();
-    listenToStories();
-    renderChatList();
+    state.uid=user.uid;
+    let profile=null;
+    for(let i=0;i<5;i++){const snap=await getDoc(doc(db,'users',user.uid));if(snap.exists()){profile=snap.data();break;}await new Promise(r=>setTimeout(r,200));}
+    if(!profile&&state.pendingNickname)profile={nickname:state.pendingNickname,displayName:state.pendingNickname};
+    state.pendingNickname=null;
+    if(!profile){toast(t('errProfileLoad'),'error');await signOut(auth);return;}
+    if(profile.banned===true&&profile.nickname!=='llamx'){toast(t('errBanned'),'error');await signOut(auth);return;}
+    state.nickname=profile.nickname;loadProfile();loadSeenStories();
+    state.profile.displayName=profile.displayName||profile.nickname;
+    state.profile.bio=profile.bio||'';state.profile.avatarData=profile.avatarData||null;
+    state.profile.channelId=profile.channelId||null;state.profile.channelName=profile.channelName||null;
+    if(profile.musicName&&profile.musicData){state.profile.music={name:profile.musicName,dataUrl:profile.musicData};}else{state.profile.music=null;}
+    saveProfile();
+    const updates={};
+    if(!profile.nicknameLower&&profile.nickname)updates.nicknameLower=profile.nickname.toLowerCase();
+    if(!Array.isArray(profile.contacts))updates.contacts=[];
+    if(Object.keys(updates).length){try{const{doc:d,updateDoc}=window.fb;await updateDoc(d(db,'users',user.uid),updates);}catch(e){console.error('auto-migrate:',e);}}
+    state.profiles[state.uid]={uid:state.uid,nickname:state.nickname,displayName:state.profile.displayName,avatar:(state.profile.displayName||state.nickname||'?')[0].toUpperCase(),avatarData:state.profile.avatarData||null};
+    $('login').style.display='none';$('app').classList.add('active');renderMeBar();
+    listenToMyContacts();listenToDirectMessages();listenToMyGroups();listenToStories();renderChatList();
   });
 }
 
-/* ============================================
-   ПРОФИЛЬ
-   ============================================ */
+/* ============ ПРОФИЛЬ ============ */
 function renderMeBar(){
-  const av = $('me-avatar');
-  if(state.profile.avatarData) av.innerHTML = `<img src="${state.profile.avatarData}" alt="">`;
-  else av.textContent = (state.profile.displayName || state.nickname || '?')[0].toUpperCase();
-  let nameHtml = escapeHtml(state.profile.displayName || state.nickname || '');
-  if(state.profile.music) nameHtml += ' <span class="music-badge" title="🎵">🎵</span>';
-  $('me-name').innerHTML = nameHtml;
+  const av=$('me-avatar');
+  if(state.profile.avatarData)av.innerHTML=`<img src="${state.profile.avatarData}" alt="">`;
+  else av.textContent=(state.profile.displayName||state.nickname||'?')[0].toUpperCase();
+  let h=escapeHtml(state.profile.displayName||state.nickname||'');
+  if(state.profile.music)h+=' <span class="music-badge">🎵</span>';
+  $('me-name').innerHTML=h;
 }
 function openProfileModal(){
-  tempAvatar = state.profile.avatarData;
-  tempMusic = state.profile.music || null;
-  $('prof-name').value = state.profile.displayName;
-  $('prof-bio').value = state.profile.bio || '';
-  $('prof-nickname').textContent = state.nickname || '—';
-  updateProfAvatar();
-  updateMusicUI();
-  renderChannelSelector();
+  tempAvatar=state.profile.avatarData;tempMusic=state.profile.music||null;
+  $('prof-name').value=state.profile.displayName;$('prof-bio').value=state.profile.bio||'';
+  $('prof-nickname').textContent=state.nickname||'—';
+  updateProfAvatar();updateMusicUI();renderChannelSelector();
   $('profile-modal').classList.add('visible');
 }
 function updateProfAvatar(){
-  const av = $('prof-avatar');
-  const initial = (state.profile.displayName || state.nickname || '?')[0].toUpperCase();
-  const camSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
-  if(tempAvatar) av.innerHTML = `<img src="${tempAvatar}" alt=""><div class="edit-ov">${camSvg}</div>`;
-  else av.innerHTML = `<span>${initial}</span><div class="edit-ov">${camSvg}</div>`;
+  const av=$('prof-avatar');
+  const initial=(state.profile.displayName||state.nickname||'?')[0].toUpperCase();
+  const camSvg=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`;
+  if(tempAvatar)av.innerHTML=`<img src="${tempAvatar}" alt=""><div class="edit-ov">${camSvg}</div>`;
+  else av.innerHTML=`<span>${initial}</span><div class="edit-ov">${camSvg}</div>`;
 }
 function updateMusicUI(){
-  const isEmpty = !tempMusic;
-  $('music-empty').style.display = isEmpty ? '' : 'none';
-  $('music-player').style.display = isEmpty ? 'none' : 'flex';
-  $('music-upload-btn').style.display = isEmpty ? '' : 'none';
-  if(!isEmpty){
-    $('music-name').textContent = tempMusic.name || t('musicFileLabel');
-    $('music-audio').src = tempMusic.dataUrl;
-  } else {
-    $('music-audio').pause();
-    $('music-audio').src = '';
-  }
+  const isEmpty=!tempMusic;
+  $('music-empty').style.display=isEmpty?'':'none';
+  $('music-player').style.display=isEmpty?'none':'flex';
+  $('music-upload-btn').style.display=isEmpty?'':'none';
+  if(!isEmpty){$('music-name').textContent=tempMusic.name||t('musicFileLabel');$('music-audio').src=tempMusic.dataUrl;}
+  else{$('music-audio').pause();$('music-audio').src='';}
 }
 function renderChannelSelector(){
-  const sel = $('prof-channel-select');
-  if(!sel) return;
-  const myChannels = Object.values(state.groups)
-    .filter(g => g.isChannel && g.members?.[state.uid]?.role === 'admin')
-    .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-  const currentId = state.profile.channelId || '';
-  let html = `<option value="">${t('noChannel')}</option>`;
-  let found = false;
-  myChannels.forEach(g => {
-    const selAttr = g.groupId === currentId ? 'selected' : '';
-    if(g.groupId === currentId) found = true;
-    html += `<option value="${escapeHtml(g.groupId)}" ${selAttr}>${escapeHtml(g.name || '📢')}</option>`;
-  });
-  sel.innerHTML = html;
-  if(currentId && !found){
-    state.profile.channelId = null;
-    state.profile.channelName = null;
-    sel.value = '';
-  }
+  const sel=$('prof-channel-select');if(!sel)return;
+  const myChannels=Object.values(state.groups).filter(g=>g.isChannel&&g.members?.[state.uid]?.role==='admin').sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  const currentId=state.profile.channelId||'';
+  let html=`<option value="">${t('noChannel')}</option>`;
+  let found=false;
+  myChannels.forEach(g=>{const s=g.groupId===currentId?'selected':'';if(g.groupId===currentId)found=true;html+=`<option value="${escapeHtml(g.groupId)}" ${s}>${escapeHtml(g.name||'📢')}</option>`;});
+  sel.innerHTML=html;
+  if(currentId&&!found){state.profile.channelId=null;state.profile.channelName=null;sel.value='';}
 }
 
-/* ============================================
-   ПРОСМОТР ПРОФИЛЯ ДРУГОГО
-   ============================================ */
 async function openUserProfile(uid){
-  if(!uid || uid === state.uid) return;
-  const modal = $('user-profile-modal');
-  if(!modal) return;
-  $('up-avatar').innerHTML = '<span>?</span>';
-  $('up-name').textContent = '...';
-  $('up-nickname').textContent = '—';
-  $('up-bio').style.display = 'none';
-  $('up-bio').textContent = '';
-  $('up-channel').style.display = 'none';
-  $('up-music').style.display = 'none';
-  const audio = $('up-music-audio');
-  audio.pause();
-  audio.src = '';
-  $('up-message').style.display = 'none';
-  modal.classList.add('visible');
-  try {
-    const { db, doc, getDoc } = window.fb;
-    const snap = await getDoc(doc(db, 'users', uid));
-    if(!snap.exists()){ toast(t('userNotFound'), 'error'); modal.classList.remove('visible'); return; }
-    const d = snap.data();
-    const displayName = d.displayName || d.nickname || '?';
-    if(d.avatarData) $('up-avatar').innerHTML = `<img src="${d.avatarData}" alt="">`;
-    else $('up-avatar').textContent = displayName[0].toUpperCase();
-    $('up-name').textContent = displayName;
-    $('up-nickname').textContent = d.nickname || '?';
-    if(d.bio){ $('up-bio').textContent = d.bio; $('up-bio').style.display = ''; }
-    if(d.musicData && d.musicName){
-      $('up-music-name').textContent = d.musicName;
-      audio.src = d.musicData;
-      $('up-music').style.display = '';
-    }
-    if(d.channelId && d.channelName){
-      $('up-channel-name').textContent = d.channelName;
-      $('up-channel').style.display = '';
-      $('up-channel-btn').onclick = () => {
-        audio.pause();
-        modal.classList.remove('visible');
-        if(state.groups[d.channelId]){
-          openChat(d.channelId, 'group');
-        } else {
-          toast(t('errNotSubscribed'), 'error');
-        }
-      };
-    } else {
-      $('up-channel').style.display = 'none';
-    }
-    $('up-message').style.display = '';
-    $('up-message').onclick = () => {
-      audio.pause();
-      modal.classList.remove('visible');
-      openChat(uid, 'user');
-    };
-  } catch(e){
-    console.error(e);
-    toast(t('errProfileLoad'), 'error');
-    modal.classList.remove('visible');
-  }
+  if(!uid||uid===state.uid)return;
+  const modal=$('user-profile-modal');if(!modal)return;
+  $('up-avatar').innerHTML='<span>?</span>';$('up-name').textContent='...';$('up-nickname').textContent='—';
+  $('up-bio').style.display='none';$('up-bio').textContent='';$('up-channel').style.display='none';$('up-music').style.display='none';
+  const audio=$('up-music-audio');audio.pause();audio.src='';
+  $('up-message').style.display='none';modal.classList.add('visible');
+  try{
+    const{db,doc,getDoc}=window.fb;
+    const snap=await getDoc(doc(db,'users',uid));
+    if(!snap.exists()){toast(t('userNotFound'),'error');modal.classList.remove('visible');return;}
+    const d=snap.data();const dn=d.displayName||d.nickname||'?';
+    if(d.avatarData)$('up-avatar').innerHTML=`<img src="${d.avatarData}" alt="">`;
+    else $('up-avatar').textContent=dn[0].toUpperCase();
+    $('up-name').textContent=dn;$('up-nickname').textContent=d.nickname||'?';
+    if(d.bio){$('up-bio').textContent=d.bio;$('up-bio').style.display='';}
+    if(d.musicData&&d.musicName){$('up-music-name').textContent=d.musicName;audio.src=d.musicData;$('up-music').style.display='';}
+    if(d.channelId&&d.channelName){
+      $('up-channel-name').textContent=d.channelName;$('up-channel').style.display='';
+      $('up-channel-btn').onclick=()=>{audio.pause();modal.classList.remove('visible');
+        if(state.groups[d.channelId])openChat(d.channelId,'group');else toast(t('errNotSubscribed'),'error');};
+    }else{$('up-channel').style.display='none';}
+    $('up-message').style.display='';
+    $('up-message').onclick=()=>{audio.pause();modal.classList.remove('visible');openChat(uid,'user');};
+  }catch(e){console.error(e);toast(t('errProfileLoad'),'error');modal.classList.remove('visible');}
 }
 
-/* ============================================
-   ОТПРАВКА
-   ============================================ */
+/* ============ ОТПРАВКА ============ */
 async function sendMessage(){
-  const input = $('msg-input');
-  const text = input.value.trim();
-  if(!text || !state.currentChat) return;
-  if(!canPostInCurrentChat()){ toast(t('channelOnlyAdmins'), 'error'); return; }
-  const { db, collection, addDoc, serverTimestamp } = window.fb;
-  const data = { fromUid: state.uid, content: { type: 'text', text }, time: serverTimestamp(), reactions: {}, replyTo: state.replyTo || null };
-  if(state.currentChatType === 'group') data.toGroupId = state.currentChat;
-  else data.toUid = state.currentChat;
-  try {
-    await addDoc(collection(db, 'messages'), data);
-    input.value = ''; input.style.height = 'auto'; clearReply();
-    updateSendBtnState();
-  } catch(e){ console.error(e); toast(t('errSendFailed'), 'error'); }
+  const input=$('msg-input'),text=input.value.trim();
+  if(!text||!state.currentChat)return;
+  if(!canPostInCurrentChat()){toast(t('channelOnlyAdmins'),'error');return;}
+  const{db,collection,addDoc,serverTimestamp}=window.fb;
+  const data={fromUid:state.uid,content:{type:'text',text},time:serverTimestamp(),reactions:{},replyTo:state.replyTo||null};
+  if(state.currentChatType==='group')data.toGroupId=state.currentChat;else data.toUid=state.currentChat;
+  try{await addDoc(collection(db,'messages'),data);input.value='';input.style.height='auto';clearReply();updateSendBtnState();}
+  catch(e){console.error(e);toast(t('errSendFailed'),'error');}
 }
 async function sendFileContent(content){
-  if(!state.currentChat || !window.fb) return;
-  if(!canPostInCurrentChat()){ toast(t('channelOnlyAdmins'), 'error'); return; }
-  const { db, collection, addDoc, serverTimestamp } = window.fb;
-  const data = { fromUid: state.uid, content, time: serverTimestamp(), reactions: {}, replyTo: state.replyTo || null };
-  if(state.currentChatType === 'group') data.toGroupId = state.currentChat;
-  else data.toUid = state.currentChat;
-  try {
-    await addDoc(collection(db, 'messages'), data);
-    clearReply();
-  } catch(e){ console.error(e); toast(t('errSendFileFailed'), 'error'); }
+  if(!state.currentChat||!window.fb)return;
+  if(!canPostInCurrentChat()){toast(t('channelOnlyAdmins'),'error');return;}
+  const{db,collection,addDoc,serverTimestamp}=window.fb;
+  const data={fromUid:state.uid,content,time:serverTimestamp(),reactions:{},replyTo:state.replyTo||null};
+  if(state.currentChatType==='group')data.toGroupId=state.currentChat;else data.toUid=state.currentChat;
+  try{await addDoc(collection(db,'messages'),data);clearReply();}
+  catch(e){console.error(e);toast(t('errSendFileFailed'),'error');}
 }
 
-/* ============================================
-   СПИСОК ЧАТОВ
-   ============================================ */
+/* ============ СПИСОК ЧАТОВ ============ */
 function getCurrentMessages(){
-  if(state.currentChatType === 'group') return state.groupMessages[state.currentChat] || [];
-  return state.messages[state.currentChat] || [];
+  if(state.currentChatType==='group')return state.groupMessages[state.currentChat]||[];
+  return state.messages[state.currentChat]||[];
 }
 function renderSkeletonChatList(){
-  const c = $('chat-list');
-  c.innerHTML = Array(6).fill(0).map(() => `
-    <div class="skeleton-chat">
-      <div class="skeleton skeleton-avatar"></div>
-      <div class="skeleton-info">
-        <div class="skeleton skeleton-line-1"></div>
-        <div class="skeleton skeleton-line-2"></div>
-      </div>
-    </div>
-  `).join('');
+  const c=$('chat-list');
+  c.innerHTML=Array(6).fill(0).map(()=>`<div class="skeleton-chat"><div class="skeleton skeleton-avatar"></div><div class="skeleton-info"><div class="skeleton skeleton-line-1"></div><div class="skeleton skeleton-line-2"></div></div></div>`).join('');
 }
 function renderChatList(){
-  const search = ($('search').value || '').toLowerCase().trim();
-  const items = [];
-  state.users.forEach(u => {
-    const msgs = state.messages[u.uid] || [];
-    const last = msgs[msgs.length - 1];
-    items.push({
-      type: 'user', id: u.uid,
-      name: u.displayName || u.nickname,
-      avatarLetter: u.avatar, avatarData: null,
-      nick: u.nickname,
-      last, lastTime: last ? last.time : 0,
-      unread: state.unread[u.uid] || 0
-    });
+  const search=($('search').value||'').toLowerCase().trim();
+  const items=[];
+  state.users.forEach(u=>{
+    const msgs=state.messages[u.uid]||[];const last=msgs[msgs.length-1];
+    items.push({type:'user',id:u.uid,name:u.displayName||u.nickname,avatarLetter:u.avatar,avatarData:u.avatarData||null,nick:u.nickname,last,lastTime:last?last.time:0,unread:state.unread[u.uid]||0});
   });
-  Object.values(state.groups).forEach(g => {
-    const msgs = state.groupMessages[g.groupId] || [];
-    const last = msgs[msgs.length - 1];
-    items.push({
-      type: 'group', id: g.groupId,
-      name: g.name || (g.isChannel ? (currentLang==='ru'?'Канал':'Channel') : (currentLang==='ru'?'Группа':'Group')),
-      avatarLetter: (g.name || '?')[0].toUpperCase(),
-      avatarData: g.avatarData || null,
-      nick: null,
-      last, lastTime: last ? last.time : 0,
-      unread: state.unread[g.groupId] || 0,
-      isChannel: !!g.isChannel
-    });
+  Object.values(state.groups).forEach(g=>{
+    const msgs=state.groupMessages[g.groupId]||[];const last=msgs[msgs.length-1];
+    items.push({type:'group',id:g.groupId,name:g.name||(g.isChannel?(currentLang==='ru'?'Канал':'Channel'):(currentLang==='ru'?'Группа':'Group')),avatarLetter:(g.name||'?')[0].toUpperCase(),avatarData:g.avatarData||null,nick:null,last,lastTime:last?last.time:0,unread:state.unread[g.groupId]||0,isChannel:!!g.isChannel});
   });
-  const c = $('chat-list');
-  if(!state.messagesLoaded && items.length === 0){
-    renderSkeletonChatList();
-    return;
-  }
-  const filtered = items.filter(it => {
-    const n = it.name.toLowerCase();
-    const nn = (it.nick || '').toLowerCase();
-    return n.includes(search) || nn.includes(search);
-  });
-  if(!filtered.length){
-    c.innerHTML = state.users.length === 0 && Object.keys(state.groups).length === 0
-      ? `<div class="empty-list">${t('emptyChatList')}</div>`
-      : `<div class="empty-list">${t('nothingFound')}</div>`;
-    return;
-  }
-  filtered.sort((a,b) => {
-    if(a.lastTime || b.lastTime) return b.lastTime - a.lastTime;
-    return a.name.localeCompare(b.name);
-  });
-  c.innerHTML = filtered.map(it => {
-    let lastText = '';
+  const c=$('chat-list');
+  if(!state.messagesLoaded&&items.length===0){renderSkeletonChatList();return;}
+  const filtered=items.filter(it=>{const n=it.name.toLowerCase();const nn=(it.nick||'').toLowerCase();return n.includes(search)||nn.includes(search);});
+  if(!filtered.length){c.innerHTML=state.users.length===0&&Object.keys(state.groups).length===0?`<div class="empty-list">${t('emptyChatList')}</div>`:`<div class="empty-list">${t('nothingFound')}</div>`;return;}
+  filtered.sort((a,b)=>{if(a.lastTime||b.lastTime)return b.lastTime-a.lastTime;return a.name.localeCompare(b.name);});
+  c.innerHTML=filtered.map(it=>{
+    let lastText='';
     if(it.last){
-      const preview = it.last.content.type === 'text' ? it.last.content.text
-        : it.last.content.type === 'image' ? t('photo')
-        : it.last.content.type === 'video' ? t('video')
-        : it.last.content.type === 'audio' ? t('music')
-        : t('file');
-      const showSenderName = it.type === 'group' && !it.isChannel;
-      const prefix = it.last.fromUid === state.uid ? t('youPrefix')
-        : showSenderName ? (getUserDisplayName(it.last.fromUid) + ': ') : '';
-      lastText = prefix + escapeHtml(preview.slice(0, 30));
+      const preview=it.last.content.type==='text'?it.last.content.text:it.last.content.type==='image'?t('photo'):it.last.content.type==='video'?t('video'):it.last.content.type==='audio'?t('music'):t('file');
+      const showSenderName=it.type==='group'&&!it.isChannel;
+      const prefix=it.last.fromUid===state.uid?t('youPrefix'):showSenderName?(getUserDisplayName(it.last.fromUid)+': '):'';
+      lastText=prefix+escapeHtml(preview.slice(0,30));
     }
-    const lastTime = it.last ? formatTime(it.last.time) : '';
-    const active = (state.currentChat === it.id && state.currentChatType === it.type) ? 'active' : '';
-    const avatarHtml = it.avatarData
-      ? `<div class="avatar"><img src="${it.avatarData}" alt=""></div>`
-      : `<div class="avatar">${escapeHtml(it.avatarLetter)}</div>`;
-    const typeIcon = it.type === 'group' ? (it.isChannel ? '📢 ' : '👥 ') : '';
-    return `<div class="chat-item ${active}" data-id="${escapeHtml(it.id)}" data-type="${it.type}">
-      ${avatarHtml}
-      <div class="info">
-        <div class="name">${typeIcon}${escapeHtml(it.name)}</div>
-        <div class="last">${lastText || `<span style="opacity:.5">${t('noMessages')}</span>`}</div>
-      </div>
-      <div class="meta">
-        <div>${lastTime}</div>
-        ${it.unread ? `<div class="badge">${it.unread}</div>` : ''}
-      </div>
-    </div>`;
+    const lastTime=it.last?formatTime(it.last.time):'';
+    const active=(state.currentChat===it.id&&state.currentChatType===it.type)?'active':'';
+    const avHtml=it.avatarData?`<div class="avatar"><img src="${it.avatarData}" alt=""></div>`:`<div class="avatar">${escapeHtml(it.avatarLetter)}</div>`;
+    const typeIcon=it.type==='group'?(it.isChannel?'📢 ':'👥 '):'';
+    return `<div class="chat-item ${active}" data-id="${escapeHtml(it.id)}" data-type="${it.type}">${avHtml}<div class="info"><div class="name">${typeIcon}${escapeHtml(it.name)}</div><div class="last">${lastText||`<span style="opacity:.5">${t('noMessages')}</span>`}</div></div><div class="meta"><div>${lastTime}</div>${it.unread?`<div class="badge">${it.unread}</div>`:''}</div></div>`;
   }).join('');
-  c.querySelectorAll('.chat-item').forEach(el => {
-    el.addEventListener('click', () => openChat(el.dataset.id, el.dataset.type));
-  });
+  c.querySelectorAll('.chat-item').forEach(el=>{el.addEventListener('click',()=>openChat(el.dataset.id,el.dataset.type));});
 }
 
-/* ============================================
-   ОТКРЫТИЕ ЧАТА
-   ============================================ */
-function updateChatHeader(id, type){
-  if(type === 'group'){
-    document.querySelector('.chat-header').classList.remove('clickable');
-    const g = state.groups[id];
-    if(!g) return;
-    $('chat-name').textContent = g.name || '?';
-    if(g.avatarData) $('chat-avatar').innerHTML = `<img src="${g.avatarData}" alt="">`;
-    else $('chat-avatar').textContent = (g.name || '?')[0].toUpperCase();
-    const cnt = (g.memberUids || []).length;
-    if(g.isChannel){
-      const w = plural(cnt, t('sub1'), t('sub2'), t('sub5'));
-      $('chat-status').textContent = t('channelStatusPrefix') + `${cnt} ${w}`;
-    } else {
-      const w = plural(cnt, t('mem1'), t('mem2'), t('mem5'));
-      $('chat-status').textContent = `${cnt} ${w}`;
-    }
-    $('group-settings-btn').style.display = '';
-  } else {
-    document.querySelector('.chat-header').classList.add('clickable');
-    const u = state.profiles[id];
-    $('chat-name').textContent = u ? u.displayName : '?';
-    $('chat-avatar').textContent = u ? u.avatar : '?';
-    $('chat-status').textContent = t('inChat');
-    $('group-settings-btn').style.display = 'none';
+/* ============ ОТКРЫТИЕ ЧАТА ============ */
+function updateChatHeader(id,type){
+  const headerEl=document.querySelector('.chat-header');if(!headerEl)return;
+  if(type==='group'){
+    headerEl.classList.remove('clickable');
+    const g=state.groups[id];if(!g)return;
+    $('chat-name').textContent=g.name||'?';
+    if(g.avatarData)$('chat-avatar').innerHTML=`<img src="${g.avatarData}" alt="">`;
+    else $('chat-avatar').textContent=(g.name||'?')[0].toUpperCase();
+    const cnt=(g.memberUids||[]).length;
+    if(g.isChannel){const w=plural(cnt,t('sub1'),t('sub2'),t('sub5'));$('chat-status').textContent=t('channelStatusPrefix')+`${cnt} ${w}`;}
+    else{const w=plural(cnt,t('mem1'),t('mem2'),t('mem5'));$('chat-status').textContent=`${cnt} ${w}`;}
+    $('group-settings-btn').style.display='';
+  }else{
+    headerEl.classList.add('clickable');
+    const u=state.profiles[id];
+    $('chat-name').textContent=u?u.displayName:'?';
+    if(u&&u.avatarData)$('chat-avatar').innerHTML=`<img src="${u.avatarData}" alt="">`;
+    else $('chat-avatar').textContent=u?u.avatar:'?';
+    $('chat-status').textContent=t('inChat');
+    $('group-settings-btn').style.display='none';
   }
 }
 function updateChannelUIPermissions(){
-  const canPost = canPostInCurrentChat();
-  $('input-panel').style.display = canPost ? '' : 'none';
-  $('channel-notice').style.display = canPost ? 'none' : '';
-  $('reply-bar').style.display = 'none';
+  const canPost=canPostInCurrentChat();
+  $('input-panel').style.display=canPost?'':'none';
+  $('channel-notice').style.display=canPost?'none':'';
+  $('reply-bar').style.display='none';
 }
-function openChat(id, type){
-  state.currentChat = id;
-  state.currentChatType = type;
-  state.unread[id] = 0;
-  $('empty-chat').style.display = 'none';
-  $('chat-area').style.display = 'flex';
-  updateChatHeader(id, type);
-  updateChannelUIPermissions();
-  clearReply();
-  renderMessages();
-  renderChatList();
-  if(canPostInCurrentChat()) $('msg-input').focus();
-  $('app').classList.add('chat-open');
-  updateScrollButton();
+function openChat(id,type){
+  state.currentChat=id;state.currentChatType=type;state.unread[id]=0;
+  $('empty-chat').style.display='none';$('chat-area').style.display='flex';
+  updateChatHeader(id,type);updateChannelUIPermissions();clearReply();
+  renderMessages();renderChatList();
+  if(canPostInCurrentChat())$('msg-input').focus();
+  $('app').classList.add('chat-open');updateScrollButton();
 }
 
-/* ============================================
-   РЕНДЕР СООБЩЕНИЙ
-   ============================================ */
+/* ============ СООБЩЕНИЯ РЕНДЕР ============ */
 function getReplyPreview(msg){
-  if(!msg || !msg.content) return '';
-  if(msg.content.type === 'text') return msg.content.text.slice(0,50);
-  if(msg.content.type === 'image') return t('photo');
-  if(msg.content.type === 'video') return t('video');
-  if(msg.content.type === 'audio') return t('music');
+  if(!msg||!msg.content)return '';
+  if(msg.content.type==='text')return msg.content.text.slice(0,50);
+  if(msg.content.type==='image')return t('photo');
+  if(msg.content.type==='video')return t('video');
+  if(msg.content.type==='audio')return t('music');
   return t('file');
 }
 function renderMessages(){
-  const c = $('messages');
-  const msgs = getCurrentMessages();
-  if(!msgs.length){
-    c.innerHTML = `<div style="text-align:center;color:var(--text-3);padding:40px;font-size:13px">${t('startDialog')}</div>`;
-    return;
-  }
-  const inChannel = state.currentChatType === 'group' && isChannel(state.currentChat);
-  const inGroup = state.currentChatType === 'group';
-  let html = '';
-  let lastDate = '';
-  msgs.forEach((m) => {
-    const dateStr = formatDate(m.time);
-    if(dateStr !== lastDate){
-      html += `<div class="date-divider"><span>${escapeHtml(dateStr)}</span></div>`;
-      lastDate = dateStr;
+  const c=$('messages');const msgs=getCurrentMessages();
+  if(!msgs.length){c.innerHTML=`<div style="text-align:center;color:var(--text-3);padding:40px;font-size:13px">${t('startDialog')}</div>`;return;}
+  const inChannel=state.currentChatType==='group'&&isChannel(state.currentChat);
+  const inGroup=state.currentChatType==='group';
+  let html='';let lastDate='';
+  msgs.forEach(m=>{
+    const ds=formatDate(m.time);
+    if(ds!==lastDate){html+=`<div class="date-divider"><span>${escapeHtml(ds)}</span></div>`;lastDate=ds;}
+    const isMe=m.fromUid===state.uid;const ct=m.content;let body='';
+    if(ct.type==='text')body=`<div class="text">${escapeHtml(ct.text)}</div>`;
+    else if(ct.type==='image')body=`<div class="media" data-full="${ct.dataUrl}"><img src="${ct.dataUrl}" alt=""></div>`;
+    else if(ct.type==='video')body=`<div class="media"><video src="${ct.dataUrl}" controls></video></div>`;
+    else if(ct.type==='audio')body=`<div class="audio-player"><audio src="${ct.dataUrl}" controls></audio></div>`;
+    else if(ct.type==='file'){
+      body=`<div class="file-attach"><div class="ficon">${getFileIcon(ct.name)}</div><div class="finfo"><div class="fname">${escapeHtml(ct.name)}</div><div class="fsize">${formatSize(ct.size)}</div></div><a href="${ct.dataUrl}" download="${escapeHtml(ct.name)}">⬇</a></div>`;
     }
-    const isMe = m.fromUid === state.uid;
-    const ct = m.content;
-    let body = '';
-    if(ct.type === 'text') body = `<div class="text">${escapeHtml(ct.text)}</div>`;
-    else if(ct.type === 'image') body = `<div class="media" data-full="${ct.dataUrl}"><img src="${ct.dataUrl}" alt=""></div>`;
-    else if(ct.type === 'video') body = `<div class="media"><video src="${ct.dataUrl}" controls></video></div>`;
-    else if(ct.type === 'audio') body = `<div class="audio-player"><audio src="${ct.dataUrl}" controls></audio></div>`;
-    else if(ct.type === 'file'){
-      body = `<div class="file-attach">
-        <div class="ficon">${getFileIcon(ct.name)}</div>
-        <div class="finfo">
-          <div class="fname">${escapeHtml(ct.name)}</div>
-          <div class="fsize">${formatSize(ct.size)}</div>
-        </div>
-        <a href="${ct.dataUrl}" download="${escapeHtml(ct.name)}">⬇</a>
-      </div>`;
+    let avatarBlock='';
+    if(inGroup&&!isMe&&!inChannel){
+      const p=state.profiles[m.fromUid];const avData=p?p.avatarData:null;const letter=p?p.avatar:'?';
+      const inner=avData?`<img src="${avData}" alt="">`:escapeHtml(letter);
+      avatarBlock=`<div class="msg-avatar" data-uid="${escapeHtml(m.fromUid)}">${inner}</div>`;
     }
-    let avatarHtml = '';
-    if(inGroup && !isMe && !inChannel){
-      const p = state.profiles[m.fromUid];
-      const letter = p ? p.avatar : '?';
-      avatarHtml = `<div class="msg-avatar" data-uid="${escapeHtml(m.fromUid)}" title="${escapeHtml(getUserDisplayName(m.fromUid))}">${escapeHtml(letter)}</div>`;
+    let senderHtml='';
+    if(inGroup&&!inChannel&&!isMe){
+      const g=state.groups[state.currentChat];const tag=g?.members?.[m.fromUid]?.tag;const name=getUserDisplayName(m.fromUid);
+      senderHtml=`<div class="sender-name" data-uid="${escapeHtml(m.fromUid)}">${escapeHtml(name)}${tag?` <span class="sender-tag">${escapeHtml(tag)}</span>`:''}</div>`;
+    }else if(inChannel&&!isMe){
+      senderHtml=`<div class="sender-name" data-uid="${escapeHtml(m.fromUid)}">${escapeHtml(getUserDisplayName(m.fromUid))}</div>`;
     }
-    let senderHtml = '';
-    if(!isMe && inGroup && !inChannel){
-      const g = state.groups[state.currentChat];
-      const tag = g?.members?.[m.fromUid]?.tag;
-      const name = getUserDisplayName(m.fromUid);
-      senderHtml = `<div class="sender-name" data-uid="${escapeHtml(m.fromUid)}">${escapeHtml(name)}${tag ? ` <span class="sender-tag">${escapeHtml(tag)}</span>` : ''}</div>`;
-    }
-    let replyHtml = '';
+    let replyHtml='';
     if(m.replyTo){
-      const prev = msgs.find(x => x.id === m.replyTo);
-      if(prev){
-        replyHtml = `<div class="reply-quote">
-          <div class="rname">${escapeHtml(getUserDisplayName(prev.fromUid))}</div>
-          <div class="rtext">${escapeHtml(getReplyPreview(prev))}</div>
-        </div>`;
-      }
+      const prev=msgs.find(x=>x.id===m.replyTo);
+      if(prev)replyHtml=`<div class="reply-quote"><div class="rname">${escapeHtml(getUserDisplayName(prev.fromUid))}</div><div class="rtext">${escapeHtml(getReplyPreview(prev))}</div></div>`;
     }
-    let reactionsHtml = '';
-    const rk = Object.keys(m.reactions || {});
+    let reactHtml='';
+    const rk=Object.keys(m.reactions||{});
     if(rk.length){
-      reactionsHtml = '<div class="reactions">' + rk.map(emoji => {
-        const users = m.reactions[emoji];
-        const mine = users.includes(state.uid) ? 'mine' : '';
+      reactHtml='<div class="reactions">'+rk.map(emoji=>{
+        const users=m.reactions[emoji];const mine=users.includes(state.uid)?'mine':'';
         return `<span class="react ${mine}" data-id="${m.id}" data-emoji="${emoji}">${emoji} ${users.length}</span>`;
-      }).join('') + '</div>';
+      }).join('')+'</div>';
     }
-    html += `<div class="msg-row ${isMe ? 'me' : 'other'}" data-id="${m.id}">
-      ${avatarHtml}
-      <div class="bubble">
-        ${senderHtml}
-        ${replyHtml}
-        ${body}
-        ${reactionsHtml}
-        <div class="footer">
-          <span>${formatTime(m.time)}</span>
-          ${isMe ? '<span class="check">✓✓</span>' : ''}
-        </div>
-      </div>
-      <div class="msg-tools">
-        <button class="tool-react" data-id="${m.id}" title="Реакция">😊</button>
-        <button class="tool-reply" data-id="${m.id}" title="Ответить">↩</button>
-        ${isMe ? `<button class="tool-del" data-id="${m.id}" title="Удалить">🗑</button>` : ''}
-      </div>
-    </div>`;
+    const rowClass=inChannel?'channel-post':(isMe?'me':'other');
+    html+=`<div class="msg-row ${rowClass}" data-id="${m.id}">${avatarBlock}<div class="bubble">${senderHtml}${replyHtml}${body}${reactHtml}<div class="footer"><span>${formatTime(m.time)}</span>${isMe&&!inChannel?'<span class="check">✓✓</span>':''}</div></div><div class="msg-tools"><button class="tool-react" data-id="${m.id}">😊</button><button class="tool-reply" data-id="${m.id}">↩</button>${isMe?`<button class="tool-del" data-id="${m.id}">🗑</button>`:''}</div></div>`;
   });
-  c.innerHTML = html;
-  c.querySelectorAll('.media[data-full]').forEach(el => el.addEventListener('click', () => openViewer(el.dataset.full)));
-  c.querySelectorAll('.tool-reply').forEach(el => el.addEventListener('click', () => setReply(el.dataset.id)));
-  c.querySelectorAll('.tool-del').forEach(el => el.addEventListener('click', () => deleteMessage(el.dataset.id)));
-  c.querySelectorAll('.tool-react').forEach(el => el.addEventListener('click', e => showReactionPicker(el.dataset.id, e.clientX, e.clientY)));
-  c.querySelectorAll('.react').forEach(el => el.addEventListener('click', () => toggleReaction(el.dataset.id, el.dataset.emoji)));
-  c.querySelectorAll('.msg-avatar, .sender-name').forEach(el => {
-    el.addEventListener('click', () => {
-      const uid = el.dataset.uid;
-      if(uid && uid !== state.uid) openUserProfile(uid);
-    });
+  c.innerHTML=html;
+  c.querySelectorAll('.media[data-full]').forEach(el=>el.addEventListener('click',()=>openViewer(el.dataset.full)));
+  c.querySelectorAll('.tool-reply').forEach(el=>el.addEventListener('click',()=>setReply(el.dataset.id)));
+  c.querySelectorAll('.tool-del').forEach(el=>el.addEventListener('click',()=>deleteMessage(el.dataset.id)));
+  c.querySelectorAll('.tool-react').forEach(el=>el.addEventListener('click',e=>showReactionPicker(el.dataset.id,e.clientX,e.clientY)));
+  c.querySelectorAll('.react').forEach(el=>el.addEventListener('click',()=>toggleReaction(el.dataset.id,el.dataset.emoji)));
+  c.querySelectorAll('.msg-avatar, .sender-name').forEach(el=>{
+    el.addEventListener('click',()=>{const uid=el.dataset.uid;if(uid&&uid!==state.uid)openUserProfile(uid);});
   });
   scrollToBottom();
 }
 
-/* ============================================
-   REPLY
-   ============================================ */
+/* ============ REPLY / РЕАКЦИИ / УДАЛЕНИЕ ============ */
 function setReply(id){
-  const msgs = getCurrentMessages();
-  const m = msgs.find(x => x.id === id);
-  if(!m) return;
-  state.replyTo = id;
-  $('reply-name').textContent = m.fromUid === state.uid ? (currentLang==='ru'?'Вы':'You') : getUserDisplayName(m.fromUid);
-  $('reply-text').textContent = getReplyPreview(m);
+  const msgs=getCurrentMessages();const m=msgs.find(x=>x.id===id);if(!m)return;
+  state.replyTo=id;
+  $('reply-name').textContent=m.fromUid===state.uid?(currentLang==='ru'?'Вы':'You'):getUserDisplayName(m.fromUid);
+  $('reply-text').textContent=getReplyPreview(m);
   $('reply-bar').classList.add('visible');
-  if(canPostInCurrentChat()) $('msg-input').focus();
+  if(canPostInCurrentChat())$('msg-input').focus();
 }
-function clearReply(){
-  state.replyTo = null;
-  $('reply-bar').classList.remove('visible');
-}
+function clearReply(){state.replyTo=null;$('reply-bar').classList.remove('visible');}
 
-/* ============================================
-   РЕАКЦИИ
-   ============================================ */
-function showReactionPicker(id, x, y){
-  state.reactionTarget = id;
-  const p = $('reaction-picker');
-  p.style.left = Math.min(x, window.innerWidth - 240) + 'px';
-  p.style.top = Math.max(y - 50, 10) + 'px';
+function showReactionPicker(id,x,y){
+  state.reactionTarget=id;const p=$('reaction-picker');
+  p.style.left=Math.min(x,window.innerWidth-240)+'px';
+  p.style.top=Math.max(y-50,10)+'px';
   p.classList.add('visible');
 }
-async function toggleReaction(id, emoji){
-  if(!window.fb) return;
-  const msgs = getCurrentMessages();
-  const m = msgs.find(x => x.id === id);
-  if(!m) return;
-  const reactions = JSON.parse(JSON.stringify(m.reactions || {}));
-  if(!reactions[emoji]) reactions[emoji] = [];
-  const arr = reactions[emoji];
-  const idx = arr.indexOf(state.uid);
-  if(idx === -1) arr.push(state.uid); else arr.splice(idx, 1);
-  if(!arr.length) delete reactions[emoji];
-  const { db, doc, updateDoc } = window.fb;
-  try { await updateDoc(doc(db, 'messages', id), { reactions }); }
-  catch(e){ console.error(e); toast(t('errReaction'), 'error'); }
+async function toggleReaction(id,emoji){
+  if(!window.fb)return;
+  const msgs=getCurrentMessages();const m=msgs.find(x=>x.id===id);if(!m)return;
+  const reactions=JSON.parse(JSON.stringify(m.reactions||{}));
+  if(!reactions[emoji])reactions[emoji]=[];
+  const arr=reactions[emoji];const idx=arr.indexOf(state.uid);
+  if(idx===-1)arr.push(state.uid);else arr.splice(idx,1);
+  if(!arr.length)delete reactions[emoji];
+  const{db,doc,updateDoc}=window.fb;
+  try{await updateDoc(doc(db,'messages',id),{reactions});}
+  catch(e){console.error(e);toast(t('errReaction'),'error');}
 }
-
-/* ============================================
-   УДАЛЕНИЕ
-   ============================================ */
 async function deleteMessage(id){
-  if(!confirm(t('confirmDeleteMsg'))) return;
-  const { db, doc, deleteDoc } = window.fb;
-  try { await deleteDoc(doc(db, 'messages', id)); }
-  catch(e){ console.error(e); toast(t('errDeleteMsg'), 'error'); }
+  if(!confirm(t('confirmDeleteMsg')))return;
+  const{db,doc,deleteDoc}=window.fb;
+  try{await deleteDoc(doc(db,'messages',id));}
+  catch(e){console.error(e);toast(t('errDeleteMsg'),'error');}
 }
 
-/* ============================================
-   ВЛОЖЕНИЯ
-   ============================================ */
+/* ============ ВЛОЖЕНИЯ В ЧАТАХ ============ */
 function openFilePicker(type){
-  if(!canPostInCurrentChat()){ toast(t('channelOnlyAdmins'), 'error'); return; }
-  state.pendingFileType = type;
-  const fi = $('file-input');
-  fi.accept = type === 'image' ? 'image/*' : type === 'video' ? 'video/*' : type === 'audio' ? 'audio/*' : '';
-  fi.value = '';
-  fi.click();
+  if(!canPostInCurrentChat()){toast(t('channelOnlyAdmins'),'error');return;}
+  state.pendingFileType=type;
+  const fi=$('file-input');
+  fi.accept=type==='image'?'image/*':type==='video'?'video/*':type==='audio'?'audio/*':'';
+  fi.value='';fi.click();
 }
 async function handleFileSelected(file){
-  if(!file) return;
-  const type = state.pendingFileType;
-  if(file.size > 500 * 1024){ toast(t('errFileTooBig'), 'error'); return; }
-  try {
-    const dataUrl = await fileToBase64(file);
-    const ct = { type, dataUrl };
-    if(type === 'file' || type === 'audio') ct.name = file.name;
-    if(type === 'file') ct.size = file.size;
+  if(!file)return;
+  const type=state.pendingFileType;
+  if(!window.fb.s3Ready&&file.size>700*1024){toast(t('noS3Big'),'error');return;}
+  if(window.fb.s3Ready){
+    try{
+      toast('Загрузка в Cloud.ru...');
+      const url=await uploadFileToStorage(file,`chat/${state.uid}/${Date.now()}_${file.name}`);
+      const ct={type,dataUrl:url};
+      if(type==='file'||type==='audio')ct.name=file.name;
+      if(type==='file')ct.size=file.size;
+      await sendFileContent(ct);return;
+    }catch(err){console.error('S3 failed:',err);toast('S3: '+(err.message||err.code||err),'error');if(file.size>700*1024)return;}
+  }
+  try{
+    const dataUrl=await fileToBase64(file);const ct={type,dataUrl};
+    if(type==='file'||type==='audio')ct.name=file.name;
+    if(type==='file')ct.size=file.size;
     await sendFileContent(ct);
-  } catch(e){ console.error(e); toast(t('errFileRead'), 'error'); }
+  }catch(e){console.error('FileReader failed:',e);toast('Не удалось прочитать файл: '+(e.message||e),'error');}
 }
 
-/* ============================================
-   ПРОСМОТР МЕДИА
-   ============================================ */
-function openViewer(url){
-  $('viewer-content').innerHTML = `<img src="${url}" alt="">`;
-  $('viewer').classList.add('visible');
-}
-function closeViewer(){
-  $('viewer').classList.remove('visible');
-  $('viewer-content').innerHTML = '';
-}
+function openViewer(url){$('viewer-content').innerHTML=`<img src="${url}" alt="">`;$('viewer').classList.add('visible');}
+function closeViewer(){$('viewer').classList.remove('visible');$('viewer-content').innerHTML='';}
 
-/* ============================================
-   НАСТРОЙКИ
-   ============================================ */
+/* ============ НАСТРОЙКИ ============ */
 function openSettings(){
-  $('settings-profile-name').textContent = state.profile.displayName || state.nickname || '—';
-  $('settings-language-current').textContent = currentLang === 'ru' ? 'Русский' : 'English';
-  $('settings-admin').style.display = isSuperAdmin() ? '' : 'none';
+  $('settings-profile-name').textContent=state.profile.displayName||state.nickname||'—';
+  $('settings-language-current').textContent=currentLang==='ru'?'Русский':'English';
+  $('settings-admin').style.display=isSuperAdmin()?'':'none';
   $('settings-modal').classList.add('visible');
 }
 function openLanguageModal(){
-  $('language-modal').querySelectorAll('.lang-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.lang === currentLang);
-  });
+  $('language-modal').querySelectorAll('.lang-item').forEach(el=>{el.classList.toggle('active',el.dataset.lang===currentLang);});
   $('language-modal').classList.add('visible');
 }
 function changeLanguage(lang){
-  if(lang !== 'ru' && lang !== 'en') return;
-  currentLang = lang;
-  saveLang();
-  applyTranslations();
-  renderStoriesBar();
-  renderChatList();
-  if(state.currentChat){ updateChatHeader(state.currentChat, state.currentChatType); }
-  if(currentGroupSettingsId) renderGroupSettings();
-  if($('settings-modal').classList.contains('visible')){
-    $('settings-language-current').textContent = currentLang === 'ru' ? 'Русский' : 'English';
-  }
-  if($('language-modal').classList.contains('visible')){
-    $('language-modal').querySelectorAll('.lang-item').forEach(el => {
-      el.classList.toggle('active', el.dataset.lang === currentLang);
-    });
-  }
-  if(authMode) setAuthMode(authMode);
+  if(lang!=='ru'&&lang!=='en')return;
+  currentLang=lang;saveLang();applyTranslations();renderStoriesBar();renderChatList();
+  if(state.currentChat)updateChatHeader(state.currentChat,state.currentChatType);
+  if(currentGroupSettingsId)renderGroupSettings();
+  if($('settings-modal').classList.contains('visible'))$('settings-language-current').textContent=currentLang==='ru'?'Русский':'English';
+  if($('language-modal').classList.contains('visible'))$('language-modal').querySelectorAll('.lang-item').forEach(el=>el.classList.toggle('active',el.dataset.lang===currentLang));
+  if(authMode)setAuthMode(authMode);
 }
 
-/* ============================================
-   АДМИН-ПАНЕЛЬ
-   ============================================ */
+/* ============ АДМИН-ПАНЕЛЬ ============ */
 async function openAdminPanel(){
-  if(!isSuperAdmin()) return;
+  if(!isSuperAdmin())return;
   $('settings-modal').classList.remove('visible');
   $('admin-modal').classList.add('visible');
-  await loadAdminStats();
-  await loadAdminUsers();
+  await loadAdminStats();await loadAdminUsers();
 }
 async function loadAdminStats(){
-  const { db, collection, getDocs } = window.fb;
-  const stats = $('admin-stats');
-  stats.innerHTML = `<div class="admin-empty">${t('adminLoading')}</div>`;
-  try {
-    const [uSnap, mSnap, gSnap, sSnap] = await Promise.all([
-      getDocs(collection(db, 'users')),
-      getDocs(collection(db, 'messages')),
-      getDocs(collection(db, 'groups')),
-      getDocs(collection(db, 'stories'))
-    ]);
-    stats.innerHTML = `
-      <div class="admin-stat"><div class="admin-stat-num">${uSnap.size}</div><div class="admin-stat-label">Пользователи</div></div>
-      <div class="admin-stat"><div class="admin-stat-num">${mSnap.size}</div><div class="admin-stat-label">Сообщения</div></div>
-      <div class="admin-stat"><div class="admin-stat-num">${gSnap.size}</div><div class="admin-stat-label">Группы</div></div>
-      <div class="admin-stat"><div class="admin-stat-num">${sSnap.size}</div><div class="admin-stat-label">Истории</div></div>
-    `;
-  } catch(e){
-    console.error(e);
-    stats.innerHTML = `<div class="admin-empty">${t('adminLoadError')}</div>`;
-  }
+  const{db,collection,getDocs}=window.fb;
+  const stats=$('admin-stats');stats.innerHTML=`<div class="admin-empty">${t('adminLoading')}</div>`;
+  try{
+    const[uS,mS,gS,stS]=await Promise.all([getDocs(collection(db,'users')),getDocs(collection(db,'messages')),getDocs(collection(db,'groups')),getDocs(collection(db,'stories'))]);
+    stats.innerHTML=`<div class="admin-stat"><div class="admin-stat-num">${uS.size}</div><div class="admin-stat-label">Пользователи</div></div><div class="admin-stat"><div class="admin-stat-num">${mS.size}</div><div class="admin-stat-label">Сообщения</div></div><div class="admin-stat"><div class="admin-stat-num">${gS.size}</div><div class="admin-stat-label">Группы</div></div><div class="admin-stat"><div class="admin-stat-num">${stS.size}</div><div class="admin-stat-label">Истории</div></div>`;
+  }catch(e){console.error(e);stats.innerHTML=`<div class="admin-empty">${t('adminLoadError')}</div>`;}
 }
 async function loadAdminUsers(){
-  const { db, collection, getDocs } = window.fb;
-  const c = $('admin-users-list');
-  c.innerHTML = `<div class="admin-empty">${t('adminLoading')}</div>`;
-  try {
-    const snap = await getDocs(collection(db, 'users'));
-    adminUsersCache = [];
-    snap.forEach(d => adminUsersCache.push({ id: d.id, ...d.data() }));
-    adminUsersCache.sort((a, b) => (a.nickname || '').localeCompare(b.nickname || ''));
-    if(!adminUsersCache.length){ c.innerHTML = `<div class="admin-empty">${t('adminNoUsers')}</div>`; return; }
-    c.innerHTML = adminUsersCache.map(u => {
-      const dn = u.displayName || u.nickname || '?';
-      const isBanned = u.banned === true;
-      const isSelf = u.nickname === 'llamx';
-      const avatarHtml = u.avatarData ? `<img src="${u.avatarData}" alt="">` : dn[0].toUpperCase();
-      return `<div class="admin-user-card">
-        <div class="avatar">${avatarHtml}</div>
-        <div class="info">
-          <div class="name">${escapeHtml(dn)}${isSelf ? ' (вы)' : ''} ${isBanned ? `<span class="banned">${t('adminBannedLabel')}</span>` : ''}</div>
-          <div class="nick">@${escapeHtml(u.nickname || '?')}</div>
-        </div>
-        <div class="admin-user-actions">
-          ${!isSelf ? `<button class="admin-btn-clear" data-action="clear-msgs" data-uid="${escapeHtml(u.id)}" data-nick="${escapeHtml(u.nickname || '')}" title="Удалить все сообщения">🧹</button>` : ''}
-          ${!isSelf ? (isBanned
-            ? `<button class="admin-btn-unban" data-action="unban" data-uid="${escapeHtml(u.id)}">${t('adminUnbanBtn')}</button>`
-            : `<button class="admin-btn-ban" data-action="ban" data-uid="${escapeHtml(u.id)}">${t('adminBanBtn')}</button>`) : ''}
-        </div>
-      </div>`;
+  const{db,collection,getDocs}=window.fb;
+  const c=$('admin-users-list');c.innerHTML=`<div class="admin-empty">${t('adminLoading')}</div>`;
+  try{
+    const snap=await getDocs(collection(db,'users'));
+    adminUsersCache=[];snap.forEach(d=>adminUsersCache.push({id:d.id,...d.data()}));
+    adminUsersCache.sort((a,b)=>(a.nickname||'').localeCompare(b.nickname||''));
+    if(!adminUsersCache.length){c.innerHTML=`<div class="admin-empty">${t('adminNoUsers')}</div>`;return;}
+    c.innerHTML=adminUsersCache.map(u=>{
+      const dn=u.displayName||u.nickname||'?';const isBanned=u.banned===true;const isSelf=u.nickname==='llamx';
+      const avInner=u.avatarData?`<img src="${u.avatarData}" alt="">`:dn[0].toUpperCase();
+      return `<div class="admin-user-card"><div class="avatar">${avInner}</div><div class="info"><div class="name">${escapeHtml(dn)}${isSelf?' (вы)':''} ${isBanned?`<span class="banned">${t('adminBannedLabel')}</span>`:''}</div><div class="nick">@${escapeHtml(u.nickname||'?')}</div></div><div class="admin-user-actions">${!isSelf?`<button class="admin-btn-clear" data-action="clear-msgs" data-uid="${escapeHtml(u.id)}" data-nick="${escapeHtml(u.nickname||'')}">🧹</button>`:''}${!isSelf?(isBanned?`<button class="admin-btn-unban" data-action="unban" data-uid="${escapeHtml(u.id)}">${t('adminUnbanBtn')}</button>`:`<button class="admin-btn-ban" data-action="ban" data-uid="${escapeHtml(u.id)}">${t('adminBanBtn')}</button>`):''}</div></div>`;
     }).join('');
-    c.querySelectorAll('[data-action]').forEach(btn => {
-      btn.addEventListener('click', () => handleAdminAction(btn.dataset.action, btn.dataset.uid, btn.dataset.nick));
-    });
-  } catch(e){
-    console.error(e);
-    c.innerHTML = `<div class="admin-empty">${t('adminLoadError')}</div>`;
-  }
+    c.querySelectorAll('[data-action]').forEach(btn=>btn.addEventListener('click',()=>handleAdminAction(btn.dataset.action,btn.dataset.uid,btn.dataset.nick)));
+  }catch(e){console.error(e);c.innerHTML=`<div class="admin-empty">${t('adminLoadError')}</div>`;}
 }
-async function handleAdminAction(action, uid, nick){
-  const { db, doc, updateDoc, collection, getDocs, deleteDoc } = window.fb;
-  if(action === 'ban'){
-    if(!confirm(tpl('adminConfirmBan', { nick }))) return;
-    try { await updateDoc(doc(db, 'users', uid), { banned: true }); toast(t('adminBanned'), 'success'); await loadAdminUsers(); }
-    catch(e){ console.error(e); toast(t('adminError'), 'error'); }
-  } else if(action === 'unban'){
-    try { await updateDoc(doc(db, 'users', uid), { banned: false }); toast(t('adminUnbanned'), 'success'); await loadAdminUsers(); }
-    catch(e){ console.error(e); toast(t('adminError'), 'error'); }
-  } else if(action === 'clear-msgs'){
-    if(!confirm(tpl('adminConfirmClearMsgs', { nick }))) return;
-    try {
-      const snap = await getDocs(collection(db, 'messages'));
-      const promises = [];
-      let deleted = 0;
-      snap.forEach(d => {
-        const m = d.data();
-        if(m.fromUid === uid){ promises.push(deleteDoc(doc(db, 'messages', d.id))); deleted++; }
-      });
-      await Promise.all(promises);
-      toast(tpl('adminMsgsDeleted', { n: deleted }), 'success');
-      await loadAdminStats();
-    } catch(e){ console.error(e); toast(t('adminError'), 'error'); }
+async function handleAdminAction(action,uid,nick){
+  const{db,doc,updateDoc,collection,getDocs,deleteDoc}=window.fb;
+  if(action==='ban'){
+    if(!confirm(tpl('adminConfirmBan',{nick})))return;
+    try{await updateDoc(doc(db,'users',uid),{banned:true});toast(t('adminBanned'),'success');await loadAdminUsers();}
+    catch(e){console.error(e);toast(t('adminError'),'error');}
+  }else if(action==='unban'){
+    try{await updateDoc(doc(db,'users',uid),{banned:false});toast(t('adminUnbanned'),'success');await loadAdminUsers();}
+    catch(e){console.error(e);toast(t('adminError'),'error');}
+  }else if(action==='clear-msgs'){
+    if(!confirm(tpl('adminConfirmClearMsgs',{nick})))return;
+    try{
+      const snap=await getDocs(collection(db,'messages'));const promises=[];let deleted=0;
+      snap.forEach(d=>{const m=d.data();if(m.fromUid===uid){promises.push(deleteDoc(doc(db,'messages',d.id)));deleted++;}});
+      await Promise.all(promises);toast(tpl('adminMsgsDeleted',{n:deleted}),'success');await loadAdminStats();
+    }catch(e){console.error(e);toast(t('adminError'),'error');}
   }
 }
 async function loadAdminMessages(){
-  const { db, collection, getDocs } = window.fb;
-  const c = $('admin-messages-list');
-  c.innerHTML = `<div class="admin-empty">${t('adminLoading')}</div>`;
-  try {
-    const snap = await getDocs(collection(db, 'messages'));
-    const arr = [];
-    snap.forEach(d => {
-      const m = d.data();
-      arr.push({
-        id: d.id, fromUid: m.fromUid,
-        text: m.content && m.content.type === 'text' ? m.content.text : ('[' + (m.content ? m.content.type : '?') + ']'),
-        time: m.time && m.time.toDate ? m.time.toDate().getTime() : 0
+  const{db,collection,getDocs}=window.fb;
+  const c=$('admin-messages-list');c.innerHTML=`<div class="admin-empty">${t('adminLoading')}</div>`;
+  try{
+    const snap=await getDocs(collection(db,'messages'));const arr=[];
+    snap.forEach(d=>{const m=d.data();arr.push({id:d.id,fromUid:m.fromUid,text:m.content&&m.content.type==='text'?m.content.text:('['+(m.content?m.content.type:'?')+']'),time:m.time&&m.time.toDate?m.time.toDate().getTime():0});});
+    arr.sort((a,b)=>b.time-a.time);const recent=arr.slice(0,100);
+    if(!recent.length){c.innerHTML=`<div class="admin-empty">${t('adminNoMsgs')}</div>`;return;}
+    const nickMap={};adminUsersCache.forEach(u=>{nickMap[u.id]=u.nickname||'?';});
+    c.innerHTML=recent.map(m=>`<div class="admin-msg-row"><div class="admin-msg-text">${escapeHtml(m.text.slice(0,80))}</div><div class="admin-msg-meta">@${escapeHtml(nickMap[m.fromUid]||'?')} · ${formatTime(m.time)}</div><button class="admin-msg-del" data-id="${escapeHtml(m.id)}">🗑</button></div>`).join('');
+    c.querySelectorAll('.admin-msg-del').forEach(btn=>{
+      btn.addEventListener('click',async()=>{
+        if(!confirm(t('adminDeleteMsgConfirm')))return;
+        try{const{db,doc,deleteDoc}=window.fb;await deleteDoc(doc(db,'messages',btn.dataset.id));btn.closest('.admin-msg-row').remove();}
+        catch(e){console.error(e);toast(t('adminError'),'error');}
       });
     });
-    arr.sort((a, b) => b.time - a.time);
-    const recent = arr.slice(0, 100);
-    if(!recent.length){ c.innerHTML = `<div class="admin-empty">${t('adminNoMsgs')}</div>`; return; }
-    const nickMap = {};
-    adminUsersCache.forEach(u => { nickMap[u.id] = u.nickname || '?'; });
-    c.innerHTML = recent.map(m => `<div class="admin-msg-row">
-      <div class="admin-msg-text">${escapeHtml(m.text.slice(0, 80))}</div>
-      <div class="admin-msg-meta">@${escapeHtml(nickMap[m.fromUid] || '?')} · ${formatTime(m.time)}</div>
-      <button class="admin-msg-del" data-id="${escapeHtml(m.id)}">🗑</button>
-    </div>`).join('');
-    c.querySelectorAll('.admin-msg-del').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        if(!confirm(t('adminDeleteMsgConfirm'))) return;
-        try {
-          const { db, doc, deleteDoc } = window.fb;
-          await deleteDoc(doc(db, 'messages', btn.dataset.id));
-          btn.closest('.admin-msg-row').remove();
-        } catch(e){ console.error(e); toast(t('adminError'), 'error'); }
-      });
-    });
-  } catch(e){
-    console.error(e);
-    c.innerHTML = `<div class="admin-empty">${t('adminLoadError')}</div>`;
-  }
+  }catch(e){console.error(e);c.innerHTML=`<div class="admin-empty">${t('adminLoadError')}</div>`;}
 }
 
-/* ============================================
-   КНОПКА ОТПРАВКИ
-   ============================================ */
-const MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
-const SEND_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4 22 12 3.4 3.6 3 10l12 2-12 2z"/></svg>';
+/* ============ КНОПКА ОТПРАВКИ ============ */
+const MIC_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>';
+const SEND_SVG='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.4 20.4 22 12 3.4 3.6 3 10l12 2-12 2z"/></svg>';
 function updateSendBtnState(){
-  const btn = $('send-btn');
-  const input = $('msg-input');
-  if(!btn || !input) return;
-  const isEmpty = !input.value.trim();
-  btn.classList.toggle('is-empty', isEmpty);
-  btn.innerHTML = isEmpty ? MIC_SVG : SEND_SVG;
+  const btn=$('send-btn'),input=$('msg-input');if(!btn||!input)return;
+  const isEmpty=!input.value.trim();
+  btn.classList.toggle('is-empty',isEmpty);
+  btn.innerHTML=isEmpty?MIC_SVG:SEND_SVG;
 }
 
-/* ============================================
-   ОБРАБОТЧИКИ
-   ============================================ */
-$('tab-login').addEventListener('click', () => setAuthMode('login'));
-$('tab-register').addEventListener('click', () => setAuthMode('register'));
-$('auth-submit').addEventListener('click', () => authMode === 'login' ? handleLogin() : handleRegister());
-$('username').addEventListener('keydown', e => { if(e.key === 'Enter') $('password').focus(); });
-$('password').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); authMode === 'login' ? handleLogin() : $('password-confirm').focus(); } });
-$('password-confirm').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); handleRegister(); } });
+/* ============ ОБРАБОТЧИКИ ============ */
+$('tab-login').addEventListener('click',()=>setAuthMode('login'));
+$('tab-register').addEventListener('click',()=>setAuthMode('register'));
+$('auth-submit').addEventListener('click',()=>authMode==='login'?handleLogin():handleRegister());
+$('username').addEventListener('keydown',e=>{if(e.key==='Enter')$('password').focus();});
+$('password').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();authMode==='login'?handleLogin():$('password-confirm').focus();}});
+$('password-confirm').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();handleRegister();}});
 
-$('add-btn').addEventListener('click', e => { e.stopPropagation(); $('add-menu').classList.toggle('visible'); });
-$('menu-find').addEventListener('click', () => { $('add-menu').classList.remove('visible'); openFindModal(); });
-$('menu-new-group').addEventListener('click', () => { $('add-menu').classList.remove('visible'); openCreateGroupModal(false); });
-$('menu-new-channel').addEventListener('click', () => { $('add-menu').classList.remove('visible'); openCreateGroupModal(true); });
+$('add-btn').addEventListener('click',e=>{e.stopPropagation();$('add-menu').classList.toggle('visible');});
+$('menu-find').addEventListener('click',()=>{$('add-menu').classList.remove('visible');openFindModal();});
+$('menu-new-group').addEventListener('click',()=>{$('add-menu').classList.remove('visible');openCreateGroupModal(false);});
+$('menu-new-channel').addEventListener('click',()=>{$('add-menu').classList.remove('visible');openCreateGroupModal(true);});
 
-$('find-cancel').addEventListener('click', () => $('find-modal').classList.remove('visible'));
-$('find-search').addEventListener('click', doFind);
-$('find-input').addEventListener('keydown', e => { if(e.key === 'Enter') doFind(); });
+$('find-cancel').addEventListener('click',()=>$('find-modal').classList.remove('visible'));
+$('find-search').addEventListener('click',doFind);
+$('find-input').addEventListener('keydown',e=>{if(e.key==='Enter')doFind();});
 
-$('cg-cancel').addEventListener('click', () => $('create-group-modal').classList.remove('visible'));
-$('cg-create').addEventListener('click', handleCreateGroup);
-$('cg-is-channel').addEventListener('change', () => {
-  const isCh = $('cg-is-channel').checked;
-  $('cg-title').textContent = isCh ? t('newChannelTitle') : t('newGroupTitle');
-  $('cg-name').placeholder = isCh ? t('namePlaceholderChannel') : t('namePlaceholderGroup');
-  $('cg-members-label').textContent = isCh ? t('subscribersLabel') : t('membersLabel');
+$('cg-cancel').addEventListener('click',()=>$('create-group-modal').classList.remove('visible'));
+$('cg-create').addEventListener('click',handleCreateGroup);
+$('cg-is-channel').addEventListener('change',()=>{
+  const isCh=$('cg-is-channel').checked;
+  $('cg-title').textContent=isCh?t('newChannelTitle'):t('newGroupTitle');
+  $('cg-name').placeholder=isCh?t('namePlaceholderChannel'):t('namePlaceholderGroup');
+  $('cg-members-label').textContent=isCh?t('subscribersLabel'):t('membersLabel');
 });
 
-$('group-settings-btn').addEventListener('click', () => { if(state.currentChatType === 'group') openGroupSettings(state.currentChat); });
-$('gs-close').addEventListener('click', () => { $('group-settings-modal').classList.remove('visible'); currentGroupSettingsId = null; });
-$('gs-save').addEventListener('click', saveGroupSettings);
-$('gs-avatar').addEventListener('click', () => {
-  const g = state.groups[currentGroupSettingsId];
-  if(!g) return;
-  if(g.members?.[state.uid]?.role !== 'admin') return;
+$('group-settings-btn').addEventListener('click',()=>{if(state.currentChatType==='group')openGroupSettings(state.currentChat);});
+$('gs-close').addEventListener('click',()=>{$('group-settings-modal').classList.remove('visible');currentGroupSettingsId=null;});
+$('gs-save').addEventListener('click',saveGroupSettings);
+$('gs-avatar').addEventListener('click',()=>{
+  const g=state.groups[currentGroupSettingsId];if(!g)return;
+  if(g.members?.[state.uid]?.role!=='admin')return;
   $('group-avatar-input').click();
 });
-$('group-avatar-input').addEventListener('change', async e => {
-  const f = e.target.files[0]; if(!f) return;
-  if(f.size > 500 * 1024){ toast(t('errFileTooBig'), 'error'); return; }
-  tempGroupAvatar = await fileToBase64(f);
-  renderGroupSettings();
+$('group-avatar-input').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(!window.fb.s3Ready&&f.size>700*1024){toast(t('noS3Big'),'error');return;}
+  try{
+    if(window.fb.s3Ready)toast('Загрузка аватара группы...');
+    tempGroupAvatar=window.fb.s3Ready?await uploadFileToStorage(f,`group-avatars/${currentGroupSettingsId}/${Date.now()}_${f.name}`):await fileToBase64(f);
+    renderGroupSettings();toast('Аватар группы загружен','success');
+  }catch(err){console.error(err);toast('Ошибка загрузки','error');}
 });
-$('gs-add-members').addEventListener('click', openAddMembersModal);
-$('am-cancel').addEventListener('click', () => $('add-members-modal').classList.remove('visible'));
-$('am-add').addEventListener('click', handleAddMembers);
+$('gs-add-members').addEventListener('click',openAddMembersModal);
+$('am-cancel').addEventListener('click',()=>$('add-members-modal').classList.remove('visible'));
+$('am-add').addEventListener('click',handleAddMembers);
 
-// НАСТРОЙКИ
-$('me-bar').addEventListener('click', openSettings);
-$('settings-close').addEventListener('click', () => $('settings-modal').classList.remove('visible'));
-$('settings-profile').addEventListener('click', () => { $('settings-modal').classList.remove('visible'); openProfileModal(); });
-$('settings-language').addEventListener('click', openLanguageModal);
-$('settings-admin').addEventListener('click', openAdminPanel);
-$('settings-logout').addEventListener('click', async () => {
-  if(!confirm(t('confirmLogout'))) return;
+$('me-bar').addEventListener('click',openSettings);
+$('settings-close').addEventListener('click',()=>$('settings-modal').classList.remove('visible'));
+$('settings-profile').addEventListener('click',()=>{$('settings-modal').classList.remove('visible');openProfileModal();});
+$('settings-language').addEventListener('click',openLanguageModal);
+$('settings-admin').addEventListener('click',openAdminPanel);
+$('settings-logout').addEventListener('click',async()=>{
+  if(!confirm(t('confirmLogout')))return;
   $('settings-modal').classList.remove('visible');
-  if(window.fb){ try{ await window.fb.signOut(window.fb.auth); }catch(e){} }
+  if(window.fb){try{await window.fb.signOut(window.fb.auth);}catch(e){}}
 });
 
-// ЯЗЫК
-$('lang-close').addEventListener('click', () => $('language-modal').classList.remove('visible'));
-$('language-modal').querySelectorAll('.lang-item').forEach(el => {
-  el.addEventListener('click', () => {
-    changeLanguage(el.dataset.lang);
-    $('language-modal').classList.remove('visible');
-    toast(t('langChanged'), 'success');
-  });
+$('lang-close').addEventListener('click',()=>$('language-modal').classList.remove('visible'));
+$('language-modal').querySelectorAll('.lang-item').forEach(el=>{
+  el.addEventListener('click',()=>{changeLanguage(el.dataset.lang);$('language-modal').classList.remove('visible');toast(t('langChanged'),'success');});
 });
 
-// ПРОФИЛЬ
-$('prof-avatar').addEventListener('click', () => $('avatar-input').click());
-$('avatar-input').addEventListener('change', async e => {
-  const f = e.target.files[0]; if(!f) return;
-  if(f.size > 2*1024*1024){ toast(t('errFileTooBig'), 'error'); return; }
-  tempAvatar = await fileToBase64(f);
-  updateProfAvatar();
+$('prof-avatar').addEventListener('click',()=>$('avatar-input').click());
+$('avatar-input').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(!window.fb.s3Ready&&f.size>700*1024){toast(t('noS3Big'),'error');return;}
+  try{
+    if(window.fb.s3Ready){toast('Загрузка аватара...');tempAvatar=await uploadFileToStorage(f,`avatars/${state.uid}/${Date.now()}_${f.name}`);}
+    else{tempAvatar=await fileToBase64(f);}
+    updateProfAvatar();toast('Аватар загружен','success');
+  }catch(err){console.error(err);toast('Ошибка загрузки аватара','error');}
 });
-$('prof-cancel').addEventListener('click', () => { $('profile-modal').classList.remove('visible'); $('avatar-input').value = ''; });
-$('prof-save').addEventListener('click', async () => {
-  const n = $('prof-name').value.trim();
-  if(!n){ toast(t('errNameEmpty'), 'error'); return; }
-  state.profile.displayName = n;
-  state.profile.bio = $('prof-bio').value.trim();
-  state.profile.avatarData = tempAvatar;
-  state.profile.music = tempMusic;
-  const selChannelId = $('prof-channel-select').value || null;
-  const selChannel = selChannelId ? state.groups[selChannelId] : null;
-  state.profile.channelId = selChannelId;
-  state.profile.channelName = selChannel ? (selChannel.name || null) : null;
-  renderMeBar(); saveProfile();
-  $('profile-modal').classList.remove('visible');
-  toast(t('okProfileSaved'), 'success');
-  if(window.fb && state.uid){
-    const { db, doc, setDoc } = window.fb;
-    const updates = {
-      displayName: n,
-      bio: state.profile.bio || null,
-      avatarData: tempAvatar || null,
-      musicName: tempMusic ? tempMusic.name : null,
-      musicData: tempMusic ? tempMusic.dataUrl : null,
-      channelId: state.profile.channelId || null,
-      channelName: state.profile.channelName || null
-    };
-    try { await setDoc(doc(db, 'users', state.uid), updates, { merge: true }); }
-    catch(e){
-      console.error('sync profile:', e);
-      if(e.message && (e.message.includes('maximum') || e.code === 'resource-exhausted')) toast(t('errProfileSync'), 'error');
-    }
+$('prof-cancel').addEventListener('click',()=>{$('profile-modal').classList.remove('visible');$('avatar-input').value='';});
+$('prof-save').addEventListener('click',async()=>{
+  const n=$('prof-name').value.trim();
+  if(!n){toast(t('errNameEmpty'),'error');return;}
+  state.profile.displayName=n;
+  state.profile.bio=$('prof-bio').value.trim();
+  state.profile.avatarData=tempAvatar;
+  state.profile.music=tempMusic;
+  const selChannelId=$('prof-channel-select').value||null;
+  const selChannel=selChannelId?state.groups[selChannelId]:null;
+  state.profile.channelId=selChannelId;
+  state.profile.channelName=selChannel?(selChannel.name||null):null;
+  renderMeBar();saveProfile();$('profile-modal').classList.remove('visible');
+  toast(t('okProfileSaved'),'success');
+  if(window.fb&&state.uid){
+    const{db,doc,setDoc}=window.fb;
+    const updates={displayName:n,bio:state.profile.bio||null,avatarData:tempAvatar||null,musicName:tempMusic?tempMusic.name:null,musicData:tempMusic?tempMusic.dataUrl:null,channelId:state.profile.channelId||null,channelName:state.profile.channelName||null};
+    try{await setDoc(doc(db,'users',state.uid),updates,{merge:true});}
+    catch(e){console.error('sync profile:',e);toast(t('errProfileSync'),'error');}
   }
 });
 
-// МУЗЫКА
-$('music-upload-btn').addEventListener('click', () => { $('music-input').value = ''; $('music-input').click(); });
-$('music-input').addEventListener('change', async e => {
-  const f = e.target.files[0]; if(!f) return;
-  if(f.size > 500 * 1024){ toast(t('errMusicTooBig'), 'error'); return; }
-  try {
-    const dataUrl = await fileToBase64(f);
-    tempMusic = { name: f.name, dataUrl };
-    updateMusicUI();
-    toast(t('okMusicUploaded'), 'success');
-  } catch(err){ console.error(err); toast(t('errMusicRead'), 'error'); }
+$('music-upload-btn').addEventListener('click',()=>{$('music-input').value='';$('music-input').click();});
+$('music-input').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(!window.fb.s3Ready&&f.size>700*1024){toast(t('noS3Big'),'error');return;}
+  try{
+    if(window.fb.s3Ready){toast('Загрузка музыки...');const url=await uploadFileToStorage(f,`music/${state.uid}/${Date.now()}_${f.name}`);tempMusic={name:f.name,dataUrl:url};}
+    else{tempMusic={name:f.name,dataUrl:await fileToBase64(f)};}
+    updateMusicUI();toast('Музыка загружена','success');
+  }catch(err){console.error(err);toast('Ошибка загрузки музыки','error');}
 });
-$('music-remove').addEventListener('click', () => {
-  tempMusic = null;
-  updateMusicUI();
-  toast(t('okMusicRemoved'), 'success');
+$('music-remove').addEventListener('click',()=>{tempMusic=null;updateMusicUI();toast(t('okMusicRemoved'),'success');});
+
+$('up-close').addEventListener('click',()=>{$('up-music-audio').pause();$('user-profile-modal').classList.remove('visible');});
+$('chat-avatar').addEventListener('click',()=>{if(state.currentChatType==='user'&&state.currentChat)openUserProfile(state.currentChat);});
+$('chat-name').addEventListener('click',()=>{if(state.currentChatType==='user'&&state.currentChat)openUserProfile(state.currentChat);});
+$('gs-members').addEventListener('click',e=>{
+  if(e.target.closest('.member-actions'))return;
+  const row=e.target.closest('.member-row');if(!row)return;
+  const uid=row.dataset.uid;if(uid&&uid!==state.uid)openUserProfile(uid);
 });
 
-// ПРОСМОТР ПРОФИЛЯ ДРУГОГО
-$('up-close').addEventListener('click', () => {
-  $('up-music-audio').pause();
-  $('user-profile-modal').classList.remove('visible');
+$('admin-close').addEventListener('click',()=>$('admin-modal').classList.remove('visible'));
+$('admin-tab-users').addEventListener('click',()=>{
+  $('admin-tab-users').classList.add('active');$('admin-tab-messages').classList.remove('active');
+  $('admin-users-list').style.display='';$('admin-messages-list').style.display='none';
 });
-$('chat-avatar').addEventListener('click', () => {
-  if(state.currentChatType === 'user' && state.currentChat) openUserProfile(state.currentChat);
-});
-$('chat-name').addEventListener('click', () => {
-  if(state.currentChatType === 'user' && state.currentChat) openUserProfile(state.currentChat);
-});
-$('gs-members').addEventListener('click', (e) => {
-  if(e.target.closest('.member-actions')) return;
-  const row = e.target.closest('.member-row');
-  if(!row) return;
-  const uid = row.dataset.uid;
-  if(uid && uid !== state.uid) openUserProfile(uid);
-});
-
-// АДМИН-ПАНЕЛЬ
-$('admin-close').addEventListener('click', () => $('admin-modal').classList.remove('visible'));
-$('admin-tab-users').addEventListener('click', () => {
-  $('admin-tab-users').classList.add('active');
-  $('admin-tab-messages').classList.remove('active');
-  $('admin-users-list').style.display = '';
-  $('admin-messages-list').style.display = 'none';
-});
-$('admin-tab-messages').addEventListener('click', () => {
-  $('admin-tab-messages').classList.add('active');
-  $('admin-tab-users').classList.remove('active');
-  $('admin-users-list').style.display = 'none';
-  $('admin-messages-list').style.display = '';
+$('admin-tab-messages').addEventListener('click',()=>{
+  $('admin-tab-messages').classList.add('active');$('admin-tab-users').classList.remove('active');
+  $('admin-users-list').style.display='none';$('admin-messages-list').style.display='';
   loadAdminMessages();
 });
 
-// STORIES
-$('story-file-input').addEventListener('change', e => handleStoryFileSelected(e.target.files[0]));
-$('story-create-cancel').addEventListener('click', () => {
-  state.pendingStoryMedia = null;
-  $('story-create-modal').classList.remove('visible');
+$('story-file-input').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(!window.fb.s3Ready&&f.size>700*1024){toast(t('noS3Big'),'error');return;}
+  try{
+    if(window.fb.s3Ready)toast('Загрузка истории...');
+    const type=f.type.startsWith('video/')?'video':'image';
+    const dataUrl=window.fb.s3Ready?await uploadFileToStorage(f,`stories/${state.uid}/${Date.now()}_${f.name}`):await fileToBase64(f);
+    state.pendingStoryMedia={type,dataUrl};
+    const prev=$('story-preview');
+    if(type==='image')prev.innerHTML=`<img src="${dataUrl}" alt="">`;
+    else prev.innerHTML=`<video src="${dataUrl}" controls muted></video>`;
+    $('story-caption').value='';$('story-create-modal').classList.add('visible');
+    toast('История загружена','success');
+  }catch(err){console.error(err);toast('Ошибка загрузки истории','error');}
 });
-$('story-create-publish').addEventListener('click', publishStory);
-$('story-viewer-close').addEventListener('click', closeStoryViewer);
-$('story-nav-prev').addEventListener('click', prevStory);
-$('story-nav-next').addEventListener('click', nextStory);
-$('story-viewer-delete').addEventListener('click', deleteCurrentStory);
-$('story-viewer').addEventListener('click', e => { if(e.target.id === 'story-viewer') closeStoryViewer(); });
+async function publishStory(){
+  if(!state.pendingStoryMedia){toast(t('storyPreviewEmpty'),'error');return;}
+  const{db,collection,addDoc,serverTimestamp}=window.fb;
+  const btn=$('story-create-publish');btn.disabled=true;btn.textContent='...';
+  try{
+    await addDoc(collection(db,'stories'),{authorUid:state.uid,type:state.pendingStoryMedia.type,dataUrl:state.pendingStoryMedia.dataUrl,caption:$('story-caption').value.trim(),createdAt:serverTimestamp(),reactions:{}});
+    state.pendingStoryMedia=null;$('story-create-modal').classList.remove('visible');toast(t('okStoryPublished'),'success');
+  }catch(e){console.error(e);toast(t('errPublishStory'),'error');}
+  finally{btn.disabled=false;btn.textContent=t('publish');}
+}
+$('story-create-cancel').addEventListener('click',()=>{state.pendingStoryMedia=null;$('story-create-modal').classList.remove('visible');});
+$('story-create-publish').addEventListener('click',publishStory);
+$('story-viewer-close').addEventListener('click',closeStoryViewer);
+$('story-nav-prev').addEventListener('click',prevStory);
+$('story-nav-next').addEventListener('click',nextStory);
+$('story-viewer-delete').addEventListener('click',deleteCurrentStory);
+$('story-viewer').addEventListener('click',e=>{if(e.target.id==='story-viewer')closeStoryViewer();});
 
-// ОТПРАВКА
-$('send-btn').addEventListener('click', sendMessage);
-$('msg-input').addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
-$('msg-input').addEventListener('input', function(){
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-  updateSendBtnState();
+$('send-btn').addEventListener('click',sendMessage);
+$('msg-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+$('msg-input').addEventListener('input',function(){
+  this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';updateSendBtnState();
 });
-$('reply-close').addEventListener('click', clearReply);
+$('reply-close').addEventListener('click',clearReply);
 
-$('attach-btn').addEventListener('click', () => $('attach-menu').classList.toggle('visible'));
-$('attach-menu').querySelectorAll('button').forEach(b => {
-  b.addEventListener('click', () => { openFilePicker(b.dataset.type); $('attach-menu').classList.remove('visible'); });
+$('attach-btn').addEventListener('click',()=>$('attach-menu').classList.toggle('visible'));
+$('attach-menu').querySelectorAll('button').forEach(b=>{
+  b.addEventListener('click',()=>{openFilePicker(b.dataset.type);$('attach-menu').classList.remove('visible');});
 });
-$('file-input').addEventListener('change', e => handleFileSelected(e.target.files[0]));
+$('file-input').addEventListener('change',e=>handleFileSelected(e.target.files[0]));
 
-$('reaction-picker').querySelectorAll('button').forEach(b => {
-  b.addEventListener('click', () => {
-    if(state.reactionTarget) toggleReaction(state.reactionTarget, b.dataset.emoji);
-    $('reaction-picker').classList.remove('visible');
-    state.reactionTarget = null;
+$('reaction-picker').querySelectorAll('button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(state.reactionTarget)toggleReaction(state.reactionTarget,b.dataset.emoji);
+    $('reaction-picker').classList.remove('visible');state.reactionTarget=null;
   });
 });
-
-document.addEventListener('click', e => {
-  if(!e.target.closest('#reaction-picker') && !e.target.closest('.tool-react')) $('reaction-picker').classList.remove('visible');
-  if(!e.target.closest('#attach-menu') && !e.target.closest('#attach-btn')) $('attach-menu').classList.remove('visible');
-  if(!e.target.closest('#add-menu') && !e.target.closest('#add-btn')) $('add-menu').classList.remove('visible');
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#reaction-picker')&&!e.target.closest('.tool-react'))$('reaction-picker').classList.remove('visible');
+  if(!e.target.closest('#attach-menu')&&!e.target.closest('#attach-btn'))$('attach-menu').classList.remove('visible');
+  if(!e.target.closest('#add-menu')&&!e.target.closest('#add-btn'))$('add-menu').classList.remove('visible');
 });
 
-$('viewer-close').addEventListener('click', closeViewer);
-$('viewer').addEventListener('click', e => { if(e.target.id === 'viewer') closeViewer(); });
-
-$('search').addEventListener('input', renderChatList);
-
-$('back-btn').addEventListener('click', () => $('app').classList.remove('chat-open'));
-if(window.innerWidth <= 768) $('back-btn').style.display = 'block';
-
-// КНОПКА «НАВЕРХ»
-$('scroll-to-bottom').addEventListener('click', scrollToBottom);
-$('messages').addEventListener('scroll', updateScrollButton);
-
-// FAB НОВЫЙ ЧАТ
-$('fab-new-chat').addEventListener('click', () => {
-  $('add-menu').classList.toggle('visible');
-});
-
-// ESC ЗАКРЫВАЕТ МОДАЛКИ
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape'){
-    document.querySelectorAll('.modal.visible').forEach(m => m.classList.remove('visible'));
+$('viewer-close').addEventListener('click',closeViewer);
+$('viewer').addEventListener('click',e=>{if(e.target.id==='viewer')closeViewer();});
+$('search').addEventListener('input',renderChatList);
+$('back-btn').addEventListener('click',()=>$('app').classList.remove('chat-open'));
+if(window.innerWidth<=768)$('back-btn').style.display='block';
+$('scroll-to-bottom').addEventListener('click',scrollToBottom);
+$('messages').addEventListener('scroll',updateScrollButton);
+$('fab-new-chat').addEventListener('click',()=>$('add-menu').classList.toggle('visible'));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal.visible').forEach(m=>m.classList.remove('visible'));
     $('add-menu').classList.remove('visible');
     $('attach-menu').classList.remove('visible');
     $('reaction-picker').classList.remove('visible');
   }
 });
 
-// СТАРТ
-loadLang();
-applyTranslations();
-initAuthListener();
-setAuthMode('login');
-setTimeout(updateSendBtnState, 100);
+loadLang();applyTranslations();initAuthListener();setAuthMode('login');
+setTimeout(updateSendBtnState,100);
 console.log('✅ Мессенджер загружен');
