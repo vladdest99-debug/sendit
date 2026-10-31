@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мессенджер</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ЭКРАН ВХОДА -->
+<div id="login">
+  <div class="login-box">
+    <div class="logo">💬</div>
+    <h1>Добро пожаловать</h1>
+    <p>Введите имя, чтобы начать</p>
+    <input type="text" id="username" placeholder="Ваше имя" maxlength="20" autocomplete="off">
+    <button id="login-btn">Войти</button>
+    <div class="err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ПРИЛОЖЕНИЕ -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="burger">☰</span>
+      <div class="search">
+        <span style="color:#6c7883">🔍</span>
+        <input type="text" id="search" placeholder="Поиск">
+      </div>
+    </div>
+    <div class="me-bar" id="me-bar">
+      <div class="avatar" id="me-avatar"></div>
+      <div>
+        <div class="name" id="me-name"></div>
+        <div class="status">в сети</div>
+      </div>
+      <span class="edit-ico">✏️</span>
+    </div>
+    <div class="chat-list" id="chat-list">
+      <div class="empty-list">Загрузка...</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="empty-chat" id="empty-chat">
+      <div class="icon">💬</div>
+      <div class="txt">Выберите чат</div>
+    </div>
+
+    <div id="chat-area" style="display:none;flex:1;flex-direction:column;">
+      <div class="chat-header">
+        <div class="avatar" id="chat-avatar"></div>
+        <div>
+          <div class="name" id="chat-name"></div>
+          <div class="status" id="chat-status"></div>
+        </div>
+        <div class="actions">
+          <button id="back-btn" style="display:none">←</button>
+          <button>📞</button>
+          <button>⋮</button>
+        </div>
+      </div>
+
+      <div class="messages" id="messages"></div>
+
+      <div class="typing-indicator" id="typing-ind">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span id="typing-text"></span>
+      </div>
+
+      <div class="reply-bar" id="reply-bar">
+        <div class="bar">
+          <div class="rname" id="reply-name"></div>
+          <div class="rtext" id="reply-text"></div>
+        </div>
+        <button id="reply-close">✕</button>
+      </div>
+
+      <div class="input-panel">
+        <button class="attach-btn" id="attach-btn">📎</button>
+        <div class="input-wrap">
+          <textarea id="msg-input" rows="1" placeholder="Написать сообщение..."></textarea>
+        </div>
+        <button class="send-btn" id="send-btn">➤</button>
+
+        <div class="attach-menu" id="attach-menu">
+          <button data-type="image"><span class="em">🖼️</span> Фото</button>
+          <button data-type="video"><span class="em">🎬</span> Видео</button>
+          <button data-type="audio"><span class="em">🎵</span> Музыка</button>
+          <button data-type="file"><span class="em">📄</span> Файл</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Скрытые input -->
+<input type="file" id="file-input" style="display:none">
+<input type="file" id="avatar-input" accept="image/*" style="display:none">
+
+<!-- Модалка профиля -->
+<div class="modal" id="profile-modal">
+  <div class="modal-box">
+    <h2>Мой профиль</h2>
+    <div class="profile-avatar">
+      <div class="avatar" id="prof-avatar">
+        <span>?</span>
+        <div class="edit-ov">📷</div>
+      </div>
+    </div>
+    <label>Имя</label>
+    <input type="text" id="prof-name" maxlength="30">
+    <label>О себе</label>
+    <textarea id="prof-bio" maxlength="120" placeholder="Напишите о себе..."></textarea>
+    <div class="modal-actions">
+      <button class="cancel" id="prof-cancel">Отмена</button>
+      <button class="save" id="prof-save">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- Просмотр медиа -->
+<div class="viewer" id="viewer">
+  <span class="close" id="viewer-close">✕</span>
+  <div id="viewer-content"></div>
+</div>
+
+<!-- Пикер реакций -->
+<div class="reaction-picker" id="reaction-picker">
+  <button data-emoji="👍">👍</button>
+  <button data-emoji="❤️">❤️</button>
+  <button data-emoji="😂">😂</button>
+  <button data-emoji="😮">😮</button>
+  <button data-emoji="😢">😢</button>
+  <button data-emoji="🔥">🔥</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ===================================================== -->
+<!-- FIREBASE: подключение к базе данных                   -->
+<!-- Этот блок ДОЛЖЕН быть ДО <script src="app.js">        -->
+<!-- ===================================================== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  import {
+    getFirestore, collection, doc, addDoc, setDoc, updateDoc, deleteDoc,
+    onSnapshot, query, orderBy, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyC0GuO63_dCwCWWCc4-T-1gDTyYLCmkYkE",
+    authDomain: "sendit-3be0d.firebaseapp.com",
+    projectId: "sendit-3be0d",
+    storageBucket: "sendit-3be0d.firebasestorage.app",
+    messagingSenderId: "426074024166",
+    appId: "1:426074024166:web:8bcc0d3f930b1f04ba3327",
+    measurementId: "G-D2YHBMGM7R"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Делаем функции доступными из app.js
+  window.fb = {
+    db, collection, doc, addDoc, setDoc, updateDoc, deleteDoc,
+    onSnapshot, query, orderBy, serverTimestamp
+  };
+</script>
+
+<!-- Ваш основной скрипт — ПОСЛЕ блока Firebase -->
+<script src="app.js"></script>
+</body>
+</html>
