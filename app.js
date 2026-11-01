@@ -13,7 +13,7 @@ close:'Закрыть',cancel:'Отмена',save:'Сохранить',loginLabe
 aboutMe:'О себе',aboutPlaceholder:'Напишите о себе...',musicLabel:'Музыка',
 musicNotSelected:'Файл не выбран',musicUpload:'Загрузить музыку',myChannelLabel:'Мой канал',
 channelLabel:'Канал',noChannel:'— Не выбран —',errNotSubscribed:'Вы не подписаны на этот канал',
-profileTitle:'Профиль',messageUser:'Написать сообщение',findUserTitle:'Найти пользователя',
+profileTitle:'Профиль',messageUser:'Перейти в чат',findUserTitle:'Найти пользователя',
 loginFieldLabel:'Логин',find:'Найти',findInputPlaceholder:'Введите логин',
 newGroupTitle:'Новая группа',newChannelTitle:'Новый канал',nameLabel:'Название',
 namePlaceholderGroup:'Например: Команда',namePlaceholderChannel:'Например: Новости',
@@ -66,7 +66,7 @@ adminConfirmBan:'Забанить @{nick}?',adminConfirmClearMsgs:'Удалит�
 adminMsgsDeleted:'Удалено сообщений: {n}',adminDeleteMsgConfirm:'Удалить сообщение?',
 adminNoUsers:'Пользователей нет',adminNoMsgs:'Сообщений нет',adminLoadError:'Ошибка загрузки',
 adminLoading:'Загрузка...',adminBannedLabel:'забанен',adminBanBtn:'Забанить',adminUnbanBtn:'Разбанить',
-noS3Big:'Файл больше 700 КБ — нужен S3. Настройте Cloud.ru.',storyReactionErr:'Не удалось поставить реакцию'
+noS3Big:'Файл больше 700 КБ требует S3. Настройте Cloud.ru.',storyReactionErr:'Не удалось поставить реакцию'
 },
 en:{
 welcome:'Welcome',createAccount:'Create account',subtitle:'Sign in or create an account',
@@ -81,7 +81,7 @@ loginLabel:'Login:',displayName:'Display name',aboutMe:'About me',aboutPlacehold
 musicLabel:'Music',musicNotSelected:'No file selected',musicUpload:'Upload music',
 myChannelLabel:'My channel',channelLabel:'Channel',noChannel:'— None —',
 errNotSubscribed:'You are not subscribed to this channel',profileTitle:'Profile',
-messageUser:'Message',findUserTitle:'Find user',loginFieldLabel:'Login',find:'Find',
+messageUser:'Go to chat',findUserTitle:'Find user',loginFieldLabel:'Login',find:'Find',
 findInputPlaceholder:'Enter login',newGroupTitle:'New group',newChannelTitle:'New channel',
 nameLabel:'Name',namePlaceholderGroup:'E.g.: Team',namePlaceholderChannel:'E.g.: News',
 membersLabel:'Members',subscribersLabel:'Subscribers',
@@ -128,7 +128,7 @@ adminBanned:'User banned',adminUnbanned:'Unbanned',adminError:'Error',adminConfi
 adminConfirmClearMsgs:'Delete ALL messages of @{nick}?',adminMsgsDeleted:'Deleted messages: {n}',
 adminDeleteMsgConfirm:'Delete message?',adminNoUsers:'No users',adminNoMsgs:'No messages',
 adminLoadError:'Load error',adminLoading:'Loading...',adminBannedLabel:'banned',
-adminBanBtn:'Ban',adminUnbanBtn:'Unban',noS3Big:'File > 700 KB needs S3. Configure Cloud.ru.',
+adminBanBtn:'Ban',adminUnbanBtn:'Unban',noS3Big:'File > 700 KB requires S3. Configure Cloud.ru.',
 storyReactionErr:'Failed to react'
 }};
 
@@ -145,6 +145,8 @@ function loadLang(){try{const s=localStorage.getItem('tg-lang');if(s==='ru'||s==
 function saveLang(){try{localStorage.setItem('tg-lang',currentLang);}catch(e){}}
 
 /* ============ СОСТОЯНИЕ ============ */
+const MAX_BASE64_SIZE = 700 * 1024; // 700 КБ — безопасный лимит Firestore
+
 const state={
   uid:null,nickname:null,pendingNickname:null,
   profile:{displayName:'',bio:'',avatarData:null,music:null,channelId:null,channelName:null},
@@ -227,7 +229,8 @@ function isSuperAdmin(){return state.nickname==='llamx';}
 async function uploadFileToStorage(file,path){
   const{s3,s3Ready,S3_CONFIG}=window.fb;
   if(!s3Ready||!s3)throw new Error('S3 не настроен');
-  const params={Bucket:S3_CONFIG.bucket,Key:path,Body:file,ContentType:file.type,ACL:'public-read'};
+  // Без ACL — Cloud.ru блокирует запросы с этим параметром
+  const params={Bucket:S3_CONFIG.bucket,Key:path,Body:file,ContentType:file.type};
   const data=await s3.upload(params).promise();
   return data.Location;
 }
@@ -402,8 +405,6 @@ function listenToStories(){
     });
     state.stories=stories;buildStoryGroups();renderStoriesBar();
     if(state.currentStoryGroup)updateStoryReactionsUI();
-    
-    // Обновляем сетку историй в профиле в реальном времени
     if ($('user-profile-modal').classList.contains('visible') && currentViewedProfileUid) {
       renderUserProfileStories(currentViewedProfileUid);
     }
@@ -952,7 +953,7 @@ async function openUserProfile(uid){
     if(d.musicData&&d.musicName){$('up-music-name').textContent=d.musicName;audio.src=d.musicData;$('up-music').style.display='block';}
     
     if(d.channelId&&d.channelName){
-      $('up-channel-name').textContent=d.channelName;$('up-channel').style.display='block';
+      $('up-channel-name').textContent=d.channelName;$('up-channel').style.display='flex';
       $('up-channel-btn').onclick=()=>{audio.pause();modal.classList.remove('visible');
         if(state.groups[d.channelId])openChat(d.channelId,'group');else toast(t('errNotSubscribed'),'error');};
     }else{$('up-channel').style.display='none';}
@@ -1010,7 +1011,15 @@ async function sendFileContent(content){
   const data={fromUid:state.uid,content,time:serverTimestamp(),reactions:{},replyTo:state.replyTo||null};
   if(state.currentChatType==='group')data.toGroupId=state.currentChat;else data.toUid=state.currentChat;
   try{await addDoc(collection(db,'messages'),data);clearReply();}
-  catch(e){console.error(e);toast(t('errSendFileFailed'),'error');}
+  catch(e){
+    console.error(e);
+    const msg=(e.message||'').toLowerCase();
+    if(e.code==='invalid-argument'||msg.includes('exceeds')||msg.includes('too large')){
+      toast('Файл слишком большой. Попробуйте файл поменьше.','error');
+    }else{
+      toast(t('errSendFileFailed'),'error');
+    }
+  }
 }
 
 /* ============ СПИСОК ЧАТОВ ============ */
@@ -1208,23 +1217,37 @@ function openFilePicker(type){
 async function handleFileSelected(file){
   if(!file)return;
   const type=state.pendingFileType;
-  if(!window.fb.s3Ready&&file.size>700*1024){toast(t('noS3Big'),'error');return;}
-  if(window.fb.s3Ready){
+  const isLarge = file.size > MAX_BASE64_SIZE;
+
+  if(isLarge){
+    if(!window.fb.s3Ready){
+      toast(t('noS3Big'),'error');
+      return;
+    }
     try{
       toast('Загрузка в Cloud.ru...');
       const url=await uploadFileToStorage(file,`chat/${state.uid}/${Date.now()}_${file.name}`);
       const ct={type,dataUrl:url};
       if(type==='file'||type==='audio')ct.name=file.name;
       if(type==='file')ct.size=file.size;
-      await sendFileContent(ct);return;
-    }catch(err){console.error('S3 failed:',err);toast('S3: '+(err.message||err.code||err),'error');if(file.size>700*1024)return;}
+      await sendFileContent(ct);
+    }catch(err){
+      console.error('S3 failed:',err);
+      toast('Не удалось загрузить в Cloud.ru','error');
+    }
+    return;
   }
+
   try{
-    const dataUrl=await fileToBase64(file);const ct={type,dataUrl};
+    const dataUrl=await fileToBase64(file);
+    const ct={type,dataUrl};
     if(type==='file'||type==='audio')ct.name=file.name;
     if(type==='file')ct.size=file.size;
     await sendFileContent(ct);
-  }catch(e){console.error('FileReader failed:',e);toast('Не удалось прочитать файл: '+(e.message||e),'error');}
+  }catch(e){
+    console.error('FileReader failed:',e);
+    toast('Не удалось прочитать файл','error');
+  }
 }
 
 function openViewer(url){$('viewer-content').innerHTML=`<img src="${url}" alt="">`;$('viewer').classList.add('visible');}
@@ -1366,10 +1389,14 @@ $('gs-avatar').addEventListener('click',()=>{
 });
 $('group-avatar-input').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(!window.fb.s3Ready&&f.size>700*1024){toast(t('noS3Big'),'error');return;}
+  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
   try{
-    if(window.fb.s3Ready)toast('Загрузка аватара группы...');
-    tempGroupAvatar=window.fb.s3Ready?await uploadFileToStorage(f,`group-avatars/${currentGroupSettingsId}/${Date.now()}_${f.name}`):await fileToBase64(f);
+    if(f.size>MAX_BASE64_SIZE){
+      toast('Загрузка аватара группы...');
+      tempGroupAvatar=await uploadFileToStorage(f,`group-avatars/${currentGroupSettingsId}/${Date.now()}_${f.name}`);
+    }else{
+      tempGroupAvatar=await fileToBase64(f);
+    }
     renderGroupSettings();toast('Аватар группы загружен','success');
   }catch(err){console.error(err);toast('Ошибка загрузки','error');}
 });
@@ -1396,10 +1423,14 @@ $('language-modal').querySelectorAll('.lang-item').forEach(el=>{
 $('prof-avatar').addEventListener('click',()=>$('avatar-input').click());
 $('avatar-input').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(!window.fb.s3Ready&&f.size>700*1024){toast(t('noS3Big'),'error');return;}
+  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
   try{
-    if(window.fb.s3Ready){toast('Загрузка аватара...');tempAvatar=await uploadFileToStorage(f,`avatars/${state.uid}/${Date.now()}_${f.name}`);}
-    else{tempAvatar=await fileToBase64(f);}
+    if(f.size>MAX_BASE64_SIZE){
+      toast('Загрузка аватара...');
+      tempAvatar=await uploadFileToStorage(f,`avatars/${state.uid}/${Date.now()}_${f.name}`);
+    }else{
+      tempAvatar=await fileToBase64(f);
+    }
     updateProfAvatar();toast('Аватар загружен','success');
   }catch(err){console.error(err);toast('Ошибка загрузки аватара','error');}
 });
@@ -1428,10 +1459,15 @@ $('prof-save').addEventListener('click',async()=>{
 $('music-upload-btn').addEventListener('click',()=>{$('music-input').value='';$('music-input').click();});
 $('music-input').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(!window.fb.s3Ready&&f.size>700*1024){toast(t('noS3Big'),'error');return;}
+  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
   try{
-    if(window.fb.s3Ready){toast('Загрузка музыки...');const url=await uploadFileToStorage(f,`music/${state.uid}/${Date.now()}_${f.name}`);tempMusic={name:f.name,dataUrl:url};}
-    else{tempMusic={name:f.name,dataUrl:await fileToBase64(f)};}
+    if(f.size>MAX_BASE64_SIZE){
+      toast('Загрузка музыки в Cloud.ru...');
+      const url=await uploadFileToStorage(f,`music/${state.uid}/${Date.now()}_${f.name}`);
+      tempMusic={name:f.name,dataUrl:url};
+    }else{
+      tempMusic={name:f.name,dataUrl:await fileToBase64(f)};
+    }
     updateMusicUI();toast('Музыка загружена','success');
   }catch(err){console.error(err);toast('Ошибка загрузки музыки','error');}
 });
@@ -1463,11 +1499,16 @@ $('admin-tab-messages').addEventListener('click',()=>{
 
 $('story-file-input').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(!window.fb.s3Ready&&f.size>700*1024){toast(t('noS3Big'),'error');return;}
+  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
   try{
-    if(window.fb.s3Ready)toast('Загрузка истории...');
     const type=f.type.startsWith('video/')?'video':'image';
-    const dataUrl=window.fb.s3Ready?await uploadFileToStorage(f,`stories/${state.uid}/${Date.now()}_${f.name}`):await fileToBase64(f);
+    let dataUrl;
+    if(f.size>MAX_BASE64_SIZE){
+      toast('Загрузка истории в Cloud.ru...');
+      dataUrl=await uploadFileToStorage(f,`stories/${state.uid}/${Date.now()}_${f.name}`);
+    }else{
+      dataUrl=await fileToBase64(f);
+    }
     state.pendingStoryMedia={type,dataUrl};
     const prev=$('story-preview');
     if(type==='image')prev.innerHTML=`<img src="${dataUrl}" alt="">`;
