@@ -238,7 +238,6 @@ let videoNoteTimerInterval=null;
 let isRecordingVideoNote=false;
 let videoNoteFacing='user';
 
-/* Кружки: фоновое воспроизведение */
 let playingCircleVideo=null;
 let playingCircleMsgId=null;
 let playingCircleAuthor=null;
@@ -589,11 +588,11 @@ async function openVideoNoteModal(){
   }
   videoNoteChunks=[];
   isRecordingVideoNote=false;
-  $('video-note-timer').textContent='0:00';
-  $('video-note-record').classList.remove('recording');
+  const tEl=$('video-note-timer');if(tEl)tEl.textContent='0:00';
+  const recBtn=$('video-note-record');if(recBtn)recBtn.classList.remove('recording');
   const ring=document.querySelector('.video-note-ring');
   if(ring)ring.classList.remove('recording');
-  $('video-note-modal').classList.add('visible');
+  const modal=$('video-note-modal');if(modal)modal.classList.add('visible');
   const hint=document.querySelector('.video-note-hint');
   if(hint)hint.textContent=t('videoNoteHint');
   await startCameraPreview();
@@ -605,6 +604,7 @@ async function startCameraPreview(){
       video:{facingMode:videoNoteFacing,width:{ideal:720},height:{ideal:720}}
     });
     const videoEl=$('video-note-preview');
+    if(!videoEl)return;
     videoEl.srcObject=videoNoteStream;
     videoEl.muted=true;
     videoEl.classList.toggle('rear-camera',videoNoteFacing==='environment');
@@ -645,7 +645,13 @@ function toggleVideoNoteRecording(){
 }
 function startVideoNoteRecording(){
   if(!videoNoteStream||!window.MediaRecorder)return;
-  const mimeTypes=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm','video/mp4'];
+  const mimeTypes=[
+    'video/mp4;codecs=h264,aac',
+    'video/mp4',
+    'video/webm;codecs=vp8,opus',
+    'video/webm;codecs=vp9,opus',
+    'video/webm'
+  ];
   let mimeType='';
   for(const m of mimeTypes){
     try{if(MediaRecorder.isTypeSupported(m)){mimeType=m;break;}}catch(e){}
@@ -674,12 +680,12 @@ function startVideoNoteRecording(){
 
   isRecordingVideoNote=true;
   videoNoteStartTime=Date.now();
-  $('video-note-record').classList.add('recording');
+  const rec=$('video-note-record');if(rec)rec.classList.add('recording');
   const ring=document.querySelector('.video-note-ring');
   if(ring)ring.classList.add('recording');
   const hint=document.querySelector('.video-note-hint');
   if(hint)hint.textContent=t('videoNoteRecording');
-  $('video-note-timer').textContent='0:00';
+  const tEl=$('video-note-timer');if(tEl)tEl.textContent='0:00';
   if(videoNoteTimerInterval)clearInterval(videoNoteTimerInterval);
   videoNoteTimerInterval=setInterval(()=>{
     if(!isRecordingVideoNote)return;
@@ -696,7 +702,7 @@ function stopVideoNoteRecording(send){
   if(!isRecordingVideoNote||!videoNoteRecorder)return;
   isRecordingVideoNote=false;
   if(videoNoteTimerInterval){clearInterval(videoNoteTimerInterval);videoNoteTimerInterval=null;}
-  $('video-note-record').classList.remove('recording');
+  const rec=$('video-note-record');if(rec)rec.classList.remove('recording');
   const ring=document.querySelector('.video-note-ring');
   if(ring)ring.classList.remove('recording');
   if(!send){
@@ -711,22 +717,14 @@ function stopVideoNoteRecording(send){
 async function sendVideoNoteBlob(blob,duration){
   if(!state.currentChat)return;
   if(!canPostInCurrentChat()){toast(t('channelOnlyAdmins'),'error');return;}
-  const filename='circle_'+Date.now()+'.webm';
   try{
-    let dataUrl;
-    if(blob.size>MAX_BASE64_SIZE){
-      if(!window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
-      toast('Загрузка кружка...');
-      const file=new File([blob],filename,{type:blob.type});
-      dataUrl=await uploadFileToStorage(file,`video-notes/${state.uid}/${Date.now()}_${filename}`);
-    }else{
-      dataUrl=await new Promise((res,rej)=>{
-        const rd=new FileReader();
-        rd.onload=()=>res(rd.result);
-        rd.onerror=rej;
-        rd.readAsDataURL(blob);
-      });
-    }
+    // Всегда через base64 (не через S3), чтобы воспроизведение работало без CORS
+    const dataUrl=await new Promise((res,rej)=>{
+      const rd=new FileReader();
+      rd.onload=()=>res(rd.result);
+      rd.onerror=rej;
+      rd.readAsDataURL(blob);
+    });
     await sendFileContent({type:'videoNote',dataUrl,duration:Math.round(duration)});
     toast(t('videoNoteSent'),'success');
   }catch(e){
@@ -734,8 +732,6 @@ async function sendVideoNoteBlob(blob,duration){
     toast(t('errSendFileFailed'),'error');
   }
 }
-
-/* Общие функции для «сейчас играет» полосы */
 function showNowPlayingBar(){
   const bar=$('circle-now-playing');
   if(!bar)return;
@@ -759,15 +755,29 @@ function stopPlayingCircle(){
     try{v.pause();v.currentTime=0;}catch(e){}
   }
 }
-
 function attachCirclePlayer(el){
   const src=el.dataset.src;if(!src)return;
   const video=el.querySelector('video');
+  if(!video)return;
   const overlay=el.querySelector('.circle-overlay');
   const timerEl=el.querySelector('.circle-timer');
   const ringFill=el.querySelector('.circle-ring-fill');
-  if(!video)return;
-  if(!video.src)video.src=src;
+
+  if(!video.dataset.setup){
+    video.dataset.setup='1';
+    video.muted=true;
+    video.playsInline=true;
+    video.setAttribute('playsinline','');
+    video.setAttribute('webkit-playsinline','');
+    video.preload='auto';
+    video.src=src;
+    try{video.load();}catch(e){}
+    video.addEventListener('error',()=>{
+      const err=video.error;
+      console.error('circle video error:',err?{code:err.code,message:err.message}:'unknown',(video.src||'').slice(0,80));
+    });
+  }
+
   const dur=parseFloat(el.dataset.duration)||0;
   if(timerEl)timerEl.textContent=formatVoiceDuration(dur);
 
@@ -785,7 +795,11 @@ function attachCirclePlayer(el){
       document.querySelectorAll('.circle-msg video').forEach(v=>{
         if(v!==video&&!v.paused)v.pause();
       });
-      video.play().catch(err=>console.error(err));
+      const p=video.play();
+      if(p&&p.catch)p.catch(err=>{
+        console.error('circle play failed:',err);
+        toast(t('errVoiceUnsupported'),'error');
+      });
     }else{
       video.pause();
     }
@@ -1704,7 +1718,8 @@ function updateChannelUIPermissions(){
 }
 function openChat(id,type){
   if(isRecordingVoice)cancelVoiceRecording();
-  if($('video-note-modal')?.classList.contains('visible'))closeVideoNoteModal();
+  const vnm=$('video-note-modal');
+  if(vnm&&vnm.classList.contains('visible'))closeVideoNoteModal();
   stopPlayingCircle();
   state.currentChat=id;state.currentChatType=type;state.unread[id]=0;
   $('empty-chat').style.display='none';$('chat-area').style.display='flex';
@@ -1733,7 +1748,6 @@ function renderMessages(opts){
   const shouldScroll=!!opts.forceScroll||isNearBottom(200);
   if(!msgs.length){c.innerHTML=`<div style="text-align:center;color:var(--text-3);padding:40px;font-size:13px">${t('startDialog')}</div>`;return;}
 
-  // Сохраняем текущий играющий кружок
   const savedCircle=(playingCircleVideo&&playingCircleMsgId)?{
     msgId:playingCircleMsgId,
     time:playingCircleVideo.currentTime||0
@@ -1755,7 +1769,7 @@ function renderMessages(opts){
       body=`<div class="voice-msg" data-src="${escapeHtml(ct.dataUrl)}" data-duration="${ct.duration||0}"><button type="button" class="voice-btn">▶</button><div class="voice-progress-wrap"><div class="voice-progress-fill"></div></div><span class="voice-time">${formatVoiceDuration(ct.duration||0)}</span></div>`;
     }
     else if(ct.type==='videoNote'){
-      body=`<div class="circle-msg" data-src="${escapeHtml(ct.dataUrl)}" data-duration="${ct.duration||0}" data-msg-id="${escapeHtml(m.id)}" data-author-uid="${escapeHtml(m.fromUid)}"><video preload="metadata" playsinline muted></video><svg class="circle-ring" viewBox="0 0 100 100" preserveAspectRatio="none"><circle class="circle-ring-track" cx="50" cy="50" r="48"/><circle class="circle-ring-fill" cx="50" cy="50" r="48"/></svg><div class="circle-overlay">▶</div><span class="circle-timer">${formatVoiceDuration(ct.duration||0)}</span></div>`;
+      body=`<div class="circle-msg" data-src="${escapeHtml(ct.dataUrl)}" data-duration="${ct.duration||0}" data-msg-id="${escapeHtml(m.id)}" data-author-uid="${escapeHtml(m.fromUid)}"><video preload="auto" playsinline muted></video><svg class="circle-ring" viewBox="0 0 100 100" preserveAspectRatio="none"><circle class="circle-ring-track" cx="50" cy="50" r="48"/><circle class="circle-ring-fill" cx="50" cy="50" r="48"/></svg><div class="circle-overlay">▶</div><span class="circle-timer">${formatVoiceDuration(ct.duration||0)}</span></div>`;
     }
     else if(ct.type==='file'){
       body=`<div class="file-attach"><div class="ficon">${getFileIcon(ct.name)}</div><div class="finfo"><div class="fname">${escapeHtml(ct.name)}</div><div class="fsize">${formatSize(ct.size)}</div></div><a href="${escapeHtml(ct.dataUrl)}" download="${escapeHtml(ct.name)}">⬇</a></div>`;
@@ -1801,7 +1815,6 @@ function renderMessages(opts){
   c.querySelectorAll('.voice-msg').forEach(attachVoicePlayer);
   c.querySelectorAll('.circle-msg').forEach(attachCirclePlayer);
 
-  // Восстанавливаем играющий кружок после ре-рендера
   if(savedCircle){
     let target=null;
     c.querySelectorAll('.circle-msg').forEach(circle=>{
@@ -2505,7 +2518,8 @@ document.addEventListener('keydown',e=>{
     $('user-profile-modal').classList.remove('visible');
     currentViewedProfileUid=null;
     if(isRecordingVoice)cancelVoiceRecording();
-    if($('video-note-modal')?.classList.contains('visible'))closeVideoNoteModal();
+    const vnm=$('video-note-modal');
+    if(vnm&&vnm.classList.contains('visible'))closeVideoNoteModal();
   }
 });
 
