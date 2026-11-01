@@ -2,6 +2,15 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<script>
+  (function(){
+    try {
+      var theme = localStorage.getItem('tg-theme');
+      if (theme !== 'light' && theme !== 'dark') theme = 'dark';
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#08090c">
 <title>Мессенджер</title>
@@ -194,7 +203,6 @@
     </div>
   </main>
 
-  <!-- Нижнее меню (мобилка + десктоп) -->
   <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
     <button type="button" class="mobile-nav-item active" id="nav-chats">
       <div class="nav-icon-wrap">
@@ -239,6 +247,22 @@
         <div class="settings-info">
           <div class="settings-title" data-i18n="myProfile">Мой профиль</div>
           <div class="settings-subtitle" id="settings-profile-name">—</div>
+        </div>
+        <svg class="settings-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+      <button type="button" class="settings-item" id="settings-theme">
+        <div class="settings-icon theme-icon-wrap">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </div>
+        <div class="settings-info">
+          <div class="settings-title" data-i18n="theme">Тема</div>
+          <div class="settings-subtitle" id="settings-theme-current">Тёмная</div>
         </div>
         <svg class="settings-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </button>
@@ -464,9 +488,15 @@
 </div>
 
 <div class="reaction-picker" id="reaction-picker">
-  <button type="button" data-emoji="👍">👍</button><button type="button" data-emoji="❤️">❤️</button>
-  <button type="button" data-emoji="😂">😂</button><button type="button" data-emoji="😮">😮</button>
-  <button type="button" data-emoji="😢">😢</button><button type="button" data-emoji="🔥">🔥</button>
+  <button type="button" data-emoji="👍">👍</button>
+  <button type="button" data-emoji="❤️">❤️</button>
+  <button type="button" data-emoji="😂">😂</button>
+  <button type="button" data-emoji="😮">😮</button>
+  <button type="button" data-emoji="😢">😢</button>
+  <button type="button" data-emoji="🔥">🔥</button>
+  <span class="rp-divider" aria-hidden="true"></span>
+  <button type="button" class="rp-action" data-action="reply" title="Ответить">↩</button>
+  <button type="button" class="rp-action" data-action="delete" title="Удалить">🗑</button>
 </div>
 
 <div class="toast" id="toast"></div>

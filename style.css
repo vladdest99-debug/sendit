@@ -1,5 +1,5 @@
 /* ============================================
-   ДИЗАЙН-СИСТЕМА
+   ДИЗАЙН-СИСТЕМА — ТЁМНАЯ (по умолчанию)
    ============================================ */
 :root{
   --bg-0:#08090c;
@@ -45,12 +45,72 @@
   --shadow-lg:0 20px 48px rgba(0,0,0,0.5),0 8px 16px rgba(0,0,0,0.3);
   --shadow-glow:0 8px 24px rgba(59,130,246,0.35);
 
+  --login-bg-top:#18243b;
+  --nav-bg:rgba(22,26,35,0.92);
+  --nav-border:rgba(22,26,35,0.92);
+  --scroll-thumb:rgba(255,255,255,0.08);
+  --scroll-thumb-hover:rgba(255,255,255,0.18);
+  --btn-hover:rgba(255,255,255,0.06);
+  --btn-active:rgba(255,255,255,0.1);
+  --reply-quote-bg:rgba(0,0,0,0.2);
+  --reply-quote-bg-me:rgba(0,0,0,0.25);
+  --attach-bg:rgba(0,0,0,0.15);
+  --date-bg:rgba(19,22,29,0.9);
+
   --ease:cubic-bezier(0.4,0,0.2,1);
   --ease-out:cubic-bezier(0,0,0.2,1);
   --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
   --t-fast:0.12s var(--ease);
   --t:0.2s var(--ease);
   --t-slow:0.3s var(--ease);
+}
+
+/* ============================================
+   СВЕТЛАЯ ТЕМА
+   ============================================ */
+html[data-theme="light"]{
+  --bg-0:#ffffff;
+  --bg-1:#f5f7fa;
+  --bg-2:#eef1f5;
+  --bg-3:#e6eaf0;
+  --bg-4:#dce2ea;
+  --bg-hover:#eef1f5;
+  --bg-active:linear-gradient(135deg,#dbeafe,#bfdbfe);
+
+  --text-1:#0f172a;
+  --text-2:#475569;
+  --text-3:#94a3b8;
+
+  --border:rgba(0,0,0,0.08);
+  --border-light:rgba(0,0,0,0.12);
+  --border-focus:rgba(59,130,246,0.5);
+
+  --accent:#2563eb;
+  --accent-2:#2563eb;
+  --accent-3:#3b82f6;
+  --accent-glow:rgba(59,130,246,0.12);
+  --accent-glow-strong:rgba(59,130,246,0.25);
+
+  --bubble-mine:linear-gradient(135deg,#3b82f6,#2563eb);
+  --bubble-theirs:#ffffff;
+
+  --shadow-xs:0 1px 2px rgba(0,0,0,0.06);
+  --shadow-sm:0 2px 6px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:0 8px 24px rgba(0,0,0,0.10),0 2px 6px rgba(0,0,0,0.05);
+  --shadow-lg:0 20px 48px rgba(0,0,0,0.15),0 8px 16px rgba(0,0,0,0.08);
+  --shadow-glow:0 8px 24px rgba(59,130,246,0.25);
+
+  --login-bg-top:#dbeafe;
+  --nav-bg:rgba(255,255,255,0.92);
+  --nav-border:rgba(255,255,255,0.92);
+  --scroll-thumb:rgba(0,0,0,0.12);
+  --scroll-thumb-hover:rgba(0,0,0,0.2);
+  --btn-hover:rgba(0,0,0,0.05);
+  --btn-active:rgba(0,0,0,0.08);
+  --reply-quote-bg:rgba(0,0,0,0.05);
+  --reply-quote-bg-me:rgba(255,255,255,0.15);
+  --attach-bg:rgba(0,0,0,0.04);
+  --date-bg:rgba(255,255,255,0.9);
 }
 
 /* ============================================
@@ -70,6 +130,7 @@ html,body{
   -moz-osx-font-smoothing:grayscale;
   -webkit-tap-highlight-color:transparent;
   letter-spacing:-0.01em;
+  transition:background-color 0.2s var(--ease),color 0.2s var(--ease);
 }
 @supports (-webkit-touch-callout:none){
   html,body{height:-webkit-fill-available;}
@@ -78,11 +139,11 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 input,textarea,select{font-family:inherit;outline:none;border:none;background:none;color:inherit;font-size:inherit;}
 img,video{max-width:100%;display:block;}
 svg{display:block;}
-::selection{background:var(--accent-glow-strong);color:#fff;}
+::selection{background:var(--accent-glow-strong);color:var(--text-1);}
 ::-webkit-scrollbar{width:8px;height:8px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;transition:background 0.2s;}
-::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.18);}
+::-webkit-scrollbar-thumb{background:var(--scroll-thumb);border-radius:4px;transition:background 0.2s;}
+::-webkit-scrollbar-thumb:hover{background:var(--scroll-thumb-hover);}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px;}
 
 /* ============================================
@@ -118,8 +179,8 @@ svg{display:block;}
   transition:var(--t);
   flex-shrink:0;
 }
-.icon-btn:hover{background:rgba(255,255,255,0.06);color:var(--text-1);}
-.icon-btn:active{transform:scale(0.94);background:rgba(255,255,255,0.1);}
+.icon-btn:hover{background:var(--btn-hover);color:var(--text-1);}
+.icon-btn:active{transform:scale(0.94);background:var(--btn-active);}
 .icon-btn svg{width:20px;height:20px;stroke-width:2;}
 
 /* ============================================
@@ -131,11 +192,12 @@ svg{display:block;}
   display:flex;
   align-items:center;
   justify-content:center;
-  background:radial-gradient(ellipse at top,#18243b 0%,var(--bg-0) 60%);
+  background:radial-gradient(ellipse at top,var(--login-bg-top) 0%,var(--bg-0) 60%);
   z-index:100;
   padding:20px;
   padding-top:calc(20px + env(safe-area-inset-top));
   padding-bottom:calc(20px + env(safe-area-inset-bottom));
+  transition:background 0.2s var(--ease);
 }
 .login-box{
   width:100%;
@@ -195,6 +257,7 @@ svg{display:block;}
   display:flex;flex-direction:column;
   border-right:1px solid var(--border);
   min-height:0;overflow:hidden;flex-shrink:0;position:relative;
+  transition:background-color 0.2s var(--ease);
 }
 .sidebar-header{
   padding:10px 12px;display:flex;align-items:center;gap:8px;
@@ -346,6 +409,7 @@ svg{display:block;}
 .main{
   flex:1;display:flex;flex-direction:column;background:var(--bg-0);
   min-height:0;overflow:hidden;position:relative;
+  transition:background-color 0.2s var(--ease);
 }
 .empty-chat{
   flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -378,7 +442,6 @@ svg{display:block;}
 .chat-header.clickable .avatar:hover,
 .chat-header.clickable .chat-info:hover{opacity:0.8;}
 
-/* Кнопка «Назад» — управляется через медиа-запрос */
 #back-btn{display:none !important;}
 
 #chat-area{min-height:0;overflow:hidden;position:relative;flex:1;display:flex;flex-direction:column;}
@@ -398,7 +461,7 @@ svg{display:block;}
 .messages-empty .emoji{font-size:32px;opacity:0.6;}
 .date-divider{text-align:center;margin:16px 0 8px;flex-shrink:0;}
 .date-divider span{
-  background:rgba(19,22,29,0.9);color:var(--text-3);
+  background:var(--date-bg);color:var(--text-3);
   font-size:12px;font-weight:500;padding:4px 12px;
   border-radius:var(--radius-full);backdrop-filter:blur(8px);letter-spacing:0.2px;
 }
@@ -438,9 +501,12 @@ svg{display:block;}
   border-radius:var(--radius-lg);font-size:15px;line-height:1.4;
   word-wrap:break-word;position:relative;
   display:flex;flex-direction:column;box-shadow:var(--shadow-xs);
+  -webkit-touch-callout:none;
+  -webkit-user-select:text;
+  user-select:text;
 }
 .msg-row.me .bubble{background:var(--bubble-mine);border-bottom-right-radius:4px;color:#fff;}
-.msg-row.other .bubble{background:var(--bubble-theirs);border-bottom-left-radius:4px;color:var(--text-1);}
+.msg-row.other .bubble{background:var(--bubble-theirs);border-bottom-left-radius:4px;color:var(--text-1);border:1px solid var(--border);}
 .bubble .text{white-space:pre-wrap;word-break:break-word;}
 .bubble .footer{
   display:flex;align-items:center;justify-content:flex-end;gap:4px;
@@ -456,21 +522,21 @@ svg{display:block;}
 }
 .sender-name:hover{text-decoration:underline;}
 .sender-tag{
-  font-size:10px;background:rgba(91,158,255,0.15);color:var(--accent);
+  font-size:10px;background:var(--accent-glow);color:var(--accent);
   padding:1px 6px;border-radius:6px;font-weight:600;
   text-transform:uppercase;letter-spacing:0.3px;
 }
 
 .reply-quote{
-  background:rgba(0,0,0,0.2);border-left:2px solid var(--accent);
+  background:var(--reply-quote-bg);border-left:2px solid var(--accent);
   padding:4px 10px;margin-bottom:6px;border-radius:4px;
   font-size:13px;line-height:1.35;
 }
-.msg-row.me .reply-quote{background:rgba(0,0,0,0.25);}
+.msg-row.me .reply-quote{background:var(--reply-quote-bg-me);}
 .reply-quote .rname{font-weight:600;color:var(--accent);font-size:12px;margin-bottom:1px;}
 .reply-quote .rtext{
   opacity:0.85;white-space:nowrap;overflow:hidden;
-  text-overflow:ellipsis;max-width:260px;color:rgba(255,255,255,0.8);
+  text-overflow:ellipsis;max-width:260px;
 }
 
 .media{max-width:340px;border-radius:var(--radius-md);overflow:hidden;cursor:pointer;margin-bottom:4px;margin-top:2px;}
@@ -478,14 +544,14 @@ svg{display:block;}
 
 .audio-player{
   display:flex;align-items:center;gap:8px;padding:6px;
-  background:rgba(0,0,0,0.15);border-radius:var(--radius-md);
+  background:var(--attach-bg);border-radius:var(--radius-md);
   max-width:100%;margin-bottom:4px;margin-top:2px;
 }
 .audio-player audio{width:100%;max-width:260px;height:32px;}
 
 .file-attach{
   display:flex;align-items:center;gap:10px;padding:8px 10px;
-  background:rgba(0,0,0,0.15);border-radius:var(--radius-md);
+  background:var(--attach-bg);border-radius:var(--radius-md);
   max-width:100%;margin-bottom:4px;margin-top:2px;
 }
 .file-attach .ficon{font-size:24px;flex-shrink:0;}
@@ -493,18 +559,18 @@ svg{display:block;}
 .file-attach .fname{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500;}
 .file-attach .fsize{font-size:11px;opacity:0.65;margin-top:1px;}
 .file-attach a{color:var(--accent);text-decoration:none;font-size:18px;padding:4px 6px;border-radius:6px;transition:var(--t);flex-shrink:0;}
-.file-attach a:hover{background:rgba(255,255,255,0.1);}
+.file-attach a:hover{background:var(--btn-hover);}
 
 .reactions{display:flex;gap:4px;margin-top:6px;flex-wrap:wrap;}
 .reactions .react{
-  background:rgba(59,130,246,0.2);padding:3px 10px;
+  background:var(--accent-glow);padding:3px 10px;
   border-radius:var(--radius-full);font-size:13px;
   display:inline-flex;align-items:center;gap:4px;
   cursor:pointer;transition:var(--t-fast);user-select:none;
-  color:#fff;border:1px solid rgba(59,130,246,0.3);
+  color:var(--text-1);border:1px solid var(--border-light);
 }
-.reactions .react:hover{background:rgba(59,130,246,0.35);}
-.reactions .react.mine{background:rgba(59,130,246,0.5);border-color:var(--accent);}
+.reactions .react:hover{background:var(--accent-glow-strong);}
+.reactions .react.mine{background:var(--accent-glow-strong);border-color:var(--accent);}
 
 /* ============================================
    CHANNEL POSTS
@@ -631,15 +697,45 @@ svg{display:block;}
 .reply-bar .rtext{opacity:0.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12px;color:var(--text-2);}
 .reply-bar button{color:var(--text-2);font-size:18px;}
 
+/* ============================================
+   REACTION PICKER
+   ============================================ */
 .reaction-picker{
   position:fixed;background:var(--bg-3);border-radius:var(--radius-full);
   padding:6px 8px;display:none;gap:2px;box-shadow:var(--shadow-lg);
   z-index:250;border:1px solid var(--border-light);
   animation:popIn 0.2s var(--ease-spring);
+  align-items:center;
 }
 .reaction-picker.visible{display:flex;}
 .reaction-picker button{font-size:22px;padding:4px 6px;border-radius:50%;transition:transform 0.15s var(--ease-spring);line-height:1;}
 .reaction-picker button:hover{transform:scale(1.3) translateY(-2px);}
+
+.reaction-picker .rp-divider,
+.reaction-picker .rp-action{display:none;}
+
+.reaction-picker.show-actions .rp-divider{
+  display:inline-block;
+  width:1px;
+  height:24px;
+  background:var(--border-light);
+  margin:0 4px;
+  align-self:center;
+}
+
+.reaction-picker.show-actions .rp-action{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  padding:4px 8px;
+  color:var(--text-1);
+  transition:transform 0.15s var(--ease-spring);
+}
+
+.reaction-picker.show-actions .rp-action:hover{
+  transform:scale(1.15);
+}
 
 /* ============================================
    TOAST
@@ -664,6 +760,7 @@ svg{display:block;}
   display:none;align-items:center;justify-content:center;
   z-index:150;padding:20px;animation:fadeIn 0.2s var(--ease);
 }
+html[data-theme="light"] .modal{background:rgba(0,0,0,0.35);}
 .modal.visible{display:flex;}
 .modal-box{
   position:relative;
@@ -726,6 +823,9 @@ svg{display:block;}
   height:160px;
   background:linear-gradient(135deg,#1e3a5f 0%,#2a1e5a 100%);
   position:relative;flex-shrink:0;
+}
+html[data-theme="light"] .profile-cover{
+  background:linear-gradient(135deg,#bfdbfe 0%,#ddd6fe 100%);
 }
 .profile-cover::before{
   content:'';position:absolute;inset:0;
@@ -839,6 +939,12 @@ svg{display:block;}
 .settings-danger .settings-title{color:var(--danger);}
 .settings-danger:hover{background:rgba(248,113,113,0.08);}
 
+/* Иконка темы — показываем луну в тёмной теме, солнце в светлой */
+.theme-icon-wrap .icon-sun{display:none;}
+.theme-icon-wrap .icon-moon{display:block;}
+html[data-theme="light"] .theme-icon-wrap .icon-sun{display:block;}
+html[data-theme="light"] .theme-icon-wrap .icon-moon{display:none;}
+
 /* ============================================
    ЯЗЫК
    ============================================ */
@@ -910,76 +1016,27 @@ svg{display:block;}
 /* ============================================
    КОНТАКТЫ (заглушка)
    ============================================ */
-.contacts-placeholder {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 40px 20px 20px;
-  gap: 12px;
+.contacts-placeholder{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:40px 20px 20px;gap:12px;
 }
-
-.contacts-placeholder-icon {
-  width: 84px;
-  height: 84px;
-  border-radius: 24px;
-  background: var(--accent-glow);
-  color: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
+.contacts-placeholder-icon{
+  width:84px;height:84px;border-radius:24px;
+  background:var(--accent-glow);color:var(--accent);
+  display:flex;align-items:center;justify-content:center;margin-bottom:8px;
 }
-
-.contacts-placeholder-icon svg {
-  width: 42px;
-  height: 42px;
+.contacts-placeholder-icon svg{width:42px;height:42px;}
+.contacts-placeholder-title{font-size:18px;font-weight:700;color:var(--text-1);letter-spacing:-0.01em;}
+.contacts-placeholder-sub{font-size:14px;color:var(--text-2);max-width:340px;line-height:1.55;}
+.contacts-find-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 20px;margin-top:12px;background:var(--accent-gradient);
+  color:#fff;border-radius:var(--radius-md);font-size:14px;font-weight:600;
+  box-shadow:var(--shadow-sm);transition:var(--t);
 }
-
-.contacts-placeholder-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text-1);
-  letter-spacing: -0.01em;
-}
-
-.contacts-placeholder-sub {
-  font-size: 14px;
-  color: var(--text-2);
-  max-width: 340px;
-  line-height: 1.55;
-}
-
-.contacts-find-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 20px;
-  margin-top: 12px;
-  background: var(--accent-gradient);
-  color: #fff;
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  font-weight: 600;
-  box-shadow: var(--shadow-sm);
-  transition: var(--t);
-}
-
-.contacts-find-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-glow);
-}
-
-.contacts-find-btn:active {
-  transform: translateY(0);
-}
-
-.contacts-find-btn svg {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
+.contacts-find-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-glow);}
+.contacts-find-btn:active{transform:translateY(0);}
+.contacts-find-btn svg{width:18px;height:18px;flex-shrink:0;}
 
 /* ============================================
    СОЗДАНИЕ ГРУППЫ
@@ -1207,15 +1264,15 @@ svg{display:block;}
   bottom: calc(16px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(22, 26, 35, 0.92);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 40px;
   padding: 8px 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: var(--shadow-lg), inset 0 1px 0 var(--border-light);
   z-index: 200;
   gap: 4px;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
 }
 
 @media (max-width: 768px) {
@@ -1244,7 +1301,7 @@ svg{display:block;}
 }
 
 .mobile-nav-item:active {
-  background: rgba(255,255,255,0.05);
+  background: var(--btn-hover);
 }
 
 .mobile-nav-item.active {
@@ -1297,7 +1354,7 @@ svg{display:block;}
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(22, 26, 35, 0.92);
+  border: 2px solid var(--nav-border);
 }
 
 /* ============================================
@@ -1309,21 +1366,17 @@ svg{display:block;}
 }
 
 @media (max-width:768px){
-  /* Sidebar/Main */
   .sidebar{width:100%;position:absolute;inset:0;z-index:10;}
   .main{width:100%;}
   #app.chat-open .sidebar{display:none;}
   #app:not(.chat-open) .main{display:none;}
 
-  /* Кнопка «Назад» */
   #back-btn{display:inline-flex !important;}
 
-  /* Login */
   .login-box{width:100%;max-width:400px;padding:36px 24px;}
   .login-box .logo{width:64px;height:64px;border-radius:18px;}
   .login-box .logo svg{width:32px;height:32px;}
 
-  /* Stories bar */
   .stories-bar{padding:12px 14px;gap:12px;}
   .story-item{width:62px;}
   .story-ring{width:54px;height:54px;}
@@ -1331,32 +1384,37 @@ svg{display:block;}
   .story-label{font-size:10px;max-width:62px;}
   .story-add-btn{top:38px;width:20px;height:20px;font-size:12px;}
 
-  /* Chat header + safe area */
   .chat-header{height:calc(64px + env(safe-area-inset-top));padding-top:calc(10px + env(safe-area-inset-top));}
   .sidebar-header{padding-top:calc(10px + env(safe-area-inset-top));}
 
-  /* Messages */
   .messages{padding:14px 10px 4px;gap:1px;}
   .bubble{max-width:84%;}
   .media{max-width:100%;}
   .media img,.media video{max-height:260px;}
 
-  /* Input panel + safe area */
   .input-panel{padding-bottom:calc(16px + env(safe-area-inset-bottom));}
   .input-wrap textarea{max-height:100px;}
   .attach-menu{bottom:calc(80px + env(safe-area-inset-bottom));}
 
-  /* Scroll button (учитывая нижнее меню) */
   .scroll-to-bottom{bottom:calc(150px + env(safe-area-inset-bottom)) !important;right:14px;width:42px;height:42px;}
 
-  /* Отступ для списка чатов под меню */
   .chat-list{padding-bottom:90px;}
 
-  /* Msg tools — всегда видимы */
-  .msg-row .msg-tools{opacity:1;padding-bottom:2px;}
-  .msg-row .msg-tools button{padding:2px 4px;font-size:13px;}
+  /* На мобиле msg-tools полностью скрыты — реакция через long-press */
+  .msg-row .msg-tools{display:none !important;}
 
-  /* Модалки — на весь экран (как разделы в Telegram) */
+  .msg-row .bubble{
+    -webkit-user-select:text;
+    user-select:text;
+  }
+  .msg-row .bubble img,
+  .msg-row .bubble video{
+    -webkit-touch-callout:none;
+    -webkit-user-drag:none;
+    user-select:none;
+    pointer-events:auto;
+  }
+
   .modal {
     align-items: stretch;
     padding: 0;
@@ -1375,7 +1433,6 @@ svg{display:block;}
     display: none;
   }
 
-  /* Профиль — кнопка «Перейти» под именем */
   .profile-panel{padding-top:env(safe-area-inset-top);}
   .profile-cover{height:140px;}
   .profile-avatar-wrapper{width:84px;height:84px;bottom:-38px;}
@@ -1384,7 +1441,6 @@ svg{display:block;}
   .profile-name{font-size:20px;line-height:1.2;}
   .profile-body{padding:16px 12px calc(40px + env(safe-area-inset-bottom));}
 
-  /* Story viewer — safe area */
   .story-progress{top:calc(12px + env(safe-area-inset-top));}
   .story-viewer-header{top:calc(26px + env(safe-area-inset-top));}
   .story-viewer-caption{font-size:13px;left:14px;right:14px;padding:8px 12px;bottom:calc(24px + env(safe-area-inset-bottom));}
@@ -1396,12 +1452,10 @@ svg{display:block;}
   .story-reactions-count{bottom:calc(70px + env(safe-area-inset-bottom));}
   .story-reactions-count .rc{font-size:11px;padding:2px 8px;}
 
-  /* Каналы на мобиле */
   .msg-row.channel-post .bubble{max-width:calc(100% - 12px);padding:12px 14px;}
-  .msg-row.channel-post .msg-tools{top:4px;right:4px;opacity:1;background:transparent;box-shadow:none;border:none;}
+  .msg-row.channel-post .msg-tools{display:none !important;}
 }
 
-/* Анимация выезда модалки справа */
 @keyframes slideInRight {
   from { transform: translateX(100%); }
   to   { transform: translateX(0); }
@@ -1423,23 +1477,20 @@ svg{display:block;}
   .chat-header .avatar{width:40px;height:40px;}
 }
 
-/* ============================================
-   ДЕСКТОПНОЕ НИЖНЕЕ МЕНЮ
-   ============================================ */
 @media (min-width: 769px) {
   .mobile-bottom-nav {
     display: flex;
-    left: 200px; /* центр sidebar при ширине 400px */
+    left: 200px;
     bottom: 20px;
   }
   .chat-list {
-    padding-bottom: 84px; /* чтобы меню не перекрывало последние элементы */
+    padding-bottom: 84px;
   }
 }
 
 @media (min-width: 769px) and (max-width: 900px) {
   .mobile-bottom-nav {
-    left: 170px; /* центр sidebar при ширине 340px */
+    left: 170px;
   }
 }
 
