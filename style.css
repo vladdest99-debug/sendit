@@ -1108,7 +1108,7 @@ html[data-theme="light"] .theme-icon-wrap .icon-moon{display:none;}
 .add-members-btn:hover{background:var(--accent-glow);border-color:var(--accent);}
 
 /* ============================================
-   ИСТОРИИ — создание и просмотр
+   ИСТОРИИ
    ============================================ */
 .story-preview{
   width:100%;aspect-ratio:1/1;background:var(--bg-0);
@@ -1256,7 +1256,7 @@ html[data-theme="light"] .theme-icon-wrap .icon-moon{display:none;}
 }
 
 /* ============================================
-   НИЖНЕЕ МЕНЮ (мобилка + десктоп)
+   НИЖНЕЕ МЕНЮ
    ============================================ */
 .mobile-bottom-nav {
   display: none;
@@ -1420,6 +1420,343 @@ html[data-theme="light"] .theme-icon-wrap .icon-moon{display:none;}
 .wallpaper-item.upload-item span{font-size:11px;line-height:1.2;}
 
 /* ============================================
+   ГОЛОСОВЫЕ СООБЩЕНИЯ
+   ============================================ */
+.recording-bar{
+  display:none;
+  padding:10px 16px;
+  background:var(--bg-2);
+  border-top:1px solid var(--border);
+  align-items:center;
+  gap:12px;
+  flex-shrink:0;
+  animation:slideDown 0.2s var(--ease-out);
+}
+.recording-bar.visible{display:flex;}
+.recording-cancel{
+  width:34px;height:34px;
+  border-radius:50%;
+  background:var(--bg-3);
+  color:var(--text-2);
+  display:flex;align-items:center;justify-content:center;
+  transition:var(--t);
+  flex-shrink:0;
+}
+.recording-cancel:hover{background:rgba(248,113,113,0.15);color:var(--danger);}
+.recording-cancel svg{width:16px;height:16px;}
+.recording-status{
+  display:flex;align-items:center;gap:10px;
+  flex:1;font-size:14px;color:var(--text-1);min-width:0;
+}
+.recording-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#ef4444;
+  animation:recPulseDot 1s infinite;
+  flex-shrink:0;
+}
+@keyframes recPulseDot{
+  0%,100%{opacity:1;transform:scale(1);}
+  50%{opacity:0.4;transform:scale(1.25);}
+}
+.recording-text{color:var(--text-2);}
+.recording-timer{
+  font-variant-numeric:tabular-nums;
+  font-weight:600;
+  color:var(--danger);
+  margin-left:auto;
+}
+
+.send-btn.recording{
+  background:linear-gradient(135deg,#ef4444,#dc2626) !important;
+  color:#fff !important;
+  box-shadow:0 0 0 0 rgba(239,68,68,0.6) !important;
+  animation:recPulseBtn 1.5s infinite;
+}
+@keyframes recPulseBtn{
+  0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.6);}
+  50%{box-shadow:0 0 0 10px rgba(239,68,68,0);}
+}
+
+.voice-msg{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:2px 0;
+  min-width:200px;
+  max-width:280px;
+  margin-top:4px;
+  margin-bottom:4px;
+}
+.voice-btn{
+  width:36px;height:36px;
+  border-radius:50%;
+  background:var(--accent-gradient);
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+  font-size:14px;
+  line-height:1;
+  transition:var(--t);
+  box-shadow:0 2px 6px rgba(59,130,246,0.35);
+}
+.voice-btn:hover{transform:scale(1.06);}
+.voice-progress-wrap{
+  flex:1;
+  height:6px;
+  background:rgba(255,255,255,0.2);
+  border-radius:3px;
+  cursor:pointer;
+  overflow:hidden;
+  position:relative;
+  touch-action:manipulation;
+}
+html[data-theme="light"] .msg-row.other .voice-progress-wrap{background:rgba(0,0,0,0.1);}
+.voice-progress-fill{
+  height:100%;
+  background:#fff;
+  border-radius:3px;
+  width:0;
+  transition:width 0.1s linear;
+}
+html[data-theme="light"] .msg-row.other .voice-progress-fill{background:var(--accent);}
+.voice-time{
+  font-size:11px;
+  color:var(--text-2);
+  min-width:34px;
+  text-align:right;
+  font-variant-numeric:tabular-nums;
+  flex-shrink:0;
+}
+.msg-row.me .voice-time{color:rgba(255,255,255,0.75);}
+.voice-msg audio{display:none;}
+
+@media (max-width:768px){
+  .voice-msg{min-width:180px;}
+  .recording-bar{padding-bottom:calc(10px + env(safe-area-inset-bottom));}
+}
+
+/* ============================================
+   КРУЖКИ (ВИДЕОСООБЩЕНИЯ)
+   ============================================ */
+
+/* Круглое сообщение в чате */
+.circle-msg{
+  position:relative;
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  overflow:hidden;
+  cursor:pointer;
+  background:#000;
+  margin:6px 0;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  flex-shrink:0;
+  box-shadow:0 4px 16px rgba(0,0,0,0.35);
+}
+.circle-msg video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;
+  pointer-events:none;
+}
+.circle-msg .circle-overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  background:rgba(0,0,0,0.25);
+  color:#fff;
+  font-size:44px;
+  transition:opacity 0.2s,background 0.2s;
+  pointer-events:none;
+  text-shadow:0 2px 6px rgba(0,0,0,0.6);
+}
+.circle-msg.playing .circle-overlay{
+  opacity:0;
+  background:transparent;
+}
+.circle-msg .circle-timer{
+  position:absolute;
+  bottom:18px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,0.55);
+  color:#fff;
+  font-size:11px;
+  font-weight:600;
+  padding:2px 8px;
+  border-radius:10px;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.2s;
+  font-variant-numeric:tabular-nums;
+}
+.circle-msg.playing .circle-timer,
+.circle-msg.paused .circle-timer{opacity:1;}
+
+/* Кольцо прогресса вокруг видео */
+.circle-msg .circle-ring{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  transform:rotate(-90deg);
+}
+.circle-msg .circle-ring-track{
+  fill:none;
+  stroke:rgba(255,255,255,0.18);
+  stroke-width:3;
+}
+.circle-msg .circle-ring-fill{
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:3;
+  stroke-linecap:round;
+  transition:stroke-dashoffset 0.1s linear;
+}
+
+/* Модалка записи */
+.video-note-modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.92);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:450;
+  padding:20px;
+  gap:18px;
+}
+.video-note-modal.visible{display:flex;}
+
+.video-note-stage{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.video-note-ring{
+  position:relative;
+  width:min(78vw,320px);
+  height:min(78vw,320px);
+  border-radius:50%;
+  overflow:hidden;
+  background:#111;
+  box-shadow:0 0 0 3px rgba(255,255,255,0.15),0 0 40px rgba(0,0,0,0.6);
+  transition:box-shadow 0.2s;
+}
+.video-note-ring.recording{
+  box-shadow:0 0 0 3px #ef4444,0 0 0 8px rgba(239,68,68,0.25),0 0 40px rgba(239,68,68,0.5);
+  animation:vnRingPulse 1.4s infinite;
+}
+@keyframes vnRingPulse{
+  0%,100%{box-shadow:0 0 0 3px #ef4444,0 0 0 8px rgba(239,68,68,0.25),0 0 40px rgba(239,68,68,0.5);}
+  50%{box-shadow:0 0 0 3px #ef4444,0 0 0 14px rgba(239,68,68,0.1),0 0 40px rgba(239,68,68,0.5);}
+}
+.video-note-ring video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  transform:scaleX(-1);
+  display:block;
+}
+.video-note-ring video.rear-camera{transform:none;}
+
+.video-note-timer{
+  position:absolute;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,0.55);
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  padding:4px 12px;
+  border-radius:12px;
+  opacity:0;
+  transition:opacity 0.2s;
+  font-variant-numeric:tabular-nums;
+}
+.video-note-ring.recording .video-note-timer{opacity:1;}
+
+.video-note-hint{
+  color:rgba(255,255,255,0.75);
+  font-size:13px;
+  text-align:center;
+  max-width:320px;
+  line-height:1.4;
+}
+
+.video-note-actions{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:32px;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom));
+}
+.video-note-btn{
+  width:56px;
+  height:56px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,0.12);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  transition:transform 0.15s,background 0.15s;
+  flex-shrink:0;
+}
+.video-note-btn:hover{background:rgba(255,255,255,0.22);}
+.video-note-btn:active{transform:scale(0.92);}
+.video-note-btn svg{width:24px;height:24px;}
+
+.video-note-record{
+  width:78px;
+  height:78px;
+  background:rgba(239,68,68,0.9);
+  box-shadow:0 0 0 4px rgba(255,255,255,0.2);
+}
+.video-note-record::before{
+  content:'';
+  width:60%;
+  height:60%;
+  border-radius:50%;
+  background:#fff;
+  transition:all 0.2s;
+}
+.video-note-record:hover{background:rgba(239,68,68,1);}
+.video-note-record.recording{
+  background:rgba(239,68,68,1);
+}
+.video-note-record.recording::before{
+  width:32%;
+  height:32%;
+  border-radius:6px;
+}
+
+.video-note-switch svg{width:22px;height:22px;}
+.video-note-cancel svg{width:22px;height:22px;}
+
+@media (max-width:480px){
+  .video-note-actions{gap:24px;}
+  .video-note-btn{width:48px;height:48px;}
+  .video-note-record{width:70px;height:70px;}
+  .circle-msg{width:180px;height:180px;}
+}
+
+/* ============================================
    АДАПТИВ
    ============================================ */
 @media (max-width:900px){
@@ -1462,7 +1799,6 @@ html[data-theme="light"] .theme-icon-wrap .icon-moon{display:none;}
 
   .chat-list{padding-bottom:90px;}
 
-  /* На мобиле msg-tools полностью скрыты — реакция через long-press */
   .msg-row .msg-tools{display:none !important;}
 
   .msg-row .bubble{
@@ -1564,4 +1900,262 @@ html[data-theme="light"] .theme-icon-wrap .icon-moon{display:none;}
     animation-iteration-count:1 !important;
     transition-duration:0.01ms !important;
   }
+}
+/* ============================================
+   UX IMPROVEMENTS (переопределения)
+   ============================================ */
+
+/* --- 1. Крупные кликабельные мишени --- */
+.icon-btn{width:44px;height:44px;}
+.chat-item{padding:12px 16px;min-height:64px;}
+.msg-row .msg-tools button{min-width:32px;min-height:32px;}
+
+/* --- 2. Attach-menu: сетка 2×2 с иконками --- */
+.attach-menu{
+  display:none !important;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding:12px;
+  min-width:300px;
+  border-radius:16px;
+}
+.attach-menu.visible{display:grid !important;}
+.attach-menu button{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:10px;
+  padding:16px 10px;
+  min-height:88px;
+  border-radius:14px;
+  background:var(--bg-4);
+  border:1px solid transparent;
+  transition:all 0.15s var(--ease);
+}
+.attach-menu button:hover{
+  background:var(--accent-glow);
+  border-color:var(--accent);
+  transform:translateY(-2px);
+}
+.attach-menu button svg{
+  width:26px;
+  height:26px;
+  color:var(--accent);
+}
+.attach-menu button span{
+  font-size:12px;
+  font-weight:500;
+  color:var(--text-1);
+  line-height:1.2;
+}
+
+/* --- 3. Активный чат — явно выделяется --- */
+.chat-item.active{
+  background:linear-gradient(135deg,rgba(59,130,246,0.18),rgba(37,99,235,0.04));
+  box-shadow:inset 3px 0 0 var(--accent);
+}
+
+/* --- 4. Бейдж непрочитанных — ярче --- */
+.chat-item .meta .badge{
+  background:linear-gradient(135deg,#ef4444,#dc2626);
+  box-shadow:0 2px 8px rgba(239,68,68,0.5);
+  min-width:24px;
+  height:24px;
+  font-size:11px;
+  animation:badgePulse 2.4s ease-in-out infinite;
+}
+@keyframes badgePulse{
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.06);}
+}
+
+/* --- 5. Тулзы сообщений — всегда видны (приглушённо) --- */
+.msg-row .msg-tools{
+  opacity:0.25;
+  transition:opacity 0.18s var(--ease);
+}
+.msg-row:hover .msg-tools{opacity:1;}
+.msg-row .msg-tools button{
+  width:32px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  background:var(--bg-2);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:0;
+}
+.msg-row .msg-tools button:hover{
+  background:var(--accent-glow);
+  border-color:var(--accent);
+  color:var(--accent);
+  transform:scale(1.1);
+}
+
+/* --- 6. Кнопки в шапке чата — заметнее --- */
+.chat-header .actions .icon-btn{
+  background:var(--bg-2);
+  border:1px solid var(--border);
+}
+.chat-header .actions .icon-btn:hover{
+  background:var(--accent-glow);
+  border-color:var(--accent);
+  color:var(--accent);
+  transform:scale(1.05);
+}
+
+/* --- 7. Attach-btn и Send-btn (пустой) — привлекают взгляд --- */
+.attach-btn{
+  background:var(--bg-3);
+  border:1.5px solid var(--border);
+}
+.attach-btn:hover{
+  background:var(--accent-glow);
+  border-color:var(--accent);
+  color:var(--accent);
+}
+.send-btn.is-empty{
+  background:var(--bg-3);
+  color:var(--accent);
+  border:1.5px solid var(--border-light);
+  box-shadow:none;
+}
+.send-btn.is-empty:hover{
+  background:var(--accent-glow);
+  border-color:var(--accent);
+  color:var(--accent);
+  box-shadow:0 0 0 4px var(--accent-glow);
+}
+
+/* --- 8. Скролл вниз — заметная кнопка --- */
+.scroll-to-bottom{
+  width:50px;
+  height:50px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.5),0 0 0 3px var(--accent-glow);
+}
+.scroll-to-bottom.visible{
+  animation:subtleBounce 2s ease-in-out infinite;
+}
+@keyframes subtleBounce{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-3px) scale(1.03);}
+}
+
+/* --- 9. Пустой чат — мягкая пульсация подсказки --- */
+.empty-chat .txt{
+  padding:14px 24px;
+  font-size:14px;
+  font-weight:600;
+  animation:emptyPulse 2.4s ease-in-out infinite;
+}
+@keyframes emptyPulse{
+  0%,100%{box-shadow:0 0 0 0 var(--accent-glow);}
+  50%{box-shadow:0 0 0 8px transparent;}
+}
+
+/* --- 10. Recording bar — заметно, что идёт запись --- */
+.recording-bar{
+  padding:14px 20px;
+  border-top:2px solid #ef4444;
+  background:linear-gradient(90deg,rgba(239,68,68,0.08),transparent 70%);
+}
+.recording-timer{
+  font-size:16px;
+  padding:4px 12px;
+  background:rgba(239,68,68,0.15);
+  border-radius:10px;
+}
+
+/* --- 11. Кружки — двойное кольцо --- */
+.circle-msg{
+  box-shadow:0 4px 18px rgba(0,0,0,0.5),0 0 0 3px var(--bg-1),0 0 0 4px var(--accent-glow);
+}
+.circle-msg:hover{
+  box-shadow:0 6px 24px rgba(0,0,0,0.6),0 0 0 3px var(--bg-1),0 0 0 4px var(--accent);
+}
+.circle-msg .circle-overlay{
+  font-size:48px;
+  background:rgba(0,0,0,0.3);
+}
+
+/* --- 12. Голосовые — крупнее кнопка play --- */
+.voice-btn{
+  width:42px;
+  height:42px;
+  font-size:16px;
+  box-shadow:0 3px 10px rgba(59,130,246,0.5);
+}
+.voice-progress-wrap{height:8px;}
+
+/* --- 13. Кнопки в модалках — крупнее --- */
+.modal-actions button{
+  padding:14px;
+  min-height:48px;
+  font-size:15px;
+  border-radius:12px;
+}
+.modal-actions .save{
+  background:linear-gradient(135deg,#3b82f6,#2563eb);
+  box-shadow:0 4px 12px rgba(59,130,246,0.4);
+}
+.modal-actions .save:hover{
+  box-shadow:0 6px 20px rgba(59,130,246,0.6);
+}
+
+/* --- 14. Toast — информативнее --- */
+.toast{
+  font-size:14px;
+  padding:14px 22px;
+  border-left:4px solid var(--accent);
+  box-shadow:0 8px 32px rgba(0,0,0,0.6);
+  border-radius:12px;
+}
+.toast.success{border-left-color:#4ade80;}
+.toast.error{border-left-color:#f87171;}
+
+/* --- 15. Реакции — читаемые чипсы --- */
+.reactions .react{
+  padding:6px 12px;
+  font-size:14px;
+  font-weight:500;
+  border-width:1.5px;
+}
+.reactions .react.mine{
+  background:var(--accent);
+  color:#fff;
+  border-color:var(--accent);
+}
+
+/* --- 16. Focus — всегда заметно --- */
+:focus-visible{
+  outline:3px solid var(--accent);
+  outline-offset:3px;
+}
+
+/* --- 17. Скроллбар — удобнее хватать --- */
+::-webkit-scrollbar{width:10px;height:10px;}
+::-webkit-scrollbar-thumb{border-radius:5px;}
+
+/* --- 18. Мобильный адаптив для новых элементов --- */
+@media (max-width:768px){
+  .attach-btn,.send-btn{width:46px;height:46px;}
+  .attach-menu{
+    min-width:260px;
+    padding:10px;
+    gap:6px;
+    bottom:calc(84px + env(safe-area-inset-bottom));
+  }
+  .attach-menu button{
+    min-height:78px;
+    padding:12px 8px;
+  }
+  .attach-menu button span{font-size:11px;}
+  .chat-header .actions .icon-btn{width:44px;height:44px;}
+  .mobile-nav-item{min-width:68px;padding:10px 14px;}
+  .msg-row .msg-tools{display:none !important;}
+  .recording-timer{font-size:15px;}
 }
