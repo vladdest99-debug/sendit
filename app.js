@@ -70,7 +70,11 @@ adminLoading:'Загрузка...',adminBannedLabel:'забанен',adminBanBtn
 noS3Big:'Файл больше 700 КБ требует S3. Настройте Cloud.ru.',storyReactionErr:'Не удалось поставить реакцию',
 contactsTitle:'Контакты',contactsInDev:'Раздел в разработке',
 contactsInDevHint:'Список контактов появится здесь совсем скоро. А пока вы можете найти пользователя по его логину.',
-findByLoginBtn:'Найти пользователя по логину'
+findByLoginBtn:'Найти пользователя по логину',
+chatWallpaper:'Обои чата',wallpaperDefault:'Стандартные',wallpaperCustom:'Своё изображение',
+wallpaperUpload:'Загрузить',errWallpaperBig:'Изображение слишком большое',
+okWallpaperSaved:'Обои сохранены',wpPurple:'Фиолетовые',wpPink:'Розовые',wpBlue:'Голубые',
+wpGreen:'Зелёные',wpSunset:'Закат',wpOcean:'Океан',wpMint:'Мята'
 },
 en:{
 welcome:'Welcome',createAccount:'Create account',subtitle:'Sign in or create an account',
@@ -138,7 +142,11 @@ adminBanBtn:'Ban',adminUnbanBtn:'Unban',noS3Big:'File > 700 KB requires S3. Conf
 storyReactionErr:'Failed to react',
 contactsTitle:'Contacts',contactsInDev:'Section in development',
 contactsInDevHint:'The contact list will appear here very soon. For now you can find a user by their login.',
-findByLoginBtn:'Find user by login'
+findByLoginBtn:'Find user by login',
+chatWallpaper:'Chat wallpaper',wallpaperDefault:'Default',wallpaperCustom:'Custom image',
+wallpaperUpload:'Upload',errWallpaperBig:'Image too large',
+okWallpaperSaved:'Wallpaper saved',wpPurple:'Purple',wpPink:'Pink',wpBlue:'Blue',
+wpGreen:'Green',wpSunset:'Sunset',wpOcean:'Ocean',wpMint:'Mint'
 }};
 
 let currentLang='ru';
@@ -151,6 +159,7 @@ function applyTranslations(){
   document.documentElement.lang=currentLang;
   const l=$('settings-language-current');if(l)l.textContent=currentLang==='ru'?'Русский':'English';
   applyThemeLabels();
+  updateWallpaperLabel();
 }
 function loadLang(){try{const s=localStorage.getItem('tg-lang');if(s==='ru'||s==='en')currentLang=s;}catch(e){}}
 function saveLang(){try{localStorage.setItem('tg-lang',currentLang);}catch(e){}}
@@ -168,7 +177,6 @@ function applyTheme(theme){
   if(theme!=='light'&&theme!=='dark')theme='dark';
   currentTheme=theme;
   document.documentElement.setAttribute('data-theme',theme);
-  // Обновляем meta theme-color под текущую тему
   const meta=document.querySelector('meta[name="theme-color"]');
   if(meta)meta.setAttribute('content',theme==='light'?'#f5f7fa':'#08090c');
   applyThemeLabels();
@@ -195,12 +203,12 @@ const state={
   contactUids:[],profiles:{},contactListeners:{},groupUnsubs:{},profileFetching:new Set(),
   unsubMe:null,unsubMessages:null,unsubGroups:null,
   stories:{},storyGroups:{},unsubStories:null,seenStoryIds:new Set(),
-  storyTimer:null,currentStoryGroup:null,currentStoryIndex:0,pendingStoryMedia:null
+  storyTimer:null,currentStoryGroup:null,currentStoryIndex:0,pendingStoryMedia:null,
+  chatWallpaper:null
 };
 let authMode='login',tempAvatar=null,tempMusic=null,currentGroupSettingsId=null,tempGroupAvatar=null,adminUsersCache=[];
 let currentViewedProfileUid=null;
 
-// Long-press флаги — глобальные, чтобы closeReactionPicker мог их сбросить
 let _lpSuppressNextClick=false;
 let _lpTimer=null;
 let _lpStartX=0,_lpStartY=0;
@@ -289,6 +297,86 @@ function saveProfile(){if(!state.uid)return;try{localStorage.setItem(profileKey(
 function loadProfile(){try{const r=localStorage.getItem(profileKey());if(!r)return;const d=JSON.parse(r);if(d.profile)state.profile={...state.profile,...d.profile};}catch(e){}}
 function saveSeenStories(){if(!state.uid)return;try{const a=Array.from(state.seenStoryIds).slice(-500);localStorage.setItem(storiesSeenKey(),JSON.stringify(a));}catch(e){}}
 function loadSeenStories(){try{const r=localStorage.getItem(storiesSeenKey());if(!r)return;const a=JSON.parse(r);if(Array.isArray(a))state.seenStoryIds=new Set(a);}catch(e){}}
+
+/* ============ ОБОИ ЧАТА ============ */
+const CHAT_WALLPAPERS=[
+  {id:'none', type:'none',     labelKey:'wallpaperDefault'},
+  {id:'grad1',type:'gradient', labelKey:'wpPurple', value:'linear-gradient(135deg,#667eea 0%,#764ba2 100%)'},
+  {id:'grad2',type:'gradient', labelKey:'wpPink',   value:'linear-gradient(135deg,#f093fb 0%,#f5576c 100%)'},
+  {id:'grad3',type:'gradient', labelKey:'wpBlue',   value:'linear-gradient(135deg,#4facfe 0%,#00f2fe 100%)'},
+  {id:'grad4',type:'gradient', labelKey:'wpGreen',  value:'linear-gradient(135deg,#43e97b 0%,#38f9d7 100%)'},
+  {id:'grad5',type:'gradient', labelKey:'wpSunset', value:'linear-gradient(135deg,#fa709a 0%,#fee140 100%)'},
+  {id:'grad6',type:'gradient', labelKey:'wpOcean',  value:'linear-gradient(135deg,#30cfd0 0%,#330867 100%)'},
+  {id:'grad7',type:'gradient', labelKey:'wpMint',   value:'linear-gradient(135deg,#a8edea 0%,#fed6e3 100%)'}
+];
+let tempWallpaper=null;
+
+function loadChatWallpaper(){
+  try{
+    const s=localStorage.getItem('tg-chat-wallpaper');
+    if(s){const p=JSON.parse(s);if(p&&p.type){state.chatWallpaper=p;return;}}
+  }catch(e){}
+  state.chatWallpaper={id:'none',type:'none'};
+}
+function saveChatWallpaper(){
+  try{localStorage.setItem('tg-chat-wallpaper',JSON.stringify(state.chatWallpaper||{id:'none',type:'none'}));}catch(e){}
+}
+function applyChatWallpaper(){
+  const el=$('messages');if(!el)return;
+  const wp=state.chatWallpaper||{type:'none'};
+  el.style.backgroundImage='';
+  el.style.backgroundSize='';
+  el.style.backgroundPosition='';
+  el.style.backgroundRepeat='';
+  if(wp.type==='gradient'&&wp.value){
+    el.style.backgroundImage=wp.value;
+  }else if(wp.type==='image'&&wp.value){
+    el.style.backgroundImage=`url("${wp.value}")`;
+    el.style.backgroundSize='cover';
+    el.style.backgroundPosition='center';
+    el.style.backgroundRepeat='no-repeat';
+  }
+}
+function updateWallpaperLabel(){
+  const el=$('settings-wallpaper-current');if(!el)return;
+  const wp=state.chatWallpaper||{type:'none'};
+  if(wp.type==='none'){el.textContent=t('wallpaperDefault');return;}
+  if(wp.type==='image'){el.textContent=t('wallpaperCustom');return;}
+  const found=CHAT_WALLPAPERS.find(x=>x.id===wp.id);
+  el.textContent=found?t(found.labelKey):t('wallpaperDefault');
+}
+function openWallpaperModal(){
+  tempWallpaper=state.chatWallpaper?{...state.chatWallpaper}:{id:'none',type:'none'};
+  renderWallpaperGrid();
+  $('wallpaper-modal').classList.add('visible');
+}
+function renderWallpaperGrid(){
+  const grid=$('wallpaper-grid');if(!grid)return;
+  let html='';
+  CHAT_WALLPAPERS.forEach(wp=>{
+    const active=(tempWallpaper&&tempWallpaper.id===wp.id)?'active':'';
+    const style=wp.type==='gradient'?`background:${wp.value};`:'';
+    const inner=wp.type==='none'?t('wallpaperDefault'):'';
+    html+=`<div class="wallpaper-item ${active}" data-id="${wp.id}" data-type="${wp.type}" style="${style}">${inner}</div>`;
+  });
+  const isCustom=tempWallpaper&&tempWallpaper.type==='image';
+  const customActive=isCustom?'active':'';
+  const customStyle=isCustom
+    ?`background-image:url('${tempWallpaper.value}');background-size:cover;background-position:center;`
+    :'';
+  html+=`<div class="wallpaper-item upload-item ${customActive}" id="wallpaper-upload" style="${customStyle}">${
+    isCustom?'':`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span>${t('wallpaperUpload')}</span>`
+  }</div>`;
+  grid.innerHTML=html;
+  grid.querySelectorAll('.wallpaper-item').forEach(el=>{
+    el.addEventListener('click',()=>{
+      if(el.id==='wallpaper-upload'){$('wallpaper-input').value='';$('wallpaper-input').click();return;}
+      const wp=CHAT_WALLPAPERS.find(x=>x.id===el.dataset.id);
+      if(wp)tempWallpaper={...wp};
+      renderWallpaperGrid();
+    });
+  });
+}
 
 /* ============ ВХОД ============ */
 function setAuthMode(mode){
@@ -1156,7 +1244,6 @@ function updateChannelUIPermissions(){
   const canPost=canPostInCurrentChat();
   $('input-panel').style.display=canPost?'':'none';
   $('channel-notice').style.display=canPost?'none':'';
-  // не трогаем инлайн display у reply-bar — управляем только классом visible
   $('reply-bar').classList.remove('visible');
 }
 function openChat(id,type){
@@ -1165,6 +1252,7 @@ function openChat(id,type){
   $('user-profile-modal').classList.remove('visible');
   updateChatHeader(id,type);updateChannelUIPermissions();clearReply();
   renderMessages({forceScroll:true});renderChatList();
+  applyChatWallpaper();
   if(canPostInCurrentChat())$('msg-input').focus();
   $('app').classList.add('chat-open');updateScrollButton();
   setNavActive('nav-chats');
@@ -1251,7 +1339,6 @@ function setReply(id){
 }
 function clearReply(){state.replyTo=null;$('reply-bar').classList.remove('visible');}
 
-/* ---- REACTION PICKER (общий) ---- */
 function showReactionPicker(id,x,y){
   state.reactionTarget=id;
   const picker=$('reaction-picker');
@@ -1416,6 +1503,7 @@ function openSettings(){
   $('settings-profile-name').textContent=state.profile.displayName||state.nickname||'—';
   $('settings-language-current').textContent=currentLang==='ru'?'Русский':'English';
   applyThemeLabels();
+  updateWallpaperLabel();
   $('settings-admin').style.display=isSuperAdmin()?'':'none';
   $('settings-modal').classList.add('visible');
 }
@@ -1432,6 +1520,8 @@ function changeLanguage(lang){
   if($('language-modal').classList.contains('visible'))$('language-modal').querySelectorAll('.lang-item').forEach(el=>el.classList.toggle('active',el.dataset.lang===currentLang));
   if(authMode)setAuthMode(authMode);
   applyThemeLabels();
+  updateWallpaperLabel();
+  if($('wallpaper-modal').classList.contains('visible'))renderWallpaperGrid();
 }
 
 /* ============ АДМИН-ПАНЕЛЬ ============ */
@@ -1556,6 +1646,7 @@ $('cg-is-channel').addEventListener('change',()=>{
 });
 
 $('group-settings-btn').addEventListener('click',()=>{if(state.currentChatType==='group')openGroupSettings(state.currentChat);});
+$('chat-wallpaper-btn').addEventListener('click',openWallpaperModal);
 $('gs-close').addEventListener('click',()=>{$('group-settings-modal').classList.remove('visible');currentGroupSettingsId=null;});
 $('gs-save').addEventListener('click',saveGroupSettings);
 $('gs-avatar').addEventListener('click',()=>{
@@ -1585,6 +1676,7 @@ $('settings-close').addEventListener('click',()=>$('settings-modal').classList.r
 $('settings-profile').addEventListener('click',()=>{$('settings-modal').classList.remove('visible');openProfileModal();});
 $('settings-theme').addEventListener('click',toggleTheme);
 $('settings-language').addEventListener('click',openLanguageModal);
+$('settings-wallpaper').addEventListener('click',()=>{$('settings-modal').classList.remove('visible');openWallpaperModal();});
 $('settings-admin').addEventListener('click',openAdminPanel);
 $('settings-logout').addEventListener('click',async()=>{
   if(!confirm(t('confirmLogout')))return;
@@ -1595,6 +1687,31 @@ $('settings-logout').addEventListener('click',async()=>{
 $('lang-close').addEventListener('click',()=>$('language-modal').classList.remove('visible'));
 $('language-modal').querySelectorAll('.lang-item').forEach(el=>{
   el.addEventListener('click',()=>{changeLanguage(el.dataset.lang);$('language-modal').classList.remove('visible');toast(t('langChanged'),'success');});
+});
+
+$('wallpaper-cancel').addEventListener('click',()=>$('wallpaper-modal').classList.remove('visible'));
+$('wallpaper-save').addEventListener('click',()=>{
+  state.chatWallpaper=tempWallpaper?{...tempWallpaper}:{id:'none',type:'none'};
+  saveChatWallpaper();
+  applyChatWallpaper();
+  updateWallpaperLabel();
+  $('wallpaper-modal').classList.remove('visible');
+  toast(t('okWallpaperSaved'),'success');
+});
+$('wallpaper-input').addEventListener('change',async e=>{
+  const f=e.target.files[0];if(!f)return;
+  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('errWallpaperBig'),'error');return;}
+  try{
+    let dataUrl;
+    if(f.size>MAX_BASE64_SIZE){
+      toast('Загрузка обоев в Cloud.ru...');
+      dataUrl=await uploadFileToStorage(f,`wallpapers/${state.uid}/${Date.now()}_${f.name}`);
+    }else{
+      dataUrl=await fileToBase64(f);
+    }
+    tempWallpaper={id:'custom',type:'image',value:dataUrl};
+    renderWallpaperGrid();
+  }catch(err){console.error(err);toast(t('errFileRead'),'error');}
 });
 
 $('prof-avatar').addEventListener('click',()=>$('avatar-input').click());
@@ -1725,7 +1842,6 @@ $('attach-menu').querySelectorAll('button').forEach(b=>{
 });
 $('file-input').addEventListener('change',e=>handleFileSelected(e.target.files[0]));
 
-/* ---- Emoji в reaction-picker ---- */
 $('reaction-picker').querySelectorAll('button[data-emoji]').forEach(b=>{
   b.addEventListener('click',()=>{
     if(state.reactionTarget)toggleReaction(state.reactionTarget,b.dataset.emoji);
@@ -1733,7 +1849,6 @@ $('reaction-picker').querySelectorAll('button[data-emoji]').forEach(b=>{
   });
 });
 
-/* ---- Action-кнопки внутри reaction-picker (long-press) ---- */
 $('reaction-picker').querySelectorAll('.rp-action').forEach(b=>{
   b.addEventListener('click',()=>{
     const id=state.reactionTarget;
@@ -1745,7 +1860,6 @@ $('reaction-picker').querySelectorAll('.rp-action').forEach(b=>{
   });
 });
 
-/* ---- Закрытие меню/пикера по клику вне ---- */
 document.addEventListener('click',e=>{
   const inPicker=e.target.closest('#reaction-picker');
   const inToolReact=e.target.closest('.tool-react');
@@ -1816,6 +1930,7 @@ const NAV_MODAL_MAP = [
   { modal: 'settings-modal',  nav: 'nav-settings' },
   { modal: 'admin-modal',     nav: 'nav-settings' },
   { modal: 'language-modal',  nav: 'nav-settings' },
+  { modal: 'wallpaper-modal', nav: 'nav-settings' },
   { modal: 'profile-modal',   nav: 'nav-profile'  },
   { modal: 'contacts-modal',  nav: 'nav-contacts' },
   { modal: 'find-modal',      nav: 'nav-contacts' },
@@ -1855,6 +1970,8 @@ loadLang();
 loadTheme();
 applyTheme(currentTheme);
 applyTranslations();
+loadChatWallpaper();
+applyChatWallpaper();
 initAuthListener();
 setAuthMode('login');
 setTimeout(updateSendBtnState,100);

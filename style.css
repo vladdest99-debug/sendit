@@ -1358,6 +1358,68 @@ html[data-theme="light"] .theme-icon-wrap .icon-moon{display:none;}
 }
 
 /* ============================================
+   ОБОИ ЧАТА
+   ============================================ */
+.wallpaper-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin:8px 0;
+}
+.wallpaper-item{
+  aspect-ratio:9/16;
+  border-radius:var(--radius-md);
+  cursor:pointer;
+  position:relative;
+  border:2px solid transparent;
+  transition:var(--t);
+  overflow:hidden;
+  background:var(--bg-3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--text-2);
+  font-size:12px;
+  font-weight:500;
+  text-align:center;
+  padding:6px;
+  touch-action:manipulation;
+}
+.wallpaper-item:hover{transform:scale(1.03);}
+.wallpaper-item.active{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-glow);
+}
+.wallpaper-item.active::after{
+  content:'✓';
+  position:absolute;
+  top:6px;right:6px;
+  width:22px;height:22px;
+  background:var(--accent);
+  color:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  font-weight:700;
+  box-shadow:var(--shadow-sm);
+}
+.wallpaper-item[data-type="none"]{
+  background:var(--bg-1);
+  border:1.5px dashed var(--border-light);
+  color:var(--text-2);
+}
+.wallpaper-item.upload-item{
+  border:1.5px dashed var(--border-light);
+  flex-direction:column;
+  gap:6px;
+  color:var(--accent);
+}
+.wallpaper-item.upload-item svg{width:28px;height:28px;flex-shrink:0;}
+.wallpaper-item.upload-item span{font-size:11px;line-height:1.2;}
+
+/* ============================================
    АДАПТИВ
    ============================================ */
 @media (max-width:900px){
@@ -1454,6 +1516,8 @@ html[data-theme="light"] .theme-icon-wrap .icon-moon{display:none;}
 
   .msg-row.channel-post .bubble{max-width:calc(100% - 12px);padding:12px 14px;}
   .msg-row.channel-post .msg-tools{display:none !important;}
+
+  .wallpaper-grid{grid-template-columns:repeat(2,1fr);}
 }
 
 @keyframes slideInRight {

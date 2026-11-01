@@ -106,6 +106,15 @@
           <div class="status" id="chat-status"></div>
         </div>
         <div class="actions">
+          <button type="button" class="icon-btn" id="chat-wallpaper-btn" title="Обои" aria-label="Обои">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+              <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+              <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+              <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+            </svg>
+          </button>
           <button type="button" class="icon-btn" id="group-settings-btn" style="display:none" title="Настройки" aria-label="Настройки группы">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3"/>
@@ -237,6 +246,7 @@
 <input type="file" id="group-avatar-input" accept="image/*" style="display:none">
 <input type="file" id="story-file-input" accept="image/*,video/*" style="display:none">
 <input type="file" id="music-input" accept="audio/*" style="display:none">
+<input type="file" id="wallpaper-input" accept="image/*" style="display:none">
 
 <div class="modal" id="settings-modal">
   <div class="modal-box settings-box">
@@ -271,6 +281,20 @@
         <div class="settings-info">
           <div class="settings-title" data-i18n="language">Язык</div>
           <div class="settings-subtitle" id="settings-language-current">Русский</div>
+        </div>
+        <svg class="settings-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+      <button type="button" class="settings-item" id="settings-wallpaper">
+        <div class="settings-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="m21 15-5-5L5 21"/>
+          </svg>
+        </div>
+        <div class="settings-info">
+          <div class="settings-title" data-i18n="chatWallpaper">Обои чата</div>
+          <div class="settings-subtitle" id="settings-wallpaper-current">Стандартные</div>
         </div>
         <svg class="settings-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </button>
@@ -459,6 +483,17 @@
     <div class="modal-actions">
       <button type="button" class="cancel" id="story-create-cancel" data-i18n="cancel">Отмена</button>
       <button type="button" class="save" id="story-create-publish" data-i18n="publish">Опубликовать</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="wallpaper-modal">
+  <div class="modal-box">
+    <h2 data-i18n="chatWallpaper">Обои чата</h2>
+    <div class="wallpaper-grid" id="wallpaper-grid"></div>
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="wallpaper-cancel" data-i18n="cancel">Отмена</button>
+      <button type="button" class="save" id="wallpaper-save" data-i18n="save">Сохранить</button>
     </div>
   </div>
 </div>
