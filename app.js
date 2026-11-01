@@ -66,7 +66,10 @@ adminConfirmBan:'Забанить @{nick}?',adminConfirmClearMsgs:'Удалит�
 adminMsgsDeleted:'Удалено сообщений: {n}',adminDeleteMsgConfirm:'Удалить сообщение?',
 adminNoUsers:'Пользователей нет',adminNoMsgs:'Сообщений нет',adminLoadError:'Ошибка загрузки',
 adminLoading:'Загрузка...',adminBannedLabel:'забанен',adminBanBtn:'Забанить',adminUnbanBtn:'Разбанить',
-noS3Big:'Файл больше 700 КБ требует S3. Настройте Cloud.ru.',storyReactionErr:'Не удалось поставить реакцию'
+noS3Big:'Файл больше 700 КБ требует S3. Настройте Cloud.ru.',storyReactionErr:'Не удалось поставить реакцию',
+contactsTitle:'Контакты',contactsInDev:'Раздел в разработке',
+contactsInDevHint:'Список контактов появится здесь совсем скоро. А пока вы можете найти пользователя по его логину.',
+findByLoginBtn:'Найти пользователя по логину'
 },
 en:{
 welcome:'Welcome',createAccount:'Create account',subtitle:'Sign in or create an account',
@@ -129,7 +132,10 @@ adminConfirmClearMsgs:'Delete ALL messages of @{nick}?',adminMsgsDeleted:'Delete
 adminDeleteMsgConfirm:'Delete message?',adminNoUsers:'No users',adminNoMsgs:'No messages',
 adminLoadError:'Load error',adminLoading:'Loading...',adminBannedLabel:'banned',
 adminBanBtn:'Ban',adminUnbanBtn:'Unban',noS3Big:'File > 700 KB requires S3. Configure Cloud.ru.',
-storyReactionErr:'Failed to react'
+storyReactionErr:'Failed to react',
+contactsTitle:'Contacts',contactsInDev:'Section in development',
+contactsInDevHint:'The contact list will appear here very soon. For now you can find a user by their login.',
+findByLoginBtn:'Find user by login'
 }};
 
 let currentLang='ru';
@@ -229,7 +235,6 @@ function isSuperAdmin(){return state.nickname==='llamx';}
 async function uploadFileToStorage(file,path){
   const{s3,s3Ready,S3_CONFIG}=window.fb;
   if(!s3Ready||!s3)throw new Error('S3 не настроен');
-  // Без ACL — Cloud.ru блокирует запросы с этим параметром
   const params={Bucket:S3_CONFIG.bucket,Key:path,Body:file,ContentType:file.type};
   const data=await s3.upload(params).promise();
   return data.Location;
@@ -892,6 +897,7 @@ function renderMeBar(){
   let h=escapeHtml(state.profile.displayName||state.nickname||'');
   if(state.profile.music)h+=' <span class="music-badge">🎵</span>';
   $('me-name').innerHTML=h;
+  updateNavAvatar();
 }
 function openProfileModal(){
   tempAvatar=state.profile.avatarData;tempMusic=state.profile.music||null;
@@ -1062,6 +1068,17 @@ function renderChatList(){
     return `<div class="chat-item ${active}" data-id="${escapeHtml(it.id)}" data-type="${it.type}">${avHtml}<div class="info"><div class="name">${typeIcon}${escapeHtml(it.name)}</div><div class="last">${lastText||`<span style="opacity:.5">${t('noMessages')}</span>`}</div></div><div class="meta"><div>${lastTime}</div>${it.unread?`<div class="badge">${it.unread}</div>`:''}</div></div>`;
   }).join('');
   c.querySelectorAll('.chat-item').forEach(el=>{el.addEventListener('click',()=>openChat(el.dataset.id,el.dataset.type));});
+
+  const totalUnread = Object.values(state.unread).reduce((sum, n) => sum + n, 0);
+  const badge = $('nav-chat-badge');
+  if (badge) {
+    if (totalUnread > 0) {
+      badge.textContent = totalUnread > 99 ? '99+' : totalUnread;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
 }
 
 /* ============ ОТКРЫТИЕ ЧАТА ============ */
@@ -1101,6 +1118,7 @@ function openChat(id,type){
   renderMessages();renderChatList();
   if(canPostInCurrentChat())$('msg-input').focus();
   $('app').classList.add('chat-open');updateScrollButton();
+  setNavActive('nav-chats');
 }
 
 /* ============ СООБЩЕНИЯ РЕНДЕР ============ */
@@ -1353,6 +1371,23 @@ function updateSendBtnState(){
   btn.innerHTML=isEmpty?MIC_SVG:SEND_SVG;
 }
 
+/* ============ НИЖНЕЕ МЕНЮ ============ */
+function updateNavAvatar() {
+  const av = $('nav-avatar');
+  if (!av) return;
+  if (state.profile.avatarData) {
+    av.innerHTML = `<img src="${state.profile.avatarData}" alt="">`;
+  } else {
+    av.textContent = (state.profile.displayName || state.nickname || '?')[0].toUpperCase();
+  }
+}
+
+function setNavActive(id) {
+  document.querySelectorAll('.mobile-nav-item').forEach(el => el.classList.remove('active'));
+  const target = $(id);
+  if (target) target.classList.add('active');
+}
+
 /* ============ ОБРАБОТЧИКИ ============ */
 $('tab-login').addEventListener('click',()=>setAuthMode('login'));
 $('tab-register').addEventListener('click',()=>setAuthMode('register'));
@@ -1567,7 +1602,90 @@ $('back-btn').addEventListener('click',()=>$('app').classList.remove('chat-open'
 if(window.innerWidth<=768)$('back-btn').style.display='block';
 $('scroll-to-bottom').addEventListener('click',scrollToBottom);
 $('messages').addEventListener('scroll',updateScrollButton);
-$('fab-new-chat').addEventListener('click',()=>$('add-menu').classList.toggle('visible'));
+
+/* ============ КОНТАКТЫ ============ */
+$('contacts-close').addEventListener('click', () => {
+  $('contacts-modal').classList.remove('visible');
+});
+
+$('contacts-find-btn').addEventListener('click', () => {
+  $('contacts-modal').classList.remove('visible');
+  openFindModal();
+});
+
+/* ============ ОБРАБОТЧИКИ НИЖНЕГО МЕНЮ (мобилка + десктоп) ============ */
+function closeAllModalsForNav() {
+  document.querySelectorAll('.modal.visible').forEach(m => m.classList.remove('visible'));
+  currentGroupSettingsId = null;
+  currentViewedProfileUid = null;
+}
+
+$('nav-chats').addEventListener('click', () => {
+  closeAllModalsForNav();
+  $('app').classList.remove('chat-open');
+  $('user-profile-modal').classList.remove('visible');
+  setNavActive('nav-chats');
+});
+
+$('nav-contacts').addEventListener('click', () => {
+  closeAllModalsForNav();
+  setNavActive('nav-contacts');
+  $('contacts-modal').classList.add('visible');
+});
+
+$('nav-settings').addEventListener('click', () => {
+  closeAllModalsForNav();
+  setNavActive('nav-settings');
+  openSettings();
+});
+
+$('nav-profile').addEventListener('click', () => {
+  closeAllModalsForNav();
+  setNavActive('nav-profile');
+  openProfileModal();
+});
+
+// При открытии любого чата возвращаем активный таб на "Чаты"
+document.addEventListener('click', e => {
+  const chatItem = e.target.closest('.chat-item');
+  if (chatItem) setNavActive('nav-chats');
+});
+
+/* ---- Автоподсветка раздела по открытой модалке ---- */
+const NAV_MODAL_MAP = [
+  { modal: 'settings-modal',  nav: 'nav-settings' },
+  { modal: 'admin-modal',     nav: 'nav-settings' },
+  { modal: 'language-modal',  nav: 'nav-settings' },
+  { modal: 'profile-modal',   nav: 'nav-profile'  },
+  { modal: 'contacts-modal',  nav: 'nav-contacts' },
+  { modal: 'find-modal',      nav: 'nav-contacts' },
+];
+
+function refreshNavFromModals() {
+  const isMobile = window.innerWidth <= 768;
+  // На мобиле в открытом чате меню скрыто — не трогаем.
+  // На десктопе меню всегда на виду (в sidebar), поэтому подсветку обновляем всегда.
+  if (isMobile && $('app').classList.contains('chat-open')) return;
+
+  for (const { modal, nav } of NAV_MODAL_MAP) {
+    const el = $(modal);
+    if (el && el.classList.contains('visible')) {
+      setNavActive(nav);
+      return;
+    }
+  }
+  setNavActive('nav-chats');
+}
+
+// Наблюдаем за видимостью модалок — активный таб всегда соответствует экрану
+document.querySelectorAll('.modal').forEach(m => {
+  new MutationObserver(refreshNavFromModals)
+    .observe(m, { attributes: true, attributeFilter: ['class'] });
+});
+
+// При ресайзе окна пересчитываем подсветку (переход моб ↔ десктоп)
+window.addEventListener('resize', refreshNavFromModals);
+
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.modal.visible').forEach(m=>m.classList.remove('visible'));

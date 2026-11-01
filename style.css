@@ -341,25 +341,6 @@ svg{display:block;}
 .skeleton-line-2{height:10px;width:80%;}
 
 /* ============================================
-   FAB
-   ============================================ */
-.fab{
-  position:fixed;bottom:22px;right:22px;width:56px;height:56px;
-  border-radius:50%;background:var(--accent-gradient);color:#fff;
-  box-shadow:var(--shadow-glow);z-index:60;display:none;
-  align-items:center;justify-content:center;
-  transition:transform 0.25s var(--ease-spring),box-shadow 0.2s;
-  bottom:calc(22px + env(safe-area-inset-bottom));
-}
-.fab:hover{transform:scale(1.08);box-shadow:0 12px 32px rgba(59,130,246,0.55);}
-.fab:active{transform:scale(0.94);}
-.fab svg{width:24px;height:24px;}
-@media (max-width:768px){
-  .fab{display:flex;}
-  #app.chat-open .fab{display:none;}
-}
-
-/* ============================================
    MAIN
    ============================================ */
 .main{
@@ -927,6 +908,80 @@ svg{display:block;}
 .find-user button:disabled{opacity:0.6;cursor:default;}
 
 /* ============================================
+   КОНТАКТЫ (заглушка)
+   ============================================ */
+.contacts-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px 20px;
+  gap: 12px;
+}
+
+.contacts-placeholder-icon {
+  width: 84px;
+  height: 84px;
+  border-radius: 24px;
+  background: var(--accent-glow);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.contacts-placeholder-icon svg {
+  width: 42px;
+  height: 42px;
+}
+
+.contacts-placeholder-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: -0.01em;
+}
+
+.contacts-placeholder-sub {
+  font-size: 14px;
+  color: var(--text-2);
+  max-width: 340px;
+  line-height: 1.55;
+}
+
+.contacts-find-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  margin-top: 12px;
+  background: var(--accent-gradient);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: var(--t);
+}
+
+.contacts-find-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
+}
+
+.contacts-find-btn:active {
+  transform: translateY(0);
+}
+
+.contacts-find-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ============================================
    СОЗДАНИЕ ГРУППЫ
    ============================================ */
 .cg-contacts{
@@ -1144,6 +1199,108 @@ svg{display:block;}
 }
 
 /* ============================================
+   НИЖНЕЕ МЕНЮ (мобилка + десктоп)
+   ============================================ */
+.mobile-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(22, 26, 35, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 40px;
+  padding: 8px 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  z-index: 200;
+  gap: 4px;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+  }
+  #app.chat-open .mobile-bottom-nav {
+    display: none;
+  }
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  color: var(--text-2);
+  transition: all 0.2s ease;
+  min-width: 64px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.mobile-nav-item:active {
+  background: rgba(255,255,255,0.05);
+}
+
+.mobile-nav-item.active {
+  color: var(--accent);
+}
+
+.mobile-nav-item.active .nav-icon-wrap svg {
+  stroke: var(--accent);
+}
+
+.nav-icon-wrap {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-icon-wrap svg {
+  width: 100%;
+  height: 100%;
+}
+
+.nav-icon-wrap .avatar img {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-label {
+  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.nav-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  background: #ff453a;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(22, 26, 35, 0.92);
+}
+
+/* ============================================
    АДАПТИВ
    ============================================ */
 @media (max-width:900px){
@@ -1189,27 +1346,33 @@ svg{display:block;}
   .input-wrap textarea{max-height:100px;}
   .attach-menu{bottom:calc(80px + env(safe-area-inset-bottom));}
 
-  /* FAB + scroll button */
-  .fab{bottom:calc(22px + env(safe-area-inset-bottom));}
-  .scroll-to-bottom{bottom:calc(86px + env(safe-area-inset-bottom));right:14px;width:42px;height:42px;}
+  /* Scroll button (учитывая нижнее меню) */
+  .scroll-to-bottom{bottom:calc(150px + env(safe-area-inset-bottom)) !important;right:14px;width:42px;height:42px;}
+
+  /* Отступ для списка чатов под меню */
+  .chat-list{padding-bottom:90px;}
 
   /* Msg tools — всегда видимы */
   .msg-row .msg-tools{opacity:1;padding-bottom:2px;}
   .msg-row .msg-tools button{padding:2px 4px;font-size:13px;}
 
-  /* Модалки как bottom sheet */
-  .modal{align-items:flex-end;padding:0;}
-  .modal-box{
-    width:100%;max-width:100%;
-    border-radius:24px 24px 0 0;
-    max-height:calc(100dvh - 40px);
-    padding:28px 20px calc(20px + env(safe-area-inset-bottom));
-    animation:slideUpMobile 0.25s var(--ease-out);
+  /* Модалки — на весь экран (как разделы в Telegram) */
+  .modal {
+    align-items: stretch;
+    padding: 0;
   }
-  @keyframes slideUpMobile{from{transform:translateY(100%);}to{transform:translateY(0);}}
-  .modal-box::before{
-    content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);
-    width:36px;height:4px;background:var(--border-light);border-radius:2px;
+  .modal-box {
+    width: 100%;
+    max-width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+    border: none;
+    padding: calc(20px + env(safe-area-inset-top)) 20px calc(100px + env(safe-area-inset-bottom));
+    animation: slideInRight 0.25s var(--ease-out);
+  }
+  .modal-box::before {
+    display: none;
   }
 
   /* Профиль — кнопка «Перейти» под именем */
@@ -1238,6 +1401,12 @@ svg{display:block;}
   .msg-row.channel-post .msg-tools{top:4px;right:4px;opacity:1;background:transparent;box-shadow:none;border:none;}
 }
 
+/* Анимация выезда модалки справа */
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
 @media (max-width:400px){
   .modal-box{padding-left:16px;padding-right:16px;}
   .profile-body{padding:12px 10px calc(32px + env(safe-area-inset-bottom));}
@@ -1252,6 +1421,26 @@ svg{display:block;}
   .bubble{max-width:86%;}
   .chat-header{height:calc(58px + env(safe-area-inset-top));padding:6px 12px;padding-top:calc(6px + env(safe-area-inset-top));}
   .chat-header .avatar{width:40px;height:40px;}
+}
+
+/* ============================================
+   ДЕСКТОПНОЕ НИЖНЕЕ МЕНЮ
+   ============================================ */
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: flex;
+    left: 200px; /* центр sidebar при ширине 400px */
+    bottom: 20px;
+  }
+  .chat-list {
+    padding-bottom: 84px; /* чтобы меню не перекрывало последние элементы */
+  }
+}
+
+@media (min-width: 769px) and (max-width: 900px) {
+  .mobile-bottom-nav {
+    left: 170px; /* центр sidebar при ширине 340px */
+  }
 }
 
 @media (prefers-reduced-motion: reduce){
