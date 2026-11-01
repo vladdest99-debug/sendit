@@ -79,7 +79,8 @@ voice:'🎤 Голосовое',voiceMsg:'🎤 Голосовое сообщен
 errMicAccess:'Нет доступа к микрофону',errVoiceTooShort:'Слишком короткая запись',
 errVoiceUnsupported:'Голосовые сообщения не поддерживаются',recordingCancel:'Отменить запись',
 videoNoteMenu:'Кружок',videoNoteHint:'Нажмите ● чтобы начать запись',videoNoteSent:'Кружок отправлен',
-videoNoteRecording:'Запись кружка',errCameraAccess:'Нет доступа к камере',videoNoteSwitchCam:'Сменить камеру'
+videoNoteRecording:'Запись кружка',errCameraAccess:'Нет доступа к камере',videoNoteSwitchCam:'Сменить камеру',
+videoNoteNowPlaying:'Кружок играет',videoNoteStop:'Остановить'
 },
 en:{
 welcome:'Welcome',createAccount:'Create account',subtitle:'Sign in or create an account',
@@ -156,7 +157,8 @@ voice:'🎤 Voice',voiceMsg:'🎤 Voice message',voiceRecording:'Recording',
 errMicAccess:'No microphone access',errVoiceTooShort:'Recording too short',
 errVoiceUnsupported:'Voice messages not supported',recordingCancel:'Cancel recording',
 videoNoteMenu:'Video note',videoNoteHint:'Tap ● to start recording',videoNoteSent:'Video note sent',
-videoNoteRecording:'Recording video note',errCameraAccess:'No camera access',videoNoteSwitchCam:'Switch camera'
+videoNoteRecording:'Recording video note',errCameraAccess:'No camera access',videoNoteSwitchCam:'Switch camera',
+videoNoteNowPlaying:'Video note playing',videoNoteStop:'Stop'
 }};
 
 let currentLang='ru';
@@ -235,6 +237,12 @@ let videoNoteStartTime=0;
 let videoNoteTimerInterval=null;
 let isRecordingVideoNote=false;
 let videoNoteFacing='user';
+
+/* Кружки: фоновое воспроизведение */
+let playingCircleVideo=null;
+let playingCircleMsgId=null;
+let playingCircleAuthor=null;
+let _isRenderingMessages=false;
 
 const $=id=>document.getElementById(id);
 
@@ -623,8 +631,8 @@ function closeVideoNoteModal(){
   if(videoNoteTimerInterval){clearInterval(videoNoteTimerInterval);videoNoteTimerInterval=null;}
   isRecordingVideoNote=false;
   videoNoteChunks=[];
-  $('video-note-modal').classList.remove('visible');
-  $('video-note-record').classList.remove('recording');
+  const modal=$('video-note-modal');if(modal)modal.classList.remove('visible');
+  const rec=$('video-note-record');if(rec)rec.classList.remove('recording');
   const ring=document.querySelector('.video-note-ring');
   if(ring)ring.classList.remove('recording');
 }
@@ -726,6 +734,32 @@ async function sendVideoNoteBlob(blob,duration){
     toast(t('errSendFileFailed'),'error');
   }
 }
+
+/* Общие функции для «сейчас играет» полосы */
+function showNowPlayingBar(){
+  const bar=$('circle-now-playing');
+  if(!bar)return;
+  const authorEl=$('cnp-author');
+  if(authorEl){
+    authorEl.textContent=playingCircleAuthor?getUserDisplayName(playingCircleAuthor):'';
+  }
+  bar.classList.add('visible');
+}
+function hideNowPlayingBar(){
+  const bar=$('circle-now-playing');
+  if(bar)bar.classList.remove('visible');
+}
+function stopPlayingCircle(){
+  const v=playingCircleVideo;
+  playingCircleVideo=null;
+  playingCircleMsgId=null;
+  playingCircleAuthor=null;
+  hideNowPlayingBar();
+  if(v){
+    try{v.pause();v.currentTime=0;}catch(e){}
+  }
+}
+
 function attachCirclePlayer(el){
   const src=el.dataset.src;if(!src)return;
   const video=el.querySelector('video');
@@ -756,14 +790,41 @@ function attachCirclePlayer(el){
       video.pause();
     }
   });
+
   video.addEventListener('play',()=>{
     el.classList.add('playing');
     el.classList.remove('paused');
+    if(playingCircleVideo&&playingCircleVideo!==video){
+      try{playingCircleVideo.pause();}catch(e){}
+    }
+    playingCircleVideo=video;
+    playingCircleMsgId=el.dataset.msgId||null;
+    playingCircleAuthor=el.dataset.authorUid||null;
+    showNowPlayingBar();
   });
+
   video.addEventListener('pause',()=>{
     el.classList.remove('playing');
     el.classList.add('paused');
+    if(playingCircleVideo===video&&!_isRenderingMessages){
+      playingCircleVideo=null;
+      playingCircleMsgId=null;
+      playingCircleAuthor=null;
+      hideNowPlayingBar();
+    }
   });
+
+  video.addEventListener('ended',()=>{
+    el.classList.remove('playing');
+    el.classList.add('paused');
+    if(playingCircleVideo===video){
+      playingCircleVideo=null;
+      playingCircleMsgId=null;
+      playingCircleAuthor=null;
+      hideNowPlayingBar();
+    }
+  });
+
   video.addEventListener('timeupdate',()=>{
     const d=(isFinite(video.duration)&&video.duration>0)?video.duration:dur;
     if(!d||d<0.5)return;
@@ -773,12 +834,7 @@ function attachCirclePlayer(el){
       ringFill.style.strokeDashoffset=circumference*(1-pct);
     }
   });
-  video.addEventListener('ended',()=>{
-    el.classList.remove('playing');
-    el.classList.add('paused');
-    if(timerEl)timerEl.textContent=formatVoiceDuration(dur);
-    if(ringFill&&circumference)ringFill.style.strokeDashoffset=circumference;
-  });
+
   video.addEventListener('loadedmetadata',()=>{
     if(timerEl&&isFinite(video.duration)&&video.duration>0){
       el.dataset.duration=video.duration;
@@ -1396,6 +1452,7 @@ function initAuthListener(){
     if(!user){
       if(isRecordingVoice)cancelVoiceRecording();
       if(isRecordingVideoNote)closeVideoNoteModal();
+      stopPlayingCircle();
       Object.keys(state.contactListeners).forEach(uid=>{try{state.contactListeners[uid]();}catch(e){}});
       Object.keys(state.groupUnsubs).forEach(gid=>{try{state.groupUnsubs[gid]();}catch(e){}});
       if(state.unsubMe)state.unsubMe();if(state.unsubMessages)state.unsubMessages();
@@ -1647,7 +1704,8 @@ function updateChannelUIPermissions(){
 }
 function openChat(id,type){
   if(isRecordingVoice)cancelVoiceRecording();
-  if($('video-note-modal').classList.contains('visible'))closeVideoNoteModal();
+  if($('video-note-modal')?.classList.contains('visible'))closeVideoNoteModal();
+  stopPlayingCircle();
   state.currentChat=id;state.currentChatType=type;state.unread[id]=0;
   $('empty-chat').style.display='none';$('chat-area').style.display='flex';
   $('user-profile-modal').classList.remove('visible');
@@ -1670,9 +1728,18 @@ function getReplyPreview(msg){
 }
 function renderMessages(opts){
   opts=opts||{};
-  const c=$('messages');const msgs=getCurrentMessages();
+  const c=$('messages');
+  const msgs=getCurrentMessages();
   const shouldScroll=!!opts.forceScroll||isNearBottom(200);
   if(!msgs.length){c.innerHTML=`<div style="text-align:center;color:var(--text-3);padding:40px;font-size:13px">${t('startDialog')}</div>`;return;}
+
+  // Сохраняем текущий играющий кружок
+  const savedCircle=(playingCircleVideo&&playingCircleMsgId)?{
+    msgId:playingCircleMsgId,
+    time:playingCircleVideo.currentTime||0
+  }:null;
+  _isRenderingMessages=true;
+
   const inChannel=state.currentChatType==='group'&&isChannel(state.currentChat);
   const inGroup=state.currentChatType==='group';
   let html='';let lastDate='';
@@ -1688,7 +1755,7 @@ function renderMessages(opts){
       body=`<div class="voice-msg" data-src="${escapeHtml(ct.dataUrl)}" data-duration="${ct.duration||0}"><button type="button" class="voice-btn">▶</button><div class="voice-progress-wrap"><div class="voice-progress-fill"></div></div><span class="voice-time">${formatVoiceDuration(ct.duration||0)}</span></div>`;
     }
     else if(ct.type==='videoNote'){
-      body=`<div class="circle-msg" data-src="${escapeHtml(ct.dataUrl)}" data-duration="${ct.duration||0}"><video preload="metadata" playsinline muted></video><svg class="circle-ring" viewBox="0 0 100 100" preserveAspectRatio="none"><circle class="circle-ring-track" cx="50" cy="50" r="48"/><circle class="circle-ring-fill" cx="50" cy="50" r="48"/></svg><div class="circle-overlay">▶</div><span class="circle-timer">${formatVoiceDuration(ct.duration||0)}</span></div>`;
+      body=`<div class="circle-msg" data-src="${escapeHtml(ct.dataUrl)}" data-duration="${ct.duration||0}" data-msg-id="${escapeHtml(m.id)}" data-author-uid="${escapeHtml(m.fromUid)}"><video preload="metadata" playsinline muted></video><svg class="circle-ring" viewBox="0 0 100 100" preserveAspectRatio="none"><circle class="circle-ring-track" cx="50" cy="50" r="48"/><circle class="circle-ring-fill" cx="50" cy="50" r="48"/></svg><div class="circle-overlay">▶</div><span class="circle-timer">${formatVoiceDuration(ct.duration||0)}</span></div>`;
     }
     else if(ct.type==='file'){
       body=`<div class="file-attach"><div class="ficon">${getFileIcon(ct.name)}</div><div class="finfo"><div class="fname">${escapeHtml(ct.name)}</div><div class="fsize">${formatSize(ct.size)}</div></div><a href="${escapeHtml(ct.dataUrl)}" download="${escapeHtml(ct.name)}">⬇</a></div>`;
@@ -1733,6 +1800,33 @@ function renderMessages(opts){
   });
   c.querySelectorAll('.voice-msg').forEach(attachVoicePlayer);
   c.querySelectorAll('.circle-msg').forEach(attachCirclePlayer);
+
+  // Восстанавливаем играющий кружок после ре-рендера
+  if(savedCircle){
+    let target=null;
+    c.querySelectorAll('.circle-msg').forEach(circle=>{
+      if(circle.dataset.msgId===savedCircle.msgId)target=circle;
+    });
+    if(target){
+      const nv=target.querySelector('video');
+      if(nv){
+        const tryPlay=()=>{
+          try{nv.currentTime=savedCircle.time;}catch(e){}
+          nv.play().catch(()=>{});
+        };
+        if(nv.readyState>=1)tryPlay();
+        else nv.addEventListener('loadedmetadata',tryPlay,{once:true});
+      }
+    }
+  }
+  _isRenderingMessages=false;
+  if(playingCircleVideo&&!document.body.contains(playingCircleVideo)){
+    playingCircleVideo=null;
+    playingCircleMsgId=null;
+    playingCircleAuthor=null;
+    hideNowPlayingBar();
+  }
+
   if(shouldScroll)scrollToBottom();
   else updateScrollButton();
 }
@@ -1931,6 +2025,7 @@ function changeLanguage(lang){
   applyThemeLabels();
   updateWallpaperLabel();
   if($('wallpaper-modal').classList.contains('visible'))renderWallpaperGrid();
+  if(playingCircleAuthor)showNowPlayingBar();
 }
 
 /* ============ АДМИН-ПАНЕЛЬ ============ */
@@ -2255,17 +2350,39 @@ $('attach-btn').addEventListener('click',()=>$('attach-menu').classList.toggle('
 $('attach-menu').querySelectorAll('button[data-type]').forEach(b=>{
   b.addEventListener('click',()=>{openFilePicker(b.dataset.type);$('attach-menu').classList.remove('visible');});
 });
-$('attach-video-note').addEventListener('click',()=>{
+$('attach-video-note')?.addEventListener('click',()=>{
   $('attach-menu').classList.remove('visible');
   openVideoNoteModal();
 });
-$('video-note-record').addEventListener('click',toggleVideoNoteRecording);
-$('video-note-cancel').addEventListener('click',()=>{
+$('video-note-record')?.addEventListener('click',toggleVideoNoteRecording);
+$('video-note-cancel')?.addEventListener('click',()=>{
   if(isRecordingVideoNote){stopVideoNoteRecording(false);}
   else{closeVideoNoteModal();}
 });
-$('video-note-switch').addEventListener('click',switchVideoNoteCamera);
+$('video-note-switch')?.addEventListener('click',switchVideoNoteCamera);
 $('file-input').addEventListener('change',e=>handleFileSelected(e.target.files[0]));
+
+/* Кружок «сейчас играет» */
+$('cnp-stop')?.addEventListener('click',(e)=>{
+  e.stopPropagation();
+  stopPlayingCircle();
+});
+$('circle-now-playing')?.addEventListener('click',(e)=>{
+  if(e.target.closest('.cnp-stop'))return;
+  if(!playingCircleMsgId)return;
+  const container=$('messages');
+  let target=null;
+  container.querySelectorAll('.circle-msg').forEach(circle=>{
+    if(circle.dataset.msgId===playingCircleMsgId)target=circle;
+  });
+  if(target){
+    target.scrollIntoView({behavior:'smooth',block:'center'});
+    const prev=target.style.boxShadow;
+    target.style.transition='box-shadow 0.3s var(--ease)';
+    target.style.boxShadow='0 0 0 4px var(--accent),0 6px 24px rgba(59,130,246,0.7)';
+    setTimeout(()=>{target.style.boxShadow=prev;},900);
+  }
+});
 
 $('reaction-picker').querySelectorAll('button[data-emoji]').forEach(b=>{
   b.addEventListener('click',()=>{
@@ -2388,7 +2505,7 @@ document.addEventListener('keydown',e=>{
     $('user-profile-modal').classList.remove('visible');
     currentViewedProfileUid=null;
     if(isRecordingVoice)cancelVoiceRecording();
-    if($('video-note-modal').classList.contains('visible'))closeVideoNoteModal();
+    if($('video-note-modal')?.classList.contains('visible'))closeVideoNoteModal();
   }
 });
 
