@@ -83,8 +83,9 @@ videoNoteRecording:'Запись кружка',errCameraAccess:'Нет дост�
 videoNoteNowPlaying:'Кружок играет',videoNoteStop:'Остановить',
 errMicPerm:'Разрешите доступ к микрофону в настройках сайта',
 errMicNotFound:'Микрофон не найден',errMicBusy:'Микрофон занят другим приложением',
-errCircleTooBig:'Кружок слишком большой. Максимум ~15 секунд.',
-errCircleUnsupported:'Этот кружок не воспроизводится в вашем браузере'
+errCircleTooBig:'Кружок слишком большой',
+errCircleUnsupported:'Этот кружок не воспроизводится в вашем браузере',
+circleUploading:'Загрузка кружка...',circleUploadFailed:'Не удалось загрузить кружок'
 },
 en:{
 welcome:'Welcome',createAccount:'Create account',subtitle:'Sign in or create an account',
@@ -165,8 +166,9 @@ videoNoteRecording:'Recording video note',errCameraAccess:'No camera access',vid
 videoNoteNowPlaying:'Video note playing',videoNoteStop:'Stop',
 errMicPerm:'Allow microphone access in site settings',
 errMicNotFound:'Microphone not found',errMicBusy:'Microphone is busy in another app',
-errCircleTooBig:'Video note is too big. Max ~15 seconds.',
-errCircleUnsupported:'This video note cannot be played in your browser'
+errCircleTooBig:'Video note is too big',
+errCircleUnsupported:'This video note cannot be played in your browser',
+circleUploading:'Uploading video note...',circleUploadFailed:'Failed to upload video note'
 }};
 
 let currentLang='ru';
@@ -328,10 +330,17 @@ function canPostInCurrentChat(){
 }
 function isSuperAdmin(){return state.nickname==='llamx';}
 
-async function uploadFileToStorage(file,path){
+async function uploadFileToStorage(file,path,opts){
+  opts=opts||{};
   const{s3,s3Ready,S3_CONFIG}=window.fb;
   if(!s3Ready||!s3)throw new Error('S3 не настроен');
-  const params={Bucket:S3_CONFIG.bucket,Key:path,Body:file,ContentType:file.type};
+  const params={
+    Bucket:S3_CONFIG.bucket,
+    Key:path,
+    Body:file,
+    ContentType:file.type||'application/octet-stream'
+  };
+  if(opts.publicRead!==false)params.ACL='public-read';
   const data=await s3.upload(params).promise();
   return data.Location;
 }
@@ -629,30 +638,57 @@ async function openVideoNoteModal(){
   videoNoteChunks=[];
   isRecordingVideoNote=false;
   const tEl=$('video-note-timer');if(tEl)tEl.textContent='0:00';
-  const recBtn=$('video-note-record');if(recBtn)recBtn.classList.remove('recording');
+  const recBtn=$('video-note-record');
+  if(recBtn){recBtn.classList.remove('recording');recBtn.disabled=true;recBtn.style.opacity='0.4';}
   const ring=document.querySelector('.video-note-ring');
   if(ring)ring.classList.remove('recording');
   const modal=$('video-note-modal');if(modal)modal.classList.add('visible');
   const hint=document.querySelector('.video-note-hint');
-  if(hint)hint.textContent=t('videoNoteHint');
+  if(hint)hint.textContent='Загрузка камеры...';
   await startCameraPreview();
 }
 async function startCameraPreview(){
   try{
     videoNoteStream=await navigator.mediaDevices.getUserMedia({
       audio:true,
-      video:{facingMode:videoNoteFacing,width:{ideal:480},height:{ideal:480},frameRate:{ideal:24,max:30}}
+      video:{
+        facingMode:videoNoteFacing,
+        width:{ideal:480,min:480},
+        height:{ideal:480,min:480},
+        frameRate:{ideal:30,min:24,max:30}
+      }
     });
+    console.log('[circle] stream ready',videoNoteStream.getTracks().map(t=>({kind:t.kind,label:t.label,state:t.readyState})));
+
+    const videoTracks=videoNoteStream.getVideoTracks();
+    if(!videoTracks.length){
+      toast('Камера не передаёт видео — разрешите камеру','error');
+      const hint=document.querySelector('.video-note-hint');
+      if(hint)hint.textContent='Нет видеотрека — разрешите камеру в настройках сайта';
+      return;
+    }
+
     const videoEl=$('video-note-preview');
-    if(!videoEl)return;
-    videoEl.srcObject=videoNoteStream;
-    videoEl.muted=true;
-    videoEl.classList.toggle('rear-camera',videoNoteFacing==='environment');
-    await videoEl.play().catch(()=>{});
+    if(videoEl){
+      videoEl.srcObject=videoNoteStream;
+      videoEl.muted=true;
+      videoEl.classList.toggle('rear-camera',videoNoteFacing==='environment');
+      await videoEl.play().catch(e=>console.warn('[circle] preview play:',e));
+    }
+
+    const recBtn=$('video-note-record');
+    if(recBtn){recBtn.disabled=false;recBtn.style.opacity='';}
+    const hint=document.querySelector('.video-note-hint');
+    if(hint)hint.textContent=t('videoNoteHint');
   }catch(e){
-    console.error('camera:',e);
-    toast(t('errCameraAccess'),'error');
-    closeVideoNoteModal();
+    console.error('[circle] getUserMedia failed:',e.name,e.message);
+    let msg=t('errCameraAccess');
+    if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError')msg='Разрешите доступ к камере и микрофону в настройках сайта';
+    else if(e.name==='NotFoundError'||e.name==='DevicesNotFoundError')msg='Камера не найдена';
+    else if(e.name==='NotReadableError'||e.name==='TrackStartError')msg='Камера занята другим приложением';
+    toast(msg,'error');
+    const hint=document.querySelector('.video-note-hint');
+    if(hint)hint.textContent=msg;
   }
 }
 async function switchVideoNoteCamera(){
@@ -672,19 +708,38 @@ function closeVideoNoteModal(){
   isRecordingVideoNote=false;
   videoNoteChunks=[];
   const modal=$('video-note-modal');if(modal)modal.classList.remove('visible');
-  const rec=$('video-note-record');if(rec)rec.classList.remove('recording');
+  const rec=$('video-note-record');if(rec){rec.classList.remove('recording');rec.disabled=false;rec.style.opacity='';}
   const ring=document.querySelector('.video-note-ring');
   if(ring)ring.classList.remove('recording');
 }
 function toggleVideoNoteRecording(){
   if(isRecordingVideoNote){
     stopVideoNoteRecording(true);
-  }else{
-    startVideoNoteRecording();
+    return;
   }
+  if(!videoNoteStream){
+    toast('Камера ещё не готова, подождите','error');
+    console.warn('[circle] record pressed but stream=null');
+    return;
+  }
+  if(!videoNoteStream.active){
+    toast('Камера отключилась — переоткройте кружок','error');
+    console.warn('[circle] stream inactive');
+    return;
+  }
+  const videoTracks=videoNoteStream.getVideoTracks();
+  if(!videoTracks.length||videoTracks.every(t=>t.readyState==='ended')){
+    toast('Камера не активна','error');
+    console.warn('[circle] video track ended');
+    return;
+  }
+  startVideoNoteRecording();
 }
 function startVideoNoteRecording(){
-  if(!videoNoteStream||!window.MediaRecorder)return;
+  if(!videoNoteStream||!window.MediaRecorder){
+    console.error('[circle] start blocked',{stream:!!videoNoteStream,recorder:typeof MediaRecorder});
+    return;
+  }
   const mimeTypes=[
     'video/mp4;codecs=h264,aac',
     'video/mp4',
@@ -696,18 +751,39 @@ function startVideoNoteRecording(){
   for(const m of mimeTypes){
     try{if(MediaRecorder.isTypeSupported(m)){mimeType=m;break;}}catch(e){}
   }
+  console.log('[circle] mime selected:',mimeType||'(default)');
+
+  const options=mimeType
+    ? {mimeType,videoBitsPerSecond:1800000,audioBitsPerSecond:64000}
+    : {videoBitsPerSecond:1800000,audioBitsPerSecond:64000};
+
   try{
-    videoNoteRecorder=new MediaRecorder(videoNoteStream,mimeType?{mimeType}:undefined);
+    videoNoteRecorder=new MediaRecorder(videoNoteStream,options);
   }catch(e){
-    console.error('MediaRecorder video:',e);
-    toast(t('errVoiceUnsupported'),'error');
-    return;
+    console.error('[circle] ctor with options failed, retry plain:',e);
+    try{
+      videoNoteRecorder=new MediaRecorder(videoNoteStream);
+    }catch(e2){
+      console.error('[circle] plain ctor failed:',e2);
+      toast('Не удалось начать запись','error');
+      return;
+    }
   }
+
   videoNoteChunks=[];
   videoNoteRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)videoNoteChunks.push(e.data);};
+  videoNoteRecorder.onerror=e=>{
+    console.error('[circle] recorder error:',e);
+    toast('Ошибка записи','error');
+    stopVideoNoteRecording(false);
+  };
   videoNoteRecorder.onstop=async()=>{
     const type=(videoNoteRecorder&&videoNoteRecorder.mimeType)||mimeType||'video/webm';
-    if(!videoNoteChunks.length){closeVideoNoteModal();return;}
+    if(!videoNoteChunks.length){
+      console.warn('[circle] no chunks on stop');
+      closeVideoNoteModal();
+      return;
+    }
     const blob=new Blob(videoNoteChunks,{type});
     videoNoteChunks=[];
     const duration=(Date.now()-videoNoteStartTime)/1000;
@@ -715,8 +791,15 @@ function startVideoNoteRecording(){
     if(duration<0.5){toast(t('errVoiceTooShort'),'error');return;}
     await sendVideoNoteBlob(blob,duration);
   };
-  try{videoNoteRecorder.start();}
-  catch(e){console.error('start video note:',e);toast(t('errVoiceUnsupported'),'error');return;}
+
+  try{
+    videoNoteRecorder.start(1000);
+    console.log('[circle] recording started, state=',videoNoteRecorder.state);
+  }catch(e){
+    console.error('[circle] start() failed:',e);
+    toast('Не удалось начать запись','error');
+    return;
+  }
 
   isRecordingVideoNote=true;
   videoNoteStartTime=Date.now();
@@ -732,7 +815,7 @@ function startVideoNoteRecording(){
     const secs=(Date.now()-videoNoteStartTime)/1000;
     const el=$('video-note-timer');
     if(el)el.textContent=formatVoiceDuration(secs);
-    if(secs>=20){
+    if(secs>=30){
       stopVideoNoteRecording(true);
     }
   },200);
@@ -760,28 +843,46 @@ async function sendVideoNoteBlob(blob,duration){
   try{
     const cleanType=((blob.type||'video/webm').split(';')[0]||'video/webm').trim();
     const cleanBlob=new Blob([blob],{type:cleanType});
-    if(cleanBlob.size>850*1024){
-      console.error('circle too big:',cleanBlob.size);
-      toast(t('errCircleTooBig'),'error');
+    const ext=cleanType.includes('mp4')?'mp4':'webm';
+    const filename=`circle_${Date.now()}.${ext}`;
+
+    if(!window.fb.s3Ready){
+      console.error('[circle] S3 not ready — cannot upload video notes');
+      toast('Загрузка кружков недоступна: S3 не настроен','error');
       return;
     }
-    const dataUrl=await new Promise((res,rej)=>{
-      const rd=new FileReader();
-      rd.onload=()=>res(rd.result);
-      rd.onerror=rej;
-      rd.readAsDataURL(cleanBlob);
+
+    toast(t('circleUploading'));
+    console.log('[circle upload]',{
+      size:cleanBlob.size,
+      sizeMB:(cleanBlob.size/1048576).toFixed(2),
+      type:cleanType,
+      duration
     });
-    console.log('[circle send]',{
-      blobSize:cleanBlob.size,
-      dataUrlLen:dataUrl.length,
-      mime:cleanType,
-      head:dataUrl.slice(0,40)
+
+    const file=new File([cleanBlob],filename,{type:cleanType});
+    const key=`video-notes/${state.uid}/${Date.now()}_${filename}`;
+    const url=await uploadFileToStorage(file,key,{publicRead:true});
+
+    if(!url||!url.startsWith('http')){
+      console.error('[circle] invalid upload url:',url);
+      toast(t('errSendFileFailed'),'error');
+      return;
+    }
+
+    console.log('[circle send OK]',{url,duration:Math.round(duration)});
+
+    await sendFileContent({
+      type:'videoNote',
+      dataUrl:url,
+      duration:Math.round(duration),
+      _storage:'s3'
     });
-    await sendFileContent({type:'videoNote',dataUrl,duration:Math.round(duration)});
+
     toast(t('videoNoteSent'),'success');
   }catch(e){
-    console.error('sendVideoNoteBlob:',e);
-    toast(t('errSendFileFailed'),'error');
+    console.error('[circle upload failed]',e);
+    toast(t('circleUploadFailed'),'error');
   }
 }
 function showNowPlayingBar(){
@@ -808,7 +909,8 @@ function stopPlayingCircle(){
   }
 }
 function attachCirclePlayer(el){
-  const src=el.dataset.src;if(!src)return;
+  const src=el.dataset.src;
+  if(!src){console.warn('[circle] no data-src');return;}
   const video=el.querySelector('video');
   if(!video)return;
   const timerEl=el.querySelector('.circle-timer');
@@ -833,6 +935,7 @@ function attachCirclePlayer(el){
     video.preload='auto';
 
     if(src.startsWith('data:')){
+      console.log('[circle load data-url]',{len:src.length});
       fetch(src).then(r=>r.blob()).then(blob=>{
         const cleanType=((blob.type||'video/webm').split(';')[0]||'video/webm').trim();
         const cleanBlob=new Blob([blob],{type:cleanType});
@@ -841,28 +944,52 @@ function attachCirclePlayer(el){
         video.src=blobUrl;
         try{video.load();}catch(e){}
       }).catch(err=>{
-        console.error('circle blob convert failed, fallback:',err);
+        console.error('[circle] data-url fetch failed:',err);
         video.src=src;
         try{video.load();}catch(e){}
       });
     }else{
+      console.log('[circle load S3]',{src:src.slice(0,80)});
       video.src=src;
       try{video.load();}catch(e){}
     }
 
     video.addEventListener('error',()=>{
       const err=video.error;
-      console.error('[circle video error]',err?{code:err.code,message:err.message}:'unknown',{
-        srcHead:(video.src||'').slice(0,60),
-        srcLen:(video.src||'').length,
-        canPlayWebm:video.canPlayType('video/webm'),
-        canPlayWebmVp8:video.canPlayType('video/webm;codecs="vp8,opus"'),
-        canPlayWebmVp9:video.canPlayType('video/webm;codecs="vp9,opus"'),
-        canPlayMp4:video.canPlayType('video/mp4'),
-        canPlayMp4H264:video.canPlayType('video/mp4;codecs="avc1.42E01E,mp4a.40.2"')
+      const code=err?err.code:0;
+      const codeMap={
+        1:'ABORTED',
+        2:'NETWORK',
+        3:'DECODE_ERROR (битый файл или неподдерживаемый кодек)',
+        4:'SRC_NOT_SUPPORTED (формат не распознан или 403 на S3)'
+      };
+      console.error('[circle video error]',{
+        code,
+        codeText:codeMap[code]||'unknown',
+        src:(video.src||'').slice(0,120),
+        canPlay_webm:video.canPlayType('video/webm'),
+        canPlay_webm_vp8:video.canPlayType('video/webm;codecs="vp8,opus"'),
+        canPlay_webm_vp9:video.canPlayType('video/webm;codecs="vp9,opus"'),
+        canPlay_mp4:video.canPlayType('video/mp4'),
+        canPlay_mp4_h264:video.canPlayType('video/mp4;codecs="avc1.42E01E,mp4a.40.2"'),
+        ua:navigator.userAgent
       });
-      if(err&&err.code===4){
-        toast(t('errCircleUnsupported'),'error');
+      if(code===4){
+        if(src.startsWith('http')){
+          toast('Кружок не загрузился с сервера — проверьте доступ к Cloud.ru','error');
+        }else if(!video.canPlayType('video/webm')&&!video.canPlayType('video/mp4')){
+          toast('Браузер вообще не поддерживает видео','error');
+        }else if((video.src||'').length>1_100_000){
+          toast('Кружок слишком большой — не сохранился в базе','error');
+        }else if((video.src||'').length<500){
+          toast('Кружок записан пустым','error');
+        }else{
+          toast(t('errCircleUnsupported'),'error');
+        }
+      }else if(code===3){
+        toast('Кружок повреждён (ошибка декодирования)','error');
+      }else if(code===2){
+        toast('Ошибка сети при загрузке кружка','error');
       }
     });
   }
@@ -875,8 +1002,16 @@ function attachCirclePlayer(el){
       });
       const p=video.play();
       if(p&&p.catch)p.catch(err=>{
-        console.error('circle play failed:',err);
-        toast(t('errCircleUnsupported'),'error');
+        console.error('[circle play failed]',{
+          name:err.name,
+          message:err.message,
+          readyState:video.readyState,
+          networkState:video.networkState,
+          error:video.error
+        });
+        if(err.name==='NotSupportedError')toast(t('errCircleUnsupported'),'error');
+        else if(err.name==='NotAllowedError')toast('Браузер заблокировал воспроизведение','error');
+        else toast('Не удалось воспроизвести','error');
       });
     }else{
       video.pause();
