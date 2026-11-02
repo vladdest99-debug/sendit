@@ -119,13 +119,13 @@ html[data-theme="light"]{
 *{margin:0;padding:0;box-sizing:border-box;}
 html,body{
   height:100%;
-  height:100dvh;
+  height:100dvh; /* Решает проблему с адресной строкой на мобилках */
   background:var(--bg-0);
   color:var(--text-1);
   font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   font-size:14px;
   line-height:1.5;
-  overflow:hidden;
+  overflow:hidden; /* Запрещаем скролл всей страницы */
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   -webkit-tap-highlight-color:transparent;
@@ -462,12 +462,22 @@ svg{display:block;}
 #chat-area{min-height:0;overflow:hidden;position:relative;flex:1;display:flex;flex-direction:column;}
 
 /* ============================================
-   MESSAGES
+   MESSAGES (ИСПРАВЛЕНО)
    ============================================ */
 .messages{
-  flex:1 1 0;min-height:0;overflow-y:auto;padding:20px 16px 8px;
-  display:flex;flex-direction:column;gap:2px;background:var(--bg-0);
-  scroll-behavior:smooth;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+  flex:1 1 0;
+  min-height:0;
+  overflow-y:auto;
+  padding:20px 16px 8px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start; /* Прижимаем к верху */
+  align-items:stretch;        /* Растягиваем по ширине */
+  gap:2px;
+  background:var(--bg-0);
+  scroll-behavior:smooth;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
 }
 .messages-empty{
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -482,12 +492,17 @@ svg{display:block;}
 }
 
 .msg-row{
-  display:flex;max-width:100%;gap:8px;align-items:flex-end;
-  flex-shrink:0;animation:msgIn 0.2s var(--ease-out);
+  display:flex;
+  width:100%;            /* Жестко 100% ширины */
+  max-width:100%;
+  gap:8px;
+  align-items:flex-end;
+  flex-shrink:0;
+  animation:msgIn 0.2s var(--ease-out);
 }
 @keyframes msgIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 .msg-row.me{justify-content:flex-end;flex-direction:row-reverse;}
-.msg-row.other{justify-content:flex-start;}
+.msg-row.other{justify-content:flex-start;flex-direction:row;}
 
 .msg-avatar{
   width:32px;height:32px;border-radius:50%;overflow:hidden;
@@ -1574,259 +1589,61 @@ html[data-theme="light"] .msg-row.other .voice-progress-fill{background:var(--ac
 }
 
 /* ============================================
-   КРУЖКИ (ВИДЕОСООБЩЕНИЯ)
-   ============================================ */
-.circle-msg{
-  position:relative;
-  width:220px;
-  height:220px;
-  border-radius:50%;
-  overflow:hidden;
-  cursor:pointer;
-  background:#000;
-  margin:6px 0;
-  user-select:none;
-  -webkit-tap-highlight-color:transparent;
-  touch-action:manipulation;
-  flex-shrink:0;
-  box-shadow:0 4px 18px rgba(0,0,0,0.5),0 0 0 3px var(--bg-1),0 0 0 4px var(--accent-glow);
-  transition:box-shadow 0.2s var(--ease);
-}
-.circle-msg:hover{
-  box-shadow:0 6px 24px rgba(0,0,0,0.6),0 0 0 3px var(--bg-1),0 0 0 4px var(--accent);
-}
-.circle-msg video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:50%;
-  display:block;
-  pointer-events:none;
-}
-.circle-msg .circle-overlay{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:50%;
-  background:rgba(0,0,0,0.3);
-  color:#fff;
-  font-size:48px;
-  transition:opacity 0.2s,background 0.2s;
-  pointer-events:none;
-  text-shadow:0 2px 6px rgba(0,0,0,0.6);
-}
-.circle-msg.playing .circle-overlay{opacity:0;background:transparent;}
-.circle-msg .circle-timer{
-  position:absolute;
-  bottom:18px;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,0.55);
-  color:#fff;
-  font-size:11px;
-  font-weight:600;
-  padding:2px 8px;
-  border-radius:10px;
-  pointer-events:none;
-  opacity:0;
-  transition:opacity 0.2s;
-  font-variant-numeric:tabular-nums;
-}
-.circle-msg.playing .circle-timer,
-.circle-msg.paused .circle-timer{opacity:1;}
-.circle-msg .circle-ring{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  transform:rotate(-90deg);
-}
-.circle-msg .circle-ring-track{
-  fill:none;
-  stroke:rgba(255,255,255,0.18);
-  stroke-width:3;
-}
-.circle-msg .circle-ring-fill{
-  fill:none;
-  stroke:var(--accent);
-  stroke-width:3;
-  stroke-linecap:round;
-  transition:stroke-dashoffset 0.1s linear;
-}
-
-/* Модалка записи кружка */
-.video-note-modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.92);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:450;
-  padding:20px;
-  gap:18px;
-}
-.video-note-modal.visible{display:flex;}
-.video-note-stage{display:flex;align-items:center;justify-content:center;}
-.video-note-ring{
-  position:relative;
-  width:min(78vw,320px);
-  height:min(78vw,320px);
-  border-radius:50%;
-  overflow:hidden;
-  background:#111;
-  box-shadow:0 0 0 3px rgba(255,255,255,0.15),0 0 40px rgba(0,0,0,0.6);
-  transition:box-shadow 0.2s;
-}
-.video-note-ring.recording{
-  box-shadow:0 0 0 3px #ef4444,0 0 0 8px rgba(239,68,68,0.25),0 0 40px rgba(239,68,68,0.5);
-  animation:vnRingPulse 1.4s infinite;
-}
-@keyframes vnRingPulse{
-  0%,100%{box-shadow:0 0 0 3px #ef4444,0 0 0 8px rgba(239,68,68,0.25),0 0 40px rgba(239,68,68,0.5);}
-  50%{box-shadow:0 0 0 3px #ef4444,0 0 0 14px rgba(239,68,68,0.1),0 0 40px rgba(239,68,68,0.5);}
-}
-.video-note-ring video{
-  width:100%;height:100%;object-fit:cover;border-radius:50%;
-  transform:scaleX(-1);display:block;
-}
-.video-note-ring video.rear-camera{transform:none;}
-.video-note-timer{
-  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
-  background:rgba(0,0,0,0.55);color:#fff;font-size:13px;font-weight:700;
-  padding:4px 12px;border-radius:12px;opacity:0;
-  transition:opacity 0.2s;font-variant-numeric:tabular-nums;
-}
-.video-note-ring.recording .video-note-timer{opacity:1;}
-.video-note-hint{color:rgba(255,255,255,0.75);font-size:13px;text-align:center;max-width:320px;line-height:1.4;}
-.video-note-actions{
-  display:flex;align-items:center;justify-content:center;gap:32px;
-  padding-bottom:calc(20px + env(safe-area-inset-bottom));
-}
-.video-note-btn{
-  width:56px;height:56px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:rgba(255,255,255,0.12);color:#fff;border:none;cursor:pointer;
-  transition:transform 0.15s,background 0.15s;flex-shrink:0;
-}
-.video-note-btn:hover{background:rgba(255,255,255,0.22);}
-.video-note-btn:active{transform:scale(0.92);}
-.video-note-btn svg{width:24px;height:24px;}
-.video-note-record{
-  width:78px;height:78px;background:rgba(239,68,68,0.9);
-  box-shadow:0 0 0 4px rgba(255,255,255,0.2);
-}
-.video-note-record::before{
-  content:'';width:60%;height:60%;border-radius:50%;
-  background:#fff;transition:all 0.2s;
-}
-.video-note-record:hover{background:rgba(239,68,68,1);}
-.video-note-record.recording{background:rgba(239,68,68,1);}
-.video-note-record.recording::before{width:32%;height:32%;border-radius:6px;}
-.video-note-switch svg{width:22px;height:22px;}
-.video-note-cancel svg{width:22px;height:22px;}
-@media (max-width:480px){
-  .video-note-actions{gap:24px;}
-  .video-note-btn{width:48px;height:48px;}
-  .video-note-record{width:70px;height:70px;}
-  .circle-msg{width:180px;height:180px;}
-}
-
-/* ============================================
-   NOW-PLAYING (кружок играет фоном)
-   ============================================ */
-.circle-now-playing{
-  display:none;
-  height:52px;
-  padding:0 14px;
-  background:linear-gradient(90deg,rgba(59,130,246,0.18),rgba(59,130,246,0.04) 70%,transparent);
-  border-bottom:1px solid var(--border);
-  align-items:center;
-  gap:12px;
-  flex-shrink:0;
-  cursor:pointer;
-  transition:background 0.15s var(--ease);
-  animation:cnpSlideIn 0.25s var(--ease-out);
-}
-.circle-now-playing.visible{display:flex;}
-.circle-now-playing:hover{background:linear-gradient(90deg,rgba(59,130,246,0.25),rgba(59,130,246,0.08) 70%,transparent);}
-@keyframes cnpSlideIn{
-  from{opacity:0;transform:translateY(-8px);}
-  to{opacity:1;transform:translateY(0);}
-}
-.circle-now-playing .cnp-dot{
-  width:10px;height:10px;border-radius:50%;background:#ef4444;
-  animation:cnpPulse 1.2s infinite;flex-shrink:0;
-  box-shadow:0 0 8px rgba(239,68,68,0.6);
-}
-@keyframes cnpPulse{
-  0%,100%{opacity:1;transform:scale(1);}
-  50%{opacity:0.4;transform:scale(1.35);}
-}
-.circle-now-playing .cnp-info{
-  flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;
-}
-.circle-now-playing .cnp-title{
-  font-size:13px;font-weight:600;color:var(--text-1);line-height:1.2;
-}
-.circle-now-playing .cnp-author{
-  font-size:11px;color:var(--text-2);
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-}
-.circle-now-playing .cnp-stop{
-  width:34px;height:34px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  background:var(--bg-3);color:var(--text-2);flex-shrink:0;
-  transition:all 0.15s var(--ease);
-  border:1px solid var(--border);cursor:pointer;
-}
-.circle-now-playing .cnp-stop:hover{
-  background:rgba(239,68,68,0.15);
-  border-color:rgba(239,68,68,0.4);
-  color:#ef4444;
-  transform:scale(1.06);
-}
-.circle-now-playing .cnp-stop svg{width:16px;height:16px;}
-.circle-now-playing .cnp-stop:active{transform:scale(0.94);}
-@media (max-width:768px){
-  .circle-now-playing{height:56px;padding:0 12px;}
-  .circle-now-playing .cnp-stop{width:38px;height:38px;}
-}
-
-/* ============================================
-   АДАПТИВ
+   АДАПТИВ (ИСПРАВЛЕНО ДЛЯ МОБИЛЬНЫХ)
    ============================================ */
 @media (max-width:900px){
   .sidebar{width:340px;}
   .messages{padding:16px 12px 6px;}
 }
+
 @media (max-width:768px){
+  /* Фиксируем высоту приложения и запрещаем скролл body */
+  #app.active {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .main {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #chat-area {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
   .sidebar{width:100%;position:absolute;inset:0;z-index:10;}
   .main{width:100%;}
   #app.chat-open .sidebar{display:none;}
   #app:not(.chat-open) .main{display:none;}
+
   #back-btn{display:inline-flex !important;}
+
   .login-box{width:100%;max-width:400px;padding:36px 24px;}
   .login-box .logo{width:64px;height:64px;border-radius:18px;}
   .login-box .logo svg{width:32px;height:32px;}
+
   .stories-bar{padding:12px 14px;gap:12px;}
   .story-item{width:62px;}
   .story-ring{width:54px;height:54px;}
   .story-thumb{width:46px;height:46px;font-size:20px;}
   .story-label{font-size:10px;max-width:62px;}
   .story-add-btn{top:38px;width:20px;height:20px;font-size:12px;}
+
   .chat-header{height:calc(64px + env(safe-area-inset-top));padding-top:calc(10px + env(safe-area-inset-top));}
   .sidebar-header{padding-top:calc(10px + env(safe-area-inset-top));}
+
   .messages{padding:14px 10px 4px;gap:1px;}
   .bubble{max-width:84%;}
   .media{max-width:100%;}
   .media img,.media video{max-height:260px;}
+
   .input-panel{padding-bottom:calc(16px + env(safe-area-inset-bottom));}
   .input-wrap textarea{max-height:100px;}
   .attach-btn,.send-btn{width:46px;height:46px;}

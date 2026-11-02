@@ -78,14 +78,14 @@ wpGreen:'Зелёные',wpSunset:'Закат',wpOcean:'Океан',wpMint:'Мя
 voice:'🎤 Голосовое',voiceMsg:'🎤 Голосовое сообщение',voiceRecording:'Запись',
 errMicAccess:'Нет доступа к микрофону',errVoiceTooShort:'Слишком короткая запись',
 errVoiceUnsupported:'Запись недоступна. Откройте сайт по HTTPS или в поддерживаемом браузере.',recordingCancel:'Отменить запись',
-videoNoteMenu:'Кружок',videoNoteHint:'Нажмите ● чтобы начать запись',videoNoteSent:'Кружок отправлен',
-videoNoteRecording:'Запись кружка',errCameraAccess:'Нет доступа к камере',videoNoteSwitchCam:'Сменить камеру',
-videoNoteNowPlaying:'Кружок играет',videoNoteStop:'Остановить',
 errMicPerm:'Разрешите доступ к микрофону в настройках сайта',
 errMicNotFound:'Микрофон не найден',errMicBusy:'Микрофон занят другим приложением',
-errCircleTooBig:'Кружок слишком большой',
-errCircleUnsupported:'Этот кружок не воспроизводится в вашем браузере',
-circleUploading:'Загрузка кружка...',circleUploadFailed:'Не удалось загрузить кружок'
+lastSeenJustNow:'был(а) в сети только что',
+lastSeenMinAgo:'был(а) в сети {n} мин назад',
+lastSeenHourAgo:'был(а) в сети {n} ч назад',
+lastSeenToday:'был(а) в сети в {time}',
+lastSeenYesterday:'был(а) в сети вчера в {time}',
+lastSeenDate:'был(а) в сети {date}'
 },
 en:{
 welcome:'Welcome',createAccount:'Create account',subtitle:'Sign in or create an account',
@@ -161,14 +161,14 @@ wpGreen:'Green',wpSunset:'Sunset',wpOcean:'Ocean',wpMint:'Mint',
 voice:'🎤 Voice',voiceMsg:'🎤 Voice message',voiceRecording:'Recording',
 errMicAccess:'No microphone access',errVoiceTooShort:'Recording too short',
 errVoiceUnsupported:'Recording unavailable. Open the site via HTTPS or a supported browser.',recordingCancel:'Cancel recording',
-videoNoteMenu:'Video note',videoNoteHint:'Tap ● to start recording',videoNoteSent:'Video note sent',
-videoNoteRecording:'Recording video note',errCameraAccess:'No camera access',videoNoteSwitchCam:'Switch camera',
-videoNoteNowPlaying:'Video note playing',videoNoteStop:'Stop',
 errMicPerm:'Allow microphone access in site settings',
 errMicNotFound:'Microphone not found',errMicBusy:'Microphone is busy in another app',
-errCircleTooBig:'Video note is too big',
-errCircleUnsupported:'This video note cannot be played in your browser',
-circleUploading:'Uploading video note...',circleUploadFailed:'Failed to upload video note'
+lastSeenJustNow:'last seen just now',
+lastSeenMinAgo:'last seen {n} min ago',
+lastSeenHourAgo:'last seen {n} h ago',
+lastSeenToday:'last seen today at {time}',
+lastSeenYesterday:'last seen yesterday at {time}',
+lastSeenDate:'last seen {date}'
 }};
 
 let currentLang='ru';
@@ -240,18 +240,9 @@ let voiceStartTime=0;
 let voiceTimerInterval=null;
 let isRecordingVoice=false;
 
-let videoNoteStream=null;
-let videoNoteRecorder=null;
-let videoNoteChunks=[];
-let videoNoteStartTime=0;
-let videoNoteTimerInterval=null;
-let isRecordingVideoNote=false;
-let videoNoteFacing='user';
-
-let playingCircleVideo=null;
-let playingCircleMsgId=null;
-let playingCircleAuthor=null;
-let _isRenderingMessages=false;
+let heartbeatInterval=null;
+let currentChatProfileUnsub=null;
+let heartbeatListenersAttached=false;
 
 const $=id=>document.getElementById(id);
 
@@ -273,6 +264,30 @@ function formatStoryTime(ts){
   if(min<1)return t('timeJustNow');
   if(min<60)return tpl('timeMinAgo',{n:min});
   return tpl('timeHourAgo',{n:Math.floor(min/60)});
+}
+function formatLastSeen(ts){
+  if(!ts)return t('inChat');
+  const now=Date.now();
+  const diff=now-ts;
+  const min=Math.floor(diff/60000);
+  if(min<1)return t('lastSeenJustNow');
+  if(min<60)return tpl('lastSeenMinAgo',{n:min});
+  
+  const d=new Date(ts);
+  const today=new Date();
+  const todayTs=new Date(today.getFullYear(),today.getMonth(),today.getDate()).getTime();
+  const yestTs=todayTs-86400000;
+  const dayTs=new Date(d.getFullYear(),d.getMonth(),d.getDate()).getTime();
+  const timeStr=d.toLocaleTimeString(currentLang==='ru'?'ru-RU':'en-US',{hour:'2-digit',minute:'2-digit'});
+  
+  if(dayTs===todayTs){
+    return tpl('lastSeenToday',{time:timeStr});
+  }
+  if(dayTs===yestTs){
+    return tpl('lastSeenYesterday',{time:timeStr});
+  }
+  const dateStr=d.toLocaleDateString(currentLang==='ru'?'ru-RU':'en-US',{day:'numeric',month:'short'});
+  return tpl('lastSeenDate',{date:dateStr});
 }
 function formatVoiceDuration(secs){
   secs=Math.max(0,Math.round(secs)||0);
@@ -340,7 +355,6 @@ async function uploadFileToStorage(file,path,opts){
     Body:file,
     ContentType:file.type||'application/octet-stream'
   };
-  // Убрано добавление ACL: 'public-read', чтобы не вызывать ошибку CORS (x-amz-acl)
   const data=await s3.upload(params).promise();
   return data.Location;
 }
@@ -349,6 +363,59 @@ function saveProfile(){if(!state.uid)return;try{localStorage.setItem(profileKey(
 function loadProfile(){try{const r=localStorage.getItem(profileKey());if(!r)return;const d=JSON.parse(r);if(d.profile)state.profile={...state.profile,...d.profile};}catch(e){}}
 function saveSeenStories(){if(!state.uid)return;try{const a=Array.from(state.seenStoryIds).slice(-500);localStorage.setItem(storiesSeenKey(),JSON.stringify(a));}catch(e){}}
 function loadSeenStories(){try{const r=localStorage.getItem(storiesSeenKey());if(!r)return;const a=JSON.parse(r);if(Array.isArray(a))state.seenStoryIds=new Set(a);}catch(e){}}
+
+function startHeartbeat(){
+  if(!state.uid||!window.fb)return;
+  const{db,doc,updateDoc,serverTimestamp}=window.fb;
+  
+  const update=()=>{
+    if(!state.uid)return;
+    updateDoc(doc(db,'users',state.uid),{
+      lastSeen:serverTimestamp(),
+      online:true
+    }).catch(e=>console.warn('heartbeat failed:',e));
+  };
+  
+  update();
+  if(heartbeatInterval)clearInterval(heartbeatInterval);
+  heartbeatInterval=setInterval(update,30000);
+  
+  if(!heartbeatListenersAttached){
+    heartbeatListenersAttached=true;
+    const handleOffline=()=>{
+      if(!state.uid||!window.fb)return;
+      const{db,doc,updateDoc,serverTimestamp}=window.fb;
+      updateDoc(doc(db,'users',state.uid),{
+        lastSeen:serverTimestamp(),
+        online:false
+      }).catch(()=>{});
+    };
+    window.addEventListener('beforeunload',handleOffline);
+    document.addEventListener('visibilitychange',()=>{
+      if(document.visibilityState==='hidden')handleOffline();
+      else {
+        if(state.uid&&window.fb){
+          const{db,doc,updateDoc,serverTimestamp}=window.fb;
+          updateDoc(doc(db,'users',state.uid),{lastSeen:serverTimestamp(),online:true}).catch(()=>{});
+        }
+      }
+    });
+  }
+}
+
+function stopHeartbeat(){
+  if(heartbeatInterval){
+    clearInterval(heartbeatInterval);
+    heartbeatInterval=null;
+  }
+  if(state.uid&&window.fb){
+    const{db,doc,updateDoc,serverTimestamp}=window.fb;
+    updateDoc(doc(db,'users',state.uid),{
+      lastSeen:serverTimestamp(),
+      online:false
+    }).catch(()=>{});
+  }
+}
 
 const CHAT_WALLPAPERS=[
   {id:'none', type:'none',     labelKey:'wallpaperDefault'},
@@ -622,454 +689,6 @@ function attachVoicePlayer(el){
   });
 }
 
-/* ============ КРУЖКИ (ВИДЕОСООБЩЕНИЯ) ============ */
-async function openVideoNoteModal(){
-  if(!canPostInCurrentChat()){toast(t('channelOnlyAdmins'),'error');return;}
-  if(typeof window.MediaRecorder==='undefined'||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    console.error('[circle] Not supported:',{
-      mediaDevices:typeof navigator.mediaDevices,
-      MediaRecorder:typeof window.MediaRecorder,
-      isSecureContext:window.isSecureContext,
-      ua:navigator.userAgent
-    });
-    toast(t('errVoiceUnsupported'),'error');
-    return;
-  }
-  videoNoteChunks=[];
-  isRecordingVideoNote=false;
-  const tEl=$('video-note-timer');if(tEl)tEl.textContent='0:00';
-  const recBtn=$('video-note-record');
-  if(recBtn){recBtn.classList.remove('recording');recBtn.disabled=true;recBtn.style.opacity='0.4';}
-  const ring=document.querySelector('.video-note-ring');
-  if(ring)ring.classList.remove('recording');
-  const modal=$('video-note-modal');if(modal)modal.classList.add('visible');
-  const hint=document.querySelector('.video-note-hint');
-  if(hint)hint.textContent='Загрузка камеры...';
-  await startCameraPreview();
-}
-async function startCameraPreview(){
-  try{
-    videoNoteStream=await navigator.mediaDevices.getUserMedia({
-      audio:true,
-      video:{
-        facingMode:videoNoteFacing,
-        width:{ideal:480,min:480},
-        height:{ideal:480,min:480},
-        frameRate:{ideal:30,min:24,max:30}
-      }
-    });
-    console.log('[circle] stream ready',videoNoteStream.getTracks().map(t=>({kind:t.kind,label:t.label,state:t.readyState})));
-
-    const videoTracks=videoNoteStream.getVideoTracks();
-    if(!videoTracks.length){
-      toast('Камера не передаёт видео — разрешите камеру','error');
-      const hint=document.querySelector('.video-note-hint');
-      if(hint)hint.textContent='Нет видеотрека — разрешите камеру в настройках сайта';
-      return;
-    }
-
-    const videoEl=$('video-note-preview');
-    if(videoEl){
-      videoEl.srcObject=videoNoteStream;
-      videoEl.muted=true;
-      videoEl.classList.toggle('rear-camera',videoNoteFacing==='environment');
-      await videoEl.play().catch(e=>console.warn('[circle] preview play:',e));
-    }
-
-    const recBtn=$('video-note-record');
-    if(recBtn){recBtn.disabled=false;recBtn.style.opacity='';}
-    const hint=document.querySelector('.video-note-hint');
-    if(hint)hint.textContent=t('videoNoteHint');
-  }catch(e){
-    console.error('[circle] getUserMedia failed:',e.name,e.message);
-    let msg=t('errCameraAccess');
-    if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError')msg='Разрешите доступ к камере и микрофону в настройках сайта';
-    else if(e.name==='NotFoundError'||e.name==='DevicesNotFoundError')msg='Камера не найдена';
-    else if(e.name==='NotReadableError'||e.name==='TrackStartError')msg='Камера занята другим приложением';
-    toast(msg,'error');
-    const hint=document.querySelector('.video-note-hint');
-    if(hint)hint.textContent=msg;
-  }
-}
-async function switchVideoNoteCamera(){
-  if(isRecordingVideoNote)return;
-  videoNoteFacing=videoNoteFacing==='user'?'environment':'user';
-  if(videoNoteStream){try{videoNoteStream.getTracks().forEach(tr=>tr.stop());}catch(_){}videoNoteStream=null;}
-  await startCameraPreview();
-}
-function closeVideoNoteModal(){
-  if(videoNoteRecorder){
-    try{videoNoteRecorder.onstop=null;videoNoteRecorder.stop();}catch(e){}
-    videoNoteRecorder=null;
-  }
-  if(videoNoteStream){try{videoNoteStream.getTracks().forEach(tr=>tr.stop());}catch(_){}videoNoteStream=null;}
-  const v=$('video-note-preview');if(v)v.srcObject=null;
-  if(videoNoteTimerInterval){clearInterval(videoNoteTimerInterval);videoNoteTimerInterval=null;}
-  isRecordingVideoNote=false;
-  videoNoteChunks=[];
-  const modal=$('video-note-modal');if(modal)modal.classList.remove('visible');
-  const rec=$('video-note-record');if(rec){rec.classList.remove('recording');rec.disabled=false;rec.style.opacity='';}
-  const ring=document.querySelector('.video-note-ring');
-  if(ring)ring.classList.remove('recording');
-}
-function toggleVideoNoteRecording(){
-  if(isRecordingVideoNote){
-    stopVideoNoteRecording(true);
-    return;
-  }
-  if(!videoNoteStream){
-    toast('Камера ещё не готова, подождите','error');
-    console.warn('[circle] record pressed but stream=null');
-    return;
-  }
-  if(!videoNoteStream.active){
-    toast('Камера отключилась — переоткройте кружок','error');
-    console.warn('[circle] stream inactive');
-    return;
-  }
-  const videoTracks=videoNoteStream.getVideoTracks();
-  if(!videoTracks.length||videoTracks.every(t=>t.readyState==='ended')){
-    toast('Камера не активна','error');
-    console.warn('[circle] video track ended');
-    return;
-  }
-  startVideoNoteRecording();
-}
-function startVideoNoteRecording(){
-  if(!videoNoteStream||!window.MediaRecorder){
-    console.error('[circle] start blocked',{stream:!!videoNoteStream,recorder:typeof MediaRecorder});
-    return;
-  }
-  const mimeTypes=[
-    'video/webm;codecs=vp8,opus',
-    'video/webm;codecs=vp9,opus',
-    'video/webm',
-    'video/mp4;codecs=h264,aac',
-    'video/mp4'
-  ];
-  let mimeType='';
-  for(const m of mimeTypes){
-    try{if(MediaRecorder.isTypeSupported(m)){mimeType=m;break;}}catch(e){}
-  }
-  console.log('[circle] mime selected:',mimeType||'(default)');
-
-  const options = mimeType ? {mimeType} : {};
-  
-  try{
-    videoNoteRecorder=new MediaRecorder(videoNoteStream, options);
-  }catch(e){
-    console.error('[circle] ctor failed:',e);
-    toast('Не удалось начать запись','error');
-    return;
-  }
-
-  videoNoteChunks=[];
-  videoNoteRecorder.ondataavailable=e=>{
-    if(e.data&&e.data.size>0)videoNoteChunks.push(e.data);
-  };
-  
-  videoNoteRecorder.onerror=(e)=>{
-    console.error('[circle] recorder error:', e.error || e);
-    if (e.error) {
-      console.error('[circle] error details:', e.error.name, e.error.message);
-    }
-    toast('Ошибка записи: ' + (e.error?.message || 'сбой кодека'),'error');
-    stopVideoNoteRecording(false);
-  };
-  
-  videoNoteRecorder.onstop=async()=>{
-    const type=(videoNoteRecorder&&videoNoteRecorder.mimeType)||mimeType||'video/webm';
-    if(!videoNoteChunks.length){
-      console.warn('[circle] no chunks on stop');
-      closeVideoNoteModal();
-      return;
-    }
-    const blob=new Blob(videoNoteChunks,{type});
-    videoNoteChunks=[];
-    const duration=(Date.now()-videoNoteStartTime)/1000;
-    closeVideoNoteModal();
-    if(duration<0.5){toast(t('errVoiceTooShort'),'error');return;}
-    await sendVideoNoteBlob(blob,duration);
-  };
-
-  try{
-    videoNoteRecorder.start(1000);
-    console.log('[circle] recording started, state=',videoNoteRecorder.state);
-  }catch(e){
-    console.error('[circle] start() failed:',e);
-    toast('Не удалось начать запись','error');
-    return;
-  }
-
-  isRecordingVideoNote=true;
-  videoNoteStartTime=Date.now();
-  const rec=$('video-note-record');if(rec)rec.classList.add('recording');
-  const ring=document.querySelector('.video-note-ring');
-  if(ring)ring.classList.add('recording');
-  const hint=document.querySelector('.video-note-hint');
-  if(hint)hint.textContent=t('videoNoteRecording');
-  const tEl=$('video-note-timer');if(tEl)tEl.textContent='0:00';
-  if(videoNoteTimerInterval)clearInterval(videoNoteTimerInterval);
-  videoNoteTimerInterval=setInterval(()=>{
-    if(!isRecordingVideoNote)return;
-    const secs=(Date.now()-videoNoteStartTime)/1000;
-    const el=$('video-note-timer');
-    if(el)el.textContent=formatVoiceDuration(secs);
-    if(secs>=30){
-      stopVideoNoteRecording(true);
-    }
-  },200);
-  try{if(navigator.vibrate)navigator.vibrate(20);}catch(e){}
-}
-function stopVideoNoteRecording(send){
-  if(!isRecordingVideoNote||!videoNoteRecorder)return;
-  isRecordingVideoNote=false;
-  if(videoNoteTimerInterval){clearInterval(videoNoteTimerInterval);videoNoteTimerInterval=null;}
-  const rec=$('video-note-record');if(rec)rec.classList.remove('recording');
-  const ring=document.querySelector('.video-note-ring');
-  if(ring)ring.classList.remove('recording');
-  if(!send){
-    try{videoNoteRecorder.onstop=null;videoNoteRecorder.stop();}catch(e){}
-    videoNoteRecorder=null;
-    videoNoteChunks=[];
-    closeVideoNoteModal();
-    return;
-  }
-  try{videoNoteRecorder.stop();}catch(e){}
-}
-async function sendVideoNoteBlob(blob,duration){
-  if(!state.currentChat)return;
-  if(!canPostInCurrentChat()){toast(t('channelOnlyAdmins'),'error');return;}
-  try{
-    const cleanType=((blob.type||'video/webm').split(';')[0]||'video/webm').trim();
-    const cleanBlob=new Blob([blob],{type:cleanType});
-    const ext=cleanType.includes('mp4')?'mp4':'webm';
-    const filename=`circle_${Date.now()}.${ext}`;
-
-    if(!window.fb.s3Ready){
-      console.error('[circle] S3 not ready — cannot upload video notes');
-      toast('Загрузка кружков недоступна: S3 не настроен','error');
-      return;
-    }
-
-    toast(t('circleUploading'));
-    console.log('[circle upload]',{
-      size:cleanBlob.size,
-      sizeMB:(cleanBlob.size/1048576).toFixed(2),
-      type:cleanType,
-      duration
-    });
-
-    const file=new File([cleanBlob],filename,{type:cleanType});
-    const key=`video-notes/${state.uid}/${Date.now()}_${filename}`;
-    const url=await uploadFileToStorage(file,key,{publicRead:true});
-
-    if(!url||!url.startsWith('http')){
-      console.error('[circle] invalid upload url:',url);
-      toast(t('errSendFileFailed'),'error');
-      return;
-    }
-
-    console.log('[circle send OK]',{url,duration:Math.round(duration)});
-
-    await sendFileContent({
-      type:'videoNote',
-      dataUrl:url,
-      duration:Math.round(duration),
-      _storage:'s3'
-    });
-
-    toast(t('videoNoteSent'),'success');
-  }catch(e){
-    console.error('[circle upload failed]',e);
-    toast(t('circleUploadFailed'),'error');
-  }
-}
-function showNowPlayingBar(){
-  const bar=$('circle-now-playing');
-  if(!bar)return;
-  const authorEl=$('cnp-author');
-  if(authorEl){
-    authorEl.textContent=playingCircleAuthor?getUserDisplayName(playingCircleAuthor):'';
-  }
-  bar.classList.add('visible');
-}
-function hideNowPlayingBar(){
-  const bar=$('circle-now-playing');
-  if(bar)bar.classList.remove('visible');
-}
-function stopPlayingCircle(){
-  const v=playingCircleVideo;
-  playingCircleVideo=null;
-  playingCircleMsgId=null;
-  playingCircleAuthor=null;
-  hideNowPlayingBar();
-  if(v){
-    try{v.pause();v.currentTime=0;}catch(e){}
-  }
-}
-function attachCirclePlayer(el){
-  const src=el.dataset.src;
-  if(!src){console.warn('[circle] no data-src');return;}
-  const video=el.querySelector('video');
-  if(!video)return;
-  const timerEl=el.querySelector('.circle-timer');
-  const ringFill=el.querySelector('.circle-ring-fill');
-  const dur=parseFloat(el.dataset.duration)||0;
-  if(timerEl)timerEl.textContent=formatVoiceDuration(dur);
-
-  let circumference=0;
-  if(ringFill){
-    const r=parseFloat(ringFill.getAttribute('r'))||48;
-    circumference=2*Math.PI*r;
-    ringFill.style.strokeDasharray=circumference;
-    ringFill.style.strokeDashoffset=circumference;
-  }
-
-  if(!video.dataset.setup){
-    video.dataset.setup='1';
-    video.muted=true;
-    video.playsInline=true;
-    video.setAttribute('playsinline','');
-    video.setAttribute('webkit-playsinline','');
-    video.preload='auto';
-
-    if(src.startsWith('data:')){
-      console.log('[circle load data-url]',{len:src.length});
-      fetch(src).then(r=>r.blob()).then(blob=>{
-        const cleanType=((blob.type||'video/webm').split(';')[0]||'video/webm').trim();
-        const cleanBlob=new Blob([blob],{type:cleanType});
-        const blobUrl=URL.createObjectURL(cleanBlob);
-        el.dataset.blobUrl=blobUrl;
-        video.src=blobUrl;
-        try{video.load();}catch(e){}
-      }).catch(err=>{
-        console.error('[circle] data-url fetch failed:',err);
-        video.src=src;
-        try{video.load();}catch(e){}
-      });
-    }else{
-      console.log('[circle load S3]',{src:src.slice(0,80)});
-      video.src=src;
-      try{video.load();}catch(e){}
-    }
-
-    video.addEventListener('error',()=>{
-      const err=video.error;
-      const code=err?err.code:0;
-      const codeMap={
-        1:'ABORTED',
-        2:'NETWORK',
-        3:'DECODE_ERROR (битый файл или неподдерживаемый кодек)',
-        4:'SRC_NOT_SUPPORTED (формат не распознан или 403 на S3)'
-      };
-      console.error('[circle video error]',{
-        code,
-        codeText:codeMap[code]||'unknown',
-        src:(video.src||'').slice(0,120),
-        canPlay_webm:video.canPlayType('video/webm'),
-        canPlay_webm_vp8:video.canPlayType('video/webm;codecs="vp8,opus"'),
-        canPlay_webm_vp9:video.canPlayType('video/webm;codecs="vp9,opus"'),
-        canPlay_mp4:video.canPlayType('video/mp4'),
-        canPlay_mp4_h264:video.canPlayType('video/mp4;codecs="avc1.42E01E,mp4a.40.2"'),
-        ua:navigator.userAgent
-      });
-      if(code===4){
-        if(src.startsWith('http')){
-          toast('Кружок не загрузился с сервера — проверьте доступ к Cloud.ru','error');
-        }else if(!video.canPlayType('video/webm')&&!video.canPlayType('video/mp4')){
-          toast('Браузер вообще не поддерживает видео','error');
-        }else if((video.src||'').length>1_100_000){
-          toast('Кружок слишком большой — не сохранился в базе','error');
-        }else if((video.src||'').length<500){
-          toast('Кружок записан пустым','error');
-        }else{
-          toast(t('errCircleUnsupported'),'error');
-        }
-      }else if(code===3){
-        toast('Кружок повреждён (ошибка декодирования)','error');
-      }else if(code===2){
-        toast('Ошибка сети при загрузке кружка','error');
-      }
-    });
-  }
-
-  el.addEventListener('click',(e)=>{
-    e.stopPropagation();
-    if(video.paused){
-      document.querySelectorAll('.circle-msg video').forEach(v=>{
-        if(v!==video&&!v.paused)v.pause();
-      });
-      const p=video.play();
-      if(p&&p.catch)p.catch(err=>{
-        console.error('[circle play failed]',{
-          name:err.name,
-          message:err.message,
-          readyState:video.readyState,
-          networkState:video.networkState,
-          error:video.error
-        });
-        if(err.name==='NotSupportedError')toast(t('errCircleUnsupported'),'error');
-        else if(err.name==='NotAllowedError')toast('Браузер заблокировал воспроизведение','error');
-        else toast('Не удалось воспроизвести','error');
-      });
-    }else{
-      video.pause();
-    }
-  });
-
-  video.addEventListener('play',()=>{
-    el.classList.add('playing');
-    el.classList.remove('paused');
-    if(playingCircleVideo&&playingCircleVideo!==video){
-      try{playingCircleVideo.pause();}catch(e){}
-    }
-    playingCircleVideo=video;
-    playingCircleMsgId=el.dataset.msgId||null;
-    playingCircleAuthor=el.dataset.authorUid||null;
-    showNowPlayingBar();
-  });
-
-  video.addEventListener('pause',()=>{
-    el.classList.remove('playing');
-    el.classList.add('paused');
-    if(playingCircleVideo===video&&!_isRenderingMessages){
-      playingCircleVideo=null;
-      playingCircleMsgId=null;
-      playingCircleAuthor=null;
-      hideNowPlayingBar();
-    }
-  });
-
-  video.addEventListener('ended',()=>{
-    el.classList.remove('playing');
-    el.classList.add('paused');
-    if(playingCircleVideo===video){
-      playingCircleVideo=null;
-      playingCircleMsgId=null;
-      playingCircleAuthor=null;
-      hideNowPlayingBar();
-    }
-  });
-
-  video.addEventListener('timeupdate',()=>{
-    const d=(isFinite(video.duration)&&video.duration>0)?video.duration:dur;
-    if(!d||d<0.5)return;
-    const pct=video.currentTime/d;
-    if(timerEl)timerEl.textContent=formatVoiceDuration(Math.max(0,d-video.currentTime));
-    if(ringFill&&circumference){
-      ringFill.style.strokeDashoffset=circumference*(1-pct);
-    }
-  });
-
-  video.addEventListener('loadedmetadata',()=>{
-    if(timerEl&&isFinite(video.duration)&&video.duration>0){
-      el.dataset.duration=video.duration;
-      timerEl.textContent=formatVoiceDuration(video.duration);
-    }
-  });
-}
-
 /* ============ ВХОД ============ */
 function setAuthMode(mode){
   authMode=mode;
@@ -1128,8 +747,8 @@ async function ensureProfile(uid){
     const snap=await getDoc(doc(db,'users',uid));
     if(snap.exists()){
       const d=snap.data();
-      state.profiles[uid]={uid,nickname:d.nickname,displayName:d.displayName||d.nickname,avatar:(d.displayName||d.nickname||'?')[0].toUpperCase(),avatarData:d.avatarData||null};
-    }else{state.profiles[uid]={uid,nickname:'?',displayName:'—',avatar:'?',avatarData:null};}
+      state.profiles[uid]={uid,nickname:d.nickname,displayName:d.displayName||d.nickname,avatar:(d.displayName||d.nickname||'?')[0].toUpperCase(),avatarData:d.avatarData||null,lastSeen:d.lastSeen&&d.lastSeen.toDate?d.lastSeen.toDate().getTime():(d.lastSeen||0),online:d.online||false};
+    }else{state.profiles[uid]={uid,nickname:'?',displayName:'—',avatar:'?',avatarData:null,lastSeen:0,online:false};}
     rebuildUsersList();if(currentGroupSettingsId)renderGroupSettings();
   }catch(e){console.error('ensureProfile:',e);}
   finally{state.profileFetching.delete(uid);}
@@ -1149,8 +768,8 @@ function listenToMyContacts(){
         state.contactListeners[uid]=onSnapshot(doc(db,'users',uid),(s)=>{
           if(s.exists()){
             const d=s.data();
-            state.profiles[uid]={uid,nickname:d.nickname,displayName:d.displayName||d.nickname,avatar:(d.displayName||d.nickname||'?')[0].toUpperCase(),avatarData:d.avatarData||null};
-          }else{state.profiles[uid]={uid,nickname:'?',displayName:'—',avatar:'?',avatarData:null};}
+            state.profiles[uid]={uid,nickname:d.nickname,displayName:d.displayName||d.nickname,avatar:(d.displayName||d.nickname||'?')[0].toUpperCase(),avatarData:d.avatarData||null,lastSeen:d.lastSeen&&d.lastSeen.toDate?d.lastSeen.toDate().getTime():(d.lastSeen||0),online:d.online||false};
+          }else{state.profiles[uid]={uid,nickname:'?',displayName:'—',avatar:'?',avatarData:null,lastSeen:0,online:false};}
           rebuildUsersList();if(currentGroupSettingsId)renderGroupSettings();
           if(state.currentChatType==='user'&&state.currentChat===uid)updateChatHeader(uid,'user');
         },err=>console.error('contact listener:',err));
@@ -1212,7 +831,7 @@ async function doFind(){
         $('find-modal').classList.remove('visible');
         setTimeout(()=>{
           if(!state.contactUids.includes(found.uid)){
-            state.profiles[found.uid]={uid:found.uid,nickname:found.nickname,displayName:found.displayName,avatar:letter,avatarData:found.avatarData||null};
+            state.profiles[found.uid]={uid:found.uid,nickname:found.nickname,displayName:found.displayName,avatar:letter,avatarData:found.avatarData||null,lastSeen:0,online:false};
             rebuildUsersList();renderStoriesBar();
           }
           openChat(found.uid,'user');
@@ -1678,8 +1297,8 @@ function initAuthListener(){
   onAuthStateChanged(auth,async(user)=>{
     if(!user){
       if(isRecordingVoice)cancelVoiceRecording();
-      if(isRecordingVideoNote)closeVideoNoteModal();
-      stopPlayingCircle();
+      stopHeartbeat();
+      if(currentChatProfileUnsub){currentChatProfileUnsub();currentChatProfileUnsub=null;}
       Object.keys(state.contactListeners).forEach(uid=>{try{state.contactListeners[uid]();}catch(e){}});
       Object.keys(state.groupUnsubs).forEach(gid=>{try{state.groupUnsubs[gid]();}catch(e){}});
       if(state.unsubMe)state.unsubMe();if(state.unsubMessages)state.unsubMessages();
@@ -1710,8 +1329,9 @@ function initAuthListener(){
     if(!profile.nicknameLower&&profile.nickname)updates.nicknameLower=profile.nickname.toLowerCase();
     if(!Array.isArray(profile.contacts))updates.contacts=[];
     if(Object.keys(updates).length){try{const{doc:d,updateDoc}=window.fb;await updateDoc(d(db,'users',user.uid),updates);}catch(e){console.error('auto-migrate:',e);}}
-    state.profiles[state.uid]={uid:state.uid,nickname:state.nickname,displayName:state.profile.displayName,avatar:(state.profile.displayName||state.nickname||'?')[0].toUpperCase(),avatarData:state.profile.avatarData||null};
+    state.profiles[state.uid]={uid:state.uid,nickname:state.nickname,displayName:state.profile.displayName,avatar:(state.profile.displayName||state.nickname||'?')[0].toUpperCase(),avatarData:state.profile.avatarData||null,lastSeen:0,online:true};
     $('login').style.display='none';$('app').classList.add('active');renderMeBar();
+    startHeartbeat();
     listenToMyContacts();listenToDirectMessages();listenToMyGroups();listenToStories();renderChatList();
   });
 }
@@ -1826,7 +1446,7 @@ async function sendMessage(){
   if(!canPostInCurrentChat()){toast(t('channelOnlyAdmins'),'error');return;}
   const{db,collection,addDoc,serverTimestamp}=window.fb;
   const data={fromUid:state.uid,content:{type:'text',text},time:serverTimestamp(),reactions:{},replyTo:state.replyTo||null};
-  if(state.currentChatType==='group')data.toGroupId=state.currentChat;else data.toUid=state.currentChat;
+  if(state.currentChatType==='group')data.toGroupId=state.currentChat;else data.toUidstate.currentChat;
   try{await addDoc(collection(db,'messages'),data);input.value='';input.style.height='auto';clearReply();updateSendBtnState();}
   catch(e){console.error(e);toast(t('errSendFailed'),'error');}
 }
@@ -1861,7 +1481,12 @@ function renderChatList(){
   const items=[];
   state.users.forEach(u=>{
     const msgs=state.messages[u.uid]||[];const last=msgs[msgs.length-1];
-    items.push({type:'user',id:u.uid,name:u.displayName||u.nickname,avatarLetter:u.avatar,avatarData:u.avatarData||null,nick:u.nickname,last,lastTime:last?last.time:0,unread:state.unread[u.uid]||0});
+    items.push({
+      type:'user',id:u.uid,name:u.displayName||u.nickname,
+      avatarLetter:u.avatar,avatarData:u.avatarData||null,nick:u.nickname,
+      last,lastTime:last?last.time:0,unread:state.unread[u.uid]||0,
+      online:u.online,lastSeen:u.lastSeen
+    });
   });
   Object.values(state.groups).forEach(g=>{
     const msgs=state.groupMessages[g.groupId]||[];const last=msgs[msgs.length-1];
@@ -1876,7 +1501,7 @@ function renderChatList(){
     let lastText='';
     if(it.last){
       const ct=it.last.content||{};
-      const preview=ct.type==='text'?ct.text:ct.type==='image'?t('photo'):ct.type==='video'?t('video'):ct.type==='videoNote'?t('voiceMsg'):ct.type==='voice'?t('voiceMsg'):ct.type==='audio'?t('music'):t('file');
+      const preview=ct.type==='text'?ct.text:ct.type==='image'?t('photo'):ct.type==='video'?t('video'):ct.type==='voice'?t('voiceMsg'):ct.type==='audio'?t('music'):t('file');
       const showSenderName=it.type==='group'&&!it.isChannel;
       const prefix=it.last.fromUid===state.uid?t('youPrefix'):showSenderName?(getUserDisplayName(it.last.fromUid)+': '):'';
       lastText=prefix+escapeHtml(preview.slice(0,30));
@@ -1919,7 +1544,16 @@ function updateChatHeader(id,type){
     $('chat-name').textContent=u?u.displayName:'?';
     if(u&&u.avatarData)$('chat-avatar').innerHTML=`<img src="${escapeHtml(u.avatarData)}" alt="">`;
     else $('chat-avatar').textContent=u?u.avatar:'?';
-    $('chat-status').textContent=t('inChat');
+    if(u&&u.online){
+      $('chat-status').textContent=t('inChat');
+      $('chat-status').classList.add('online');
+    }else if(u&&u.lastSeen){
+      $('chat-status').textContent=formatLastSeen(u.lastSeen);
+      $('chat-status').classList.remove('online');
+    }else{
+      $('chat-status').textContent=t('lastSeenDate').replace('{date}','—');
+      $('chat-status').classList.remove('online');
+    }
     $('group-settings-btn').style.display='none';
   }
 }
@@ -1928,14 +1562,9 @@ function updateChannelUIPermissions(){
   $('input-panel').style.display=canPost?'':'none';
   $('channel-notice').style.display=canPost?'none':'';
   $('reply-bar').classList.remove('visible');
-  const vnb=$('video-note-btn');
-  if(vnb)vnb.style.display=canPost?'':'none';
 }
 function openChat(id,type){
   if(isRecordingVoice)cancelVoiceRecording();
-  const vnm=$('video-note-modal');
-  if(vnm&&vnm.classList.contains('visible'))closeVideoNoteModal();
-  stopPlayingCircle();
   state.currentChat=id;state.currentChatType=type;state.unread[id]=0;
   $('empty-chat').style.display='none';$('chat-area').style.display='flex';
   $('user-profile-modal').classList.remove('visible');
@@ -1945,30 +1574,37 @@ function openChat(id,type){
   if(canPostInCurrentChat())$('msg-input').focus();
   $('app').classList.add('chat-open');updateScrollButton();
   setNavActive('nav-chats');
-}/* ============ СООБЩЕНИЯ РЕНДЕР ============ */
+
+  // Подписка на профиль текущего собеседника для статуса «был в сети»
+  if(currentChatProfileUnsub){currentChatProfileUnsub();currentChatProfileUnsub=null;}
+  if(type==='user'&&window.fb){
+    const{db,doc,onSnapshot}=window.fb;
+    currentChatProfileUnsub=onSnapshot(doc(db,'users',id),(s)=>{
+      if(s.exists()){
+        const d=s.data();
+        state.profiles[id]={uid:id,nickname:d.nickname,displayName:d.displayName||d.nickname,avatar:(d.displayName||d.nickname||'?')[0].toUpperCase(),avatarData:d.avatarData||null,lastSeen:d.lastSeen&&d.lastSeen.toDate?d.lastSeen.toDate().getTime():(d.lastSeen||0),online:d.online||false};
+        if(state.currentChatType==='user'&&state.currentChat===id)updateChatHeader(id,'user');
+        renderChatList();
+      }
+    },err=>console.error('current chat listener:',err));
+  }
+}
+
+/* ============ СООБЩЕНИЯ РЕНДЕР ============ */
 function getReplyPreview(msg){
   if(!msg||!msg.content)return '';
   if(msg.content.type==='text')return msg.content.text.slice(0,50);
   if(msg.content.type==='image')return t('photo');
   if(msg.content.type==='video')return t('video');
-  if(msg.content.type==='videoNote')return t('voiceMsg');
   if(msg.content.type==='voice')return t('voiceMsg');
   if(msg.content.type==='audio')return t('music');
   return t('file');
 }
 function renderMessages(opts){
   opts=opts||{};
-  const c=$('messages');
-  const msgs=getCurrentMessages();
+  const c=$('messages');const msgs=getCurrentMessages();
   const shouldScroll=!!opts.forceScroll||isNearBottom(200);
   if(!msgs.length){c.innerHTML=`<div style="text-align:center;color:var(--text-3);padding:40px;font-size:13px">${t('startDialog')}</div>`;return;}
-
-  const savedCircle=(playingCircleVideo&&playingCircleMsgId)?{
-    msgId:playingCircleMsgId,
-    time:playingCircleVideo.currentTime||0
-  }:null;
-  _isRenderingMessages=true;
-
   const inChannel=state.currentChatType==='group'&&isChannel(state.currentChat);
   const inGroup=state.currentChatType==='group';
   let html='';let lastDate='';
@@ -1982,9 +1618,6 @@ function renderMessages(opts){
     else if(ct.type==='audio')body=`<div class="audio-player"><audio src="${escapeHtml(ct.dataUrl)}" controls></audio></div>`;
     else if(ct.type==='voice'){
       body=`<div class="voice-msg" data-src="${escapeHtml(ct.dataUrl)}" data-duration="${ct.duration||0}"><button type="button" class="voice-btn">▶</button><div class="voice-progress-wrap"><div class="voice-progress-fill"></div></div><span class="voice-time">${formatVoiceDuration(ct.duration||0)}</span></div>`;
-    }
-    else if(ct.type==='videoNote'){
-      body=`<div class="circle-msg" data-src="${escapeHtml(ct.dataUrl)}" data-duration="${ct.duration||0}" data-msg-id="${escapeHtml(m.id)}" data-author-uid="${escapeHtml(m.fromUid)}"><video preload="auto" playsinline muted></video><svg class="circle-ring" viewBox="0 0 100 100" preserveAspectRatio="none"><circle class="circle-ring-track" cx="50" cy="50" r="48"/><circle class="circle-ring-fill" cx="50" cy="50" r="48"/></svg><div class="circle-overlay">▶</div><span class="circle-timer">${formatVoiceDuration(ct.duration||0)}</span></div>`;
     }
     else if(ct.type==='file'){
       body=`<div class="file-attach"><div class="ficon">${getFileIcon(ct.name)}</div><div class="finfo"><div class="fname">${escapeHtml(ct.name)}</div><div class="fsize">${formatSize(ct.size)}</div></div><a href="${escapeHtml(ct.dataUrl)}" download="${escapeHtml(ct.name)}">⬇</a></div>`;
@@ -2028,33 +1661,6 @@ function renderMessages(opts){
     el.addEventListener('click',()=>{const uid=el.dataset.uid;if(uid&&uid!==state.uid)openUserProfile(uid);});
   });
   c.querySelectorAll('.voice-msg').forEach(attachVoicePlayer);
-  c.querySelectorAll('.circle-msg').forEach(attachCirclePlayer);
-
-  if(savedCircle){
-    let target=null;
-    c.querySelectorAll('.circle-msg').forEach(circle=>{
-      if(circle.dataset.msgId===savedCircle.msgId)target=circle;
-    });
-    if(target){
-      const nv=target.querySelector('video');
-      if(nv){
-        const tryPlay=()=>{
-          try{nv.currentTime=savedCircle.time;}catch(e){}
-          nv.play().catch(()=>{});
-        };
-        if(nv.readyState>=1)tryPlay();
-        else nv.addEventListener('loadedmetadata',tryPlay,{once:true});
-      }
-    }
-  }
-  _isRenderingMessages=false;
-  if(playingCircleVideo&&!document.body.contains(playingCircleVideo)){
-    playingCircleVideo=null;
-    playingCircleMsgId=null;
-    playingCircleAuthor=null;
-    hideNowPlayingBar();
-  }
-
   if(shouldScroll)scrollToBottom();
   else updateScrollButton();
 }
@@ -2149,7 +1755,7 @@ function attachLongPressToMessages(){
     if(e.pointerType==='mouse')return;
     const row=e.target.closest('.msg-row');
     if(!row)return;
-    if(e.target.closest('audio, video, a, button, input, textarea, .media, .msg-avatar, .sender-name, .voice-msg, .circle-msg'))return;
+    if(e.target.closest('audio, video, a, button, input, textarea, .media, .msg-avatar, .sender-name, .voice-msg'))return;
 
     _lpStartX=e.clientX;
     _lpStartY=e.clientY;
@@ -2253,7 +1859,6 @@ function changeLanguage(lang){
   applyThemeLabels();
   updateWallpaperLabel();
   if($('wallpaper-modal').classList.contains('visible'))renderWallpaperGrid();
-  if(playingCircleAuthor)showNowPlayingBar();
 }
 
 /* ============ АДМИН-ПАНЕЛЬ ============ */
@@ -2413,7 +2018,7 @@ $('settings-admin').addEventListener('click',openAdminPanel);
 $('settings-logout').addEventListener('click',async()=>{
   if(!confirm(t('confirmLogout')))return;
   $('settings-modal').classList.remove('visible');
-  if(window.fb){try{await window.fb.signOut(window.fb.auth);}catch(e){}}
+  if(window.fb){try{stopHeartbeat();await window.fb.signOut(window.fb.auth);}catch(e){}}
 });
 
 $('lang-close').addEventListener('click',()=>$('language-modal').classList.remove('visible'));
@@ -2578,43 +2183,7 @@ $('attach-btn').addEventListener('click',()=>$('attach-menu').classList.toggle('
 $('attach-menu').querySelectorAll('button[data-type]').forEach(b=>{
   b.addEventListener('click',()=>{openFilePicker(b.dataset.type);$('attach-menu').classList.remove('visible');});
 });
-$('attach-video-note')?.addEventListener('click',()=>{
-  $('attach-menu').classList.remove('visible');
-  openVideoNoteModal();
-});
-$('video-note-btn')?.addEventListener('click',()=>{
-  const vnm=$('video-note-modal');
-  if(vnm&&vnm.classList.contains('visible'))return;
-  openVideoNoteModal();
-});
-$('video-note-record')?.addEventListener('click',toggleVideoNoteRecording);
-$('video-note-cancel')?.addEventListener('click',()=>{
-  if(isRecordingVideoNote){stopVideoNoteRecording(false);}
-  else{closeVideoNoteModal();}
-});
-$('video-note-switch')?.addEventListener('click',switchVideoNoteCamera);
 $('file-input').addEventListener('change',e=>handleFileSelected(e.target.files[0]));
-
-$('cnp-stop')?.addEventListener('click',(e)=>{
-  e.stopPropagation();
-  stopPlayingCircle();
-});
-$('circle-now-playing')?.addEventListener('click',(e)=>{
-  if(e.target.closest('.cnp-stop'))return;
-  if(!playingCircleMsgId)return;
-  const container=$('messages');
-  let target=null;
-  container.querySelectorAll('.circle-msg').forEach(circle=>{
-    if(circle.dataset.msgId===playingCircleMsgId)target=circle;
-  });
-  if(target){
-    target.scrollIntoView({behavior:'smooth',block:'center'});
-    const prev=target.style.boxShadow;
-    target.style.transition='box-shadow 0.3s var(--ease)';
-    target.style.boxShadow='0 0 0 4px var(--accent),0 6px 24px rgba(59,130,246,0.7)';
-    setTimeout(()=>{target.style.boxShadow=prev;},900);
-  }
-});
 
 $('reaction-picker').querySelectorAll('button[data-emoji]').forEach(b=>{
   b.addEventListener('click',()=>{
@@ -2737,8 +2306,6 @@ document.addEventListener('keydown',e=>{
     $('user-profile-modal').classList.remove('visible');
     currentViewedProfileUid=null;
     if(isRecordingVoice)cancelVoiceRecording();
-    const vnm=$('video-note-modal');
-    if(vnm&&vnm.classList.contains('visible'))closeVideoNoteModal();
   }
 });
 
