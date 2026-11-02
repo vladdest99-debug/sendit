@@ -340,7 +340,7 @@ async function uploadFileToStorage(file,path,opts){
     Body:file,
     ContentType:file.type||'application/octet-stream'
   };
-  if(opts.publicRead!==false)params.ACL='public-read';
+  // Убрано добавление ACL: 'public-read', чтобы не вызывать ошибку CORS (x-amz-acl)
   const data=await s3.upload(params).promise();
   return data.Location;
 }
