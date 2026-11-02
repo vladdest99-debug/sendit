@@ -741,11 +741,11 @@ function startVideoNoteRecording(){
     return;
   }
   const mimeTypes=[
-    'video/mp4;codecs=h264,aac',
-    'video/mp4',
     'video/webm;codecs=vp8,opus',
     'video/webm;codecs=vp9,opus',
-    'video/webm'
+    'video/webm',
+    'video/mp4;codecs=h264,aac',
+    'video/mp4'
   ];
   let mimeType='';
   for(const m of mimeTypes){
@@ -753,30 +753,30 @@ function startVideoNoteRecording(){
   }
   console.log('[circle] mime selected:',mimeType||'(default)');
 
-  const options=mimeType
-    ? {mimeType,videoBitsPerSecond:1800000,audioBitsPerSecond:64000}
-    : {videoBitsPerSecond:1800000,audioBitsPerSecond:64000};
-
+  const options = mimeType ? {mimeType} : {};
+  
   try{
-    videoNoteRecorder=new MediaRecorder(videoNoteStream,options);
+    videoNoteRecorder=new MediaRecorder(videoNoteStream, options);
   }catch(e){
-    console.error('[circle] ctor with options failed, retry plain:',e);
-    try{
-      videoNoteRecorder=new MediaRecorder(videoNoteStream);
-    }catch(e2){
-      console.error('[circle] plain ctor failed:',e2);
-      toast('Не удалось начать запись','error');
-      return;
-    }
+    console.error('[circle] ctor failed:',e);
+    toast('Не удалось начать запись','error');
+    return;
   }
 
   videoNoteChunks=[];
-  videoNoteRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)videoNoteChunks.push(e.data);};
-  videoNoteRecorder.onerror=e=>{
-    console.error('[circle] recorder error:',e);
-    toast('Ошибка записи','error');
+  videoNoteRecorder.ondataavailable=e=>{
+    if(e.data&&e.data.size>0)videoNoteChunks.push(e.data);
+  };
+  
+  videoNoteRecorder.onerror=(e)=>{
+    console.error('[circle] recorder error:', e.error || e);
+    if (e.error) {
+      console.error('[circle] error details:', e.error.name, e.error.message);
+    }
+    toast('Ошибка записи: ' + (e.error?.message || 'сбой кодека'),'error');
     stopVideoNoteRecording(false);
   };
+  
   videoNoteRecorder.onstop=async()=>{
     const type=(videoNoteRecorder&&videoNoteRecorder.mimeType)||mimeType||'video/webm';
     if(!videoNoteChunks.length){
