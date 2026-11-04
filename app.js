@@ -14,7 +14,7 @@ close:'Закрыть',cancel:'Отмена',save:'Сохранить',loginLabe
 aboutMe:'О себе',aboutPlaceholder:'Напишите о себе...',musicLabel:'Музыка',
 musicNotSelected:'Файл не выбран',musicUpload:'Загрузить музыку',myChannelLabel:'Мой канал',
 channelLabel:'Канал',noChannel:'— Не выбран —',errNotSubscribed:'Вы не подписаны на этот канал',
-profileTitle:'Профиль',messageUser:'Перейти в чат',findUserTitle:'Найти пользователя',
+profileTitle:'Профиль',messageUser:'Чат',findUserTitle:'Найти пользователя',
 loginFieldLabel:'Логин',find:'Найти',findInputPlaceholder:'Введите логин',
 newGroupTitle:'Новая группа',newChannelTitle:'Новый канал',nameLabel:'Название',
 namePlaceholderGroup:'Например: Команда',namePlaceholderChannel:'Например: Новости',
@@ -86,7 +86,7 @@ lastSeenHourAgo:'был(а) в сети {n} ч назад',
 lastSeenToday:'был(а) в сети в {time}',
 lastSeenYesterday:'был(а) в сети вчера в {time}',
 lastSeenDate:'был(а) в сети {date}',
-blockUser:'Заблокировать пользователя',unblockUser:'Разблокировать пользователя',
+blockUser:'Заблокировать',unblockUser:'Разблокировать',
 okUserBlocked:'Пользователь заблокирован',okUserUnblocked:'Пользователь разблокирован',
 errBlockUser:'Не удалось заблокировать',errUnblockUser:'Не удалось разблокировать',
 confirmBlockUser:'Заблокировать этого пользователя?',
@@ -110,7 +110,7 @@ loginLabel:'Login:',displayName:'Display name',aboutMe:'About me',aboutPlacehold
 musicLabel:'Music',musicNotSelected:'No file selected',musicUpload:'Upload music',
 myChannelLabel:'My channel',channelLabel:'Channel',noChannel:'— None —',
 errNotSubscribed:'You are not subscribed to this channel',profileTitle:'Profile',
-messageUser:'Go to chat',findUserTitle:'Find user',loginFieldLabel:'Login',find:'Find',
+messageUser:'Chat',findUserTitle:'Find user',loginFieldLabel:'Login',find:'Find',
 findInputPlaceholder:'Enter login',newGroupTitle:'New group',newChannelTitle:'New channel',
 nameLabel:'Name',namePlaceholderGroup:'E.g.: Team',namePlaceholderChannel:'E.g.: News',
 membersLabel:'Members',subscribersLabel:'Subscribers',
@@ -177,7 +177,7 @@ lastSeenHourAgo:'last seen {n} h ago',
 lastSeenToday:'last seen today at {time}',
 lastSeenYesterday:'last seen yesterday at {time}',
 lastSeenDate:'last seen {date}',
-blockUser:'Block user',unblockUser:'Unblock user',
+blockUser:'Block',unblockUser:'Unblock',
 okUserBlocked:'User blocked',okUserUnblocked:'User unblocked',
 errBlockUser:'Failed to block user',errUnblockUser:'Failed to unblock user',
 confirmBlockUser:'Block this user?',
@@ -632,7 +632,6 @@ async function sendVoiceBlob(blob,duration){
   try{
     let dataUrl;
     if(blob.size>MAX_BASE64_SIZE){
-      if(!window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
       toast('Загрузка голосового...');
       const file=new File([blob],filename,{type:blob.type});
       dataUrl=await uploadFileToStorage(file,`voice/${state.uid}/${Date.now()}_${filename}`);
@@ -1080,7 +1079,8 @@ async function toggleStoryReaction(storyId,emoji){
     story.reactions=reactions;
     updateStoryReactionsUI();
   }catch(e){console.error(e);toast(t('storyReactionErr'),'error');}
-}function listenToMyGroups(){
+}
+function listenToMyGroups(){
   const{db,collection,onSnapshot,query,where}=window.fb;
   if(state.unsubGroups)state.unsubGroups();
   const q=query(collection(db,'groups'),where('memberUids','array-contains',state.uid));
@@ -1441,10 +1441,15 @@ async function openUserProfile(uid){
   const modal=$('user-profile-modal');if(!modal)return;
   currentViewedProfileUid = uid;
   updateUserProfileBlockUI(uid);
-  $('up-avatar').innerHTML='<span>?</span>';$('up-name').textContent='...';$('up-nickname').textContent='—';
-  $('up-bio').style.display='none';$('up-bio').textContent='';$('up-channel').style.display='none';$('up-music').style.display='none';
+  $('up-avatar').innerHTML='<span>?</span>';
+  $('up-name').textContent='...';
+  $('up-nickname').textContent='—';
+  $('up-last-seen').textContent='';
+  $('up-bio-container').style.display='none';
+  $('up-bio').textContent='';
+  $('up-channel').style.display='none';
+  $('up-music').style.display='none';
   const audio=$('up-music-audio');audio.pause();audio.src='';
-  $('up-message').style.display='none';
   $('up-stories-grid').innerHTML='';
   document.querySelectorAll('.modal.visible').forEach(m=>m.classList.remove('visible'));
   modal.classList.add('visible');
@@ -1453,18 +1458,45 @@ async function openUserProfile(uid){
     const snap=await getDoc(doc(db,'users',uid));
     if(!snap.exists()){toast(t('userNotFound'),'error');modal.classList.remove('visible');return;}
     const d=snap.data();const dn=d.displayName||d.nickname||'?';
+    
     if(d.avatarData)$('up-avatar').innerHTML=`<img src="${escapeHtml(d.avatarData)}" alt="">`;
     else $('up-avatar').textContent=dn[0].toUpperCase();
-    $('up-name').textContent=dn;$('up-nickname').textContent=d.nickname||'?';
-    if(d.bio){$('up-bio').textContent=d.bio;$('up-bio').style.display='block';}
-    if(d.musicData&&d.musicName){$('up-music-name').textContent=d.musicName;audio.src=d.musicData;$('up-music').style.display='block';}
+    
+    $('up-name').textContent=dn;
+    $('up-nickname').textContent='@'+(d.nickname||'?');
+    
+    if(d.bio){
+      $('up-bio').textContent=d.bio;
+      $('up-bio-container').style.display='flex';
+    }
+    
+    if(d.musicData&&d.musicName){
+      $('up-music-name').textContent=d.musicName;
+      audio.src=d.musicData;
+      $('up-music').style.display='flex';
+    }
+    
     if(d.channelId&&d.channelName){
-      $('up-channel-name').textContent=d.channelName;$('up-channel').style.display='flex';
-      $('up-channel-btn').onclick=()=>{audio.pause();modal.classList.remove('visible');
-        if(state.groups[d.channelId])openChat(d.channelId,'group');else toast(t('errNotSubscribed'),'error');};
-    }else{$('up-channel').style.display='none';}
-    $('up-message').style.display='block';
-    $('up-message').onclick=()=>{audio.pause();modal.classList.remove('visible');openChat(uid,'user');};
+      $('up-channel-name').textContent=d.channelName;
+      $('up-channel').style.display='flex';
+      $('up-channel-btn').onclick=(e)=>{
+        e.stopPropagation();
+        audio.pause();
+        modal.classList.remove('visible');
+        if(state.groups[d.channelId])openChat(d.channelId,'group');
+        else toast(t('errNotSubscribed'),'error');
+      };
+    }else{
+      $('up-channel').style.display='none';
+    }
+    
+    $('up-message').onclick=(e)=>{
+      e.stopPropagation();
+      audio.pause();
+      modal.classList.remove('visible');
+      openChat(uid,'user');
+    };
+    
     renderUserProfileStories(uid);
     updateUserProfileBlockUI(uid);
   }catch(e){console.error(e);toast(t('errProfileLoad'),'error');modal.classList.remove('visible');}
@@ -1549,17 +1581,23 @@ async function unblockUser(uid){
 function updateUserProfileBlockUI(uid){
   const btn=$('up-block-btn');
   const txt=$('up-block-btn-text');
+  const icon=$('up-block-icon');
   if(!btn||!txt)return;
   if(!uid||currentViewedProfileUid!==uid)return;
+  
   const {iBlocked}=getBlockStatus(uid);
   if(iBlocked){
     btn.dataset.action='unblock';
-    btn.classList.remove('danger');
     txt.textContent=t('unblockUser');
+    txt.classList.remove('danger-text');
+    if(icon) icon.classList.remove('danger');
+    if(icon) icon.classList.add('accent');
   }else{
     btn.dataset.action='block';
-    btn.classList.add('danger');
     txt.textContent=t('blockUser');
+    txt.classList.add('danger-text');
+    if(icon) icon.classList.add('danger');
+    if(icon) icon.classList.remove('accent');
   }
 }
 async function sendMessage(){
@@ -1581,12 +1619,7 @@ async function sendFileContent(content){
   try{await addDoc(collection(db,'messages'),data);clearReply();}
   catch(e){
     console.error(e);
-    const msg=(e.message||'').toLowerCase();
-    if(e.code==='invalid-argument'||msg.includes('exceeds')||msg.includes('too large')){
-      toast('Файл слишком большой. Попробуйте файл поменьше.','error');
-    }else{
-      toast(t('errSendFileFailed'),'error');
-    }
+    toast(t('errSendFileFailed'),'error');
   }
 }
 function getCurrentMessages(){
@@ -1972,7 +2005,6 @@ async function handleFileSelected(file){
   const type=state.pendingFileType;
   const isLarge = file.size > MAX_BASE64_SIZE;
   if(isLarge){
-    if(!window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
     try{
       toast('Загрузка в Cloud.ru...');
       const url=await uploadFileToStorage(file,`chat/${state.uid}/${Date.now()}_${file.name}`);
@@ -2160,7 +2192,6 @@ on('gs-avatar','click',()=>{
 });
 on('group-avatar-input','change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
   try{
     if(f.size>MAX_BASE64_SIZE){
       toast('Загрузка аватара группы...');
@@ -2201,7 +2232,6 @@ on('wallpaper-save','click',()=>{
 });
 on('wallpaper-input','change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('errWallpaperBig'),'error');return;}
   try{
     let dataUrl;
     if(f.size>MAX_BASE64_SIZE){
@@ -2217,7 +2247,6 @@ on('wallpaper-input','change',async e=>{
 on('prof-avatar','click',()=>{const i=$('avatar-input');if(i)i.click();});
 on('avatar-input','change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
   try{
     if(f.size>MAX_BASE64_SIZE){
       toast('Загрузка аватара...');
@@ -2253,7 +2282,6 @@ on('prof-save','click',async()=>{
 on('music-upload-btn','click',()=>{const i=$('music-input');if(i){i.value='';i.click();}});
 on('music-input','change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
   try{
     if(f.size>MAX_BASE64_SIZE){
       toast('Загрузка музыки в Cloud.ru...');
@@ -2307,7 +2335,6 @@ on('admin-tab-messages','click',()=>{
 });
 on('story-file-input','change',async e=>{
   const f=e.target.files[0];if(!f)return;
-  if(f.size>MAX_BASE64_SIZE && !window.fb.s3Ready){toast(t('noS3Big'),'error');return;}
   try{
     const type=f.type.startsWith('video/')?'video':'image';
     let dataUrl;
@@ -2445,40 +2472,53 @@ const NAV_MODAL_MAP = [
   { modal: 'contacts-modal',  nav: 'nav-contacts' },
   { modal: 'find-modal',      nav: 'nav-contacts' },
 ];
-function refreshNavFromModals() {
-  const appEl=$('app');
-  const isMobile = window.innerWidth <= 768;
-  
-  // Проверяем, открыто ли ЛЮБОЕ модальное окно или панель профиля
-  let hasActiveModal = false;
-  document.querySelectorAll('.modal.visible, .profile-panel.visible').forEach(el => {
-    if (el.classList.contains('visible')) hasActiveModal = true;
-  });
-
-  // Добавляем класс на body, чтобы CSS показал меню
+let _lastSyncKey = null;
+function syncModalState() {
+  const hasActiveModal = !!document.querySelector('.modal.visible, .profile-panel.visible');
+  let activeNav = 'nav-chats';
   if (hasActiveModal) {
-    document.body.classList.add('modal-open');
-  } else {
-    document.body.classList.remove('modal-open');
-  }
-
-  // Если мы в чате на телефоне и модалки не открыты — ничего не делаем
-  if (isMobile && appEl && appEl.classList.contains('chat-open') && !hasActiveModal) return;
-  
-  for (const { modal, nav } of NAV_MODAL_MAP) {
-    const el = $(modal);
-    if (el && el.classList.contains('visible')) {
-      setNavActive(nav);
-      return;
+    for (const item of NAV_MODAL_MAP) {
+      const el = $(item.modal);
+      if (el && el.classList.contains('visible')) { activeNav = item.nav; break; }
+    }
+    if (activeNav === 'nav-chats') {
+      const upm = $('user-profile-modal');
+      if (upm && upm.classList.contains('visible')) activeNav = 'nav-profile';
     }
   }
-  setNavActive('nav-chats');
+  const app = $('app');
+  const isInChat = !!(app && app.classList.contains('chat-open'));
+  const isMobile = window.innerWidth <= 768;
+  const shouldHide = isMobile && isInChat && !hasActiveModal;
+  const key = `${shouldHide}|${activeNav}`;
+  if (key === _lastSyncKey) return;
+  _lastSyncKey = key;
+  document.body.classList.toggle('modal-open', hasActiveModal);
+  const menu = $('mobile-bottom-nav');
+  if (menu) {
+    if (shouldHide) {
+      menu.style.setProperty('display', 'none', 'important');
+      menu.style.setProperty('visibility', 'hidden', 'important');
+      menu.style.setProperty('opacity', '0', 'important');
+      menu.style.setProperty('pointer-events', 'none', 'important');
+    } else {
+      menu.style.removeProperty('display');
+      menu.style.removeProperty('visibility');
+      menu.style.removeProperty('opacity');
+      menu.style.removeProperty('pointer-events');
+      menu.style.setProperty('z-index', '2147483647', 'important');
+    }
+  }
+  setNavActive(activeNav);
 }
-document.querySelectorAll('.modal, .profile-panel').forEach(m => {
-  new MutationObserver(refreshNavFromModals)
-    .observe(m, { attributes: true, attributeFilter: ['class'] });
+new MutationObserver(syncModalState).observe(document.body, {
+  attributes: true,
+  attributeFilter: ['class'],
+  subtree: true
 });
-window.addEventListener('resize', refreshNavFromModals);
+window.addEventListener('resize', syncModalState);
+window.addEventListener('orientationchange', syncModalState);
+syncModalState();
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.modal.visible').forEach(m=>m.classList.remove('visible'));
