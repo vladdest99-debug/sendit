@@ -17,6 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -209,6 +210,17 @@
           </div>
           <span data-i18n="messageUser">Чат</span>
         </button>
+        
+        <button class="action-btn" id="up-edit-btn" style="display:none;">
+          <div class="action-icon" style="color: #fbbf24;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"/>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+          </div>
+          <span data-i18n="editContact">Изменить</span>
+        </button>
+
         <button class="action-btn" id="up-block-btn" data-action="block">
           <div class="action-icon danger" id="up-block-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
@@ -302,6 +314,7 @@
 <input type="file" id="story-file-input" accept="image/*,video/*" style="display:none">
 <input type="file" id="music-input" accept="audio/*" style="display:none">
 <input type="file" id="wallpaper-input" accept="image/*" style="display:none">
+<input type="file" id="local-avatar-input" accept="image/*" style="display:none">
 
 <div class="modal" id="settings-modal">
   <div class="modal-box settings-box">
@@ -408,6 +421,24 @@
     <div class="modal-actions">
       <button type="button" class="cancel" id="prof-cancel" data-i18n="cancel">Отмена</button>
       <button type="button" class="save" id="prof-save" data-i18n="save">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="local-profile-modal">
+  <div class="modal-box">
+    <h2 data-i18n="editContact">Редактировать профиль</h2>
+    <div class="profile-avatar">
+      <div class="avatar" id="lp-avatar" style="cursor:pointer;position:relative;">
+        <span>?</span>
+        <div class="edit-ov"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      </div>
+    </div>
+    <label data-i18n="displayName">Отображаемое имя</label>
+    <input type="text" id="lp-name" maxlength="30">
+    <div class="modal-actions">
+      <button type="button" class="cancel" id="lp-cancel" data-i18n="cancel">Отмена</button>
+      <button type="button" class="save" id="lp-save" data-i18n="save">Сохранить</button>
     </div>
   </div>
 </div>
