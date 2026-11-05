@@ -714,22 +714,28 @@ function attachVoicePlayer(el){
       if(fill)fill.style.width=(x*100)+'%';
     }
   });
-}/* ============ ВХОД ============ */
+}
 function setAuthMode(mode){
   authMode=mode;
-  const tl=$('tab-login');if(tl)tl.classList.toggle('active',mode==='login');
-  const tr=$('tab-register');if(tr)tr.classList.toggle('active',mode==='register');
   const submit=$('auth-submit');
   if(submit){
     submit.textContent=mode==='login'?t('signIn'):t('signUp');
-    submit.setAttribute('data-i18n',mode==='login'?'signIn':'signUp');
   }
-  const pc=$('password-confirm');if(pc)pc.style.display=mode==='register'?'block':'none';
-  const le=$('login-err');if(le)le.textContent='';
+  const pc=$('password-confirm');
+  if(pc)pc.style.display=mode==='register'?'block':'none';
+  const le=$('login-err');
+  if(le)le.textContent='';
   const at=$('auth-title');
-  if(at){at.textContent=mode==='login'?t('welcome'):t('createAccount');at.setAttribute('data-i18n',mode==='login'?'welcome':'createAccount');}
-  const as=$('auth-subtitle');
-  if(as){as.textContent=mode==='login'?t('subtitle'):t('subtitleRegister');as.setAttribute('data-i18n',mode==='login'?'subtitle':'subtitleRegister');}
+  if(at)at.textContent=mode==='login'?t('login'):t('register');
+  const toggleText=$('auth-toggle-text');
+  const toggleBtn=$('auth-toggle-btn');
+  if(mode==='login'){
+    if(toggleText)toggleText.textContent=currentLang==='ru'?'Нет аккаунта?':"Don't have an account?";
+    if(toggleBtn)toggleBtn.textContent=currentLang==='ru'?'Зарегистрироваться':'Sign up';
+  }else{
+    if(toggleText)toggleText.textContent=currentLang==='ru'?'Уже есть аккаунт?':'Already have an account?';
+    if(toggleBtn)toggleBtn.textContent=currentLang==='ru'?'Войти':'Sign in';
+  }
 }
 function showErr(m){const el=$('login-err');if(el)el.textContent=m;}
 async function handleRegister(){
@@ -765,7 +771,6 @@ async function handleLogin(){
     else showErr('Ошибка: '+(e.message||e.code));
   }
 }
-/* ============ ПРОФИЛИ ============ */
 async function ensureProfile(uid){
   if(state.profiles[uid]||state.profileFetching.has(uid))return;
   state.profileFetching.add(uid);
@@ -797,12 +802,12 @@ async function batchLoadProfiles(uids){
   const toFetch=uids.filter(u=>!_batchFetching.has(u)&&!state.profiles[u]);
   if(!toFetch.length)return;
   toFetch.forEach(u=>_batchFetching.add(u));
-  const{db,collection,query,where,getDocs}=window.fb;
+  const{db,collection,query,where,getDocs,limit}=window.fb;
   const chunks=[];
   for(let i=0;i<toFetch.length;i+=10)chunks.push(toFetch.slice(i,i+10));
   await Promise.all(chunks.map(async chunk=>{
     try{
-      const q=query(collection(db,'users'),where('uid','in',chunk));
+      const q=query(collection(db,'users'),where('uid','in',chunk),limit(10));
       const snap=await getDocs(q);
       snap.forEach(d=>{
         const data=d.data();
@@ -876,8 +881,7 @@ function rebuildUsersList(){
   state.users=list;
   renderChatList();
   if(missing.length)batchLoadProfiles(missing);
-}
-async function findUserByNickname(nickname){
+}async function findUserByNickname(nickname){
   const{db,collection,query,where,getDocs}=window.fb;
   const lower=nickname.trim().toLowerCase();if(!lower)return null;
   try{
@@ -931,11 +935,11 @@ async function doFind(){
   }catch(e){console.error(e);res.innerHTML=`<div class="find-error">${t('errSearch')}</div>`;}
 }
 function openFindModal(){$('find-input').value='';$('find-result').innerHTML='';$('find-modal').classList.add('visible');setTimeout(()=>$('find-input').focus(),50);}
-/* ============ ИСТОРИИ ============ */
 function listenToStories(){
-  const{db,collection,onSnapshot}=window.fb;
+  const{db,collection,query,where,onSnapshot}=window.fb;
   if(state.unsubStories)state.unsubStories();
-  state.unsubStories=onSnapshot(collection(db,'stories'),(snap)=>{
+  const qStories=query(collection(db,'stories'),where('visibleTo','array-contains',state.uid));
+  state.unsubStories=onSnapshot(qStories,(snap)=>{
     const cutoff=Date.now()-24*60*60*1000;const stories={};
     snap.forEach(d=>{
       const s=d.data();
@@ -1383,87 +1387,71 @@ let _splashHidden = false;
 function hideSplash(){
   if(_splashHidden) return;
   _splashHidden = true;
-  const sp = document.getElementById('splash');
-  const loginEl = $('login');
-  const appEl = $('app');
-  if(appEl) void appEl.offsetWidth;
-  if(loginEl) void loginEl.offsetWidth;
-  if(loginEl) loginEl.classList.add('ready');
-  if(appEl) appEl.classList.add('ready');
-  if(sp){
-    sp.classList.add('hide');
-    setTimeout(() => { sp.style.display = 'none'; }, 1000);
-  }
+  
+  // Ждем 2.5 секунды, чтобы буквы полностью появились и покрасиво полетали
+  setTimeout(() => {
+    const sp = document.getElementById('splash');
+    const splashLogo = document.querySelector('.splash-logo');
+    const loginEl = $('login');
+    const appEl = $('app');
+    const isLoginVisible = loginEl && loginEl.style.display !== 'none';
+    
+    if (isLoginVisible) {
+      loginEl.style.display = 'flex';
+      loginEl.classList.add('ready');
+      
+      const targetLogo = document.querySelector('.login-sendit-logo');
+      const targetText = targetLogo ? targetLogo.querySelector('span') : null;
+      
+      if (splashLogo && targetText && sp) {
+        const firstRect = splashLogo.getBoundingClientRect();
+        const lastRect = targetText.getBoundingClientRect();
+        const deltaX = lastRect.left - firstRect.left;
+        const deltaY = lastRect.top - firstRect.top;
+        const scale = lastRect.width / firstRect.width;
+        
+        // СКРЫВАЕМ статичный текст, чтобы он не накладывался
+        targetText.style.opacity = '0';
+        
+        // Останавливаем анимации для плавного перелета
+        splashLogo.style.animation = 'none';
+        splashLogo.querySelectorAll('span').forEach(s => {
+            s.style.animation = 'none';
+        });
+        
+        splashLogo.style.transition = 'transform 0.9s cubic-bezier(0.4, 0, 0.2, 1)';
+        splashLogo.style.transformOrigin = 'top left';
+        
+        sp.style.transition = 'background-color 0.9s ease';
+        sp.style.backgroundColor = 'transparent';
+        sp.style.pointerEvents = 'none'; // Чтобы можно было нажимать на кнопки
+        
+        const styleEl = document.createElement('style');
+        styleEl.innerHTML = '#splash::before { opacity: 0 !important; transition: opacity 0.9s ease !important; }';
+        document.head.appendChild(styleEl);
+        
+        void splashLogo.offsetWidth;
+        // Летим на место статичного текста
+        splashLogo.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scale})`;
+        
+        setTimeout(() => {
+          // Буквы остаются на месте, просто помечаем, что заставка завершена
+          document.body.classList.add('splash-done');
+        }, 900);
+      } else {
+        if(sp) { sp.classList.add('hide'); setTimeout(() => { sp.style.display = 'none'; document.body.classList.add('splash-done'); }, 1000); }
+        else { document.body.classList.add('splash-done'); }
+      }
+    } else {
+      // Если пользователь уже авторизован
+      if(appEl) appEl.classList.add('ready');
+      if(sp) { sp.classList.add('hide'); setTimeout(() => { sp.style.display = 'none'; document.body.classList.add('splash-done'); }, 1000); }
+      else { document.body.classList.add('splash-done'); }
+    }
+  }, 2500);
 }
 const splashStyles = document.createElement('style');
-splashStyles.textContent = `
-  #splash {
-    position: fixed; inset: 0; background: #000;
-    display: flex; align-items: center; justify-content: center;
-    z-index: 999999; overflow: hidden;
-    transition: opacity 0.9s, visibility 0.9s;
-  }
-  #splash::before {
-    content: ''; position: absolute; inset: -20%;
-    background: radial-gradient(circle at 50% 50%, rgba(91,158,255,0.20) 0%, rgba(167,139,250,0.12) 35%, transparent 65%);
-    pointer-events: none;
-    animation: splashGlow 4s ease-in-out infinite;
-  }
-  #splash.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-  .splash-logo {
-    display: flex; gap: 0.02em;
-    font-family: 'Sora', 'Inter', sans-serif;
-    font-size: clamp(56px, 16vw, 104px);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    position: relative; z-index: 1;
-    perspective: 1200px;
-    user-select: none;
-  }
-  .splash-logo span {
-    display: inline-block;
-    background: linear-gradient(135deg, #5b9eff 0%, #a78bfa 50%, #f472b6 100%);
-    background-size: 200% 200%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: transparent;
-    transform-origin: center bottom;
-    filter: drop-shadow(0 0 18px rgba(91,158,255,0.55));
-    animation:
-      splashReveal 1s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d) both,
-      splashFloat 2.6s ease-in-out calc(var(--d) + 1s) infinite,
-      splashShimmer 3.4s ease-in-out calc(var(--d) + 1s) infinite;
-  }
-  .splash-logo span:nth-child(1) { --d: 0s; }
-  .splash-logo span:nth-child(2) { --d: 0.09s; }
-  .splash-logo span:nth-child(3) { --d: 0.18s; }
-  .splash-logo span:nth-child(4) { --d: 0.27s; }
-  .splash-logo span:nth-child(5) { --d: 0.36s; }
-  .splash-logo span:nth-child(6) { --d: 0.45s; }
-  @keyframes splashReveal {
-    0% { opacity: 0; transform: translateY(50px) rotateX(-90deg) scale(0.4); filter: blur(18px) drop-shadow(0 0 0 transparent); }
-    60% { opacity: 1; transform: translateY(-8px) rotateX(8deg) scale(1.06); filter: blur(0) drop-shadow(0 0 24px rgba(91,158,255,0.75)); }
-    100% { opacity: 1; transform: translateY(0) rotateX(0) scale(1); filter: blur(0) drop-shadow(0 0 18px rgba(91,158,255,0.55)); }
-  }
-  @keyframes splashFloat {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-7px) scale(1.05); }
-  }
-  @keyframes splashShimmer {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-  @keyframes splashGlow {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.15); }
-  }
-  #login { visibility: hidden; opacity: 0; transition: opacity 0.4s ease, visibility 0.4s ease; }
-  #login.ready { visibility: visible; opacity: 1; }
-  #app { opacity: 0; }
-  #app.active.ready { animation: appReveal 0.8s ease forwards; }
-  @keyframes appReveal { from { opacity: 0; } to { opacity: 1; } }
-`;
+splashStyles.textContent = `#splash{position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;z-index:999999;overflow:hidden;transition:opacity 0.9s cubic-bezier(0.4,0,0.2,1),visibility 0.9s cubic-bezier(0.4,0,0.2,1);}#splash::before{content:'';position:absolute;inset:-20%;background:radial-gradient(circle at 50% 50%,rgba(161,161,170,0.22) 0%,rgba(140,140,150,0.12) 35%,transparent 65%);pointer-events:none;animation:splashGlow 4s ease-in-out infinite;}#splash.hide{opacity:0;visibility:hidden;pointer-events:none;}.splash-logo{display:flex;gap:0.02em;font-family:'Sora','Inter',sans-serif;font-size:clamp(56px,16vw,104px);font-weight:800;letter-spacing:-0.04em;position:relative;z-index:1;perspective:1200px;user-select:none;}.splash-logo span{display:inline-block;background:linear-gradient(135deg,#e4e4e7 0%,#a1a1aa 50%,#71717a 100%);background-size:200% 200%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;transform-origin:center bottom;filter:drop-shadow(0 0 18px rgba(161,161,170,0.55));animation:splashReveal 1s cubic-bezier(0.34,1.56,0.64,1) var(--d) both,splashFloat 2.6s ease-in-out calc(var(--d) + 1s) infinite,splashShimmer 3.4s ease-in-out calc(var(--d) + 1s) infinite;}.splash-logo span:nth-child(1){--d:0s;}.splash-logo span:nth-child(2){--d:0.09s;}.splash-logo span:nth-child(3){--d:0.18s;}.splash-logo span:nth-child(4){--d:0.27s;}.splash-logo span:nth-child(5){--d:0.36s;}.splash-logo span:nth-child(6){--d:0.45s;}@keyframes splashReveal{0%{opacity:0;transform:translateY(50px) rotateX(-90deg) scale(0.4);filter:blur(18px) drop-shadow(0 0 0 transparent);}60%{opacity:1;transform:translateY(-8px) rotateX(8deg) scale(1.06);filter:blur(0) drop-shadow(0 0 24px rgba(212,212,216,0.75));}100%{opacity:1;transform:translateY(0) rotateX(0) scale(1);filter:blur(0) drop-shadow(0 0 18px rgba(161,161,170,0.55));}}@keyframes splashFloat{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-7px) scale(1.05);}}@keyframes splashShimmer{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}@keyframes splashGlow{0%,100%{opacity:0.5;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}#login{visibility:hidden;opacity:0;transition:opacity 0.4s ease,visibility 0.4s ease;}#login.ready{visibility:visible;opacity:1;}#app{opacity:0;}#app.active.ready{animation:appReveal 0.8s ease forwards;}@keyframes appReveal{from{opacity:0;}to{opacity:1;}}`;
 document.head.appendChild(splashStyles);
 function initAuthListener(){
   if(!window.fb){setTimeout(initAuthListener,100);return;}
@@ -1484,12 +1472,19 @@ function initAuthListener(){
       state.contactListeners={};state.groupUnsubs={};state.unsubMe=null;state.unsubMessages=null;state.unsubGroups=null;state.unsubStories=null;
       state.editChatsMode=false;state.hiddenChats=new Set();state.localProfiles={};
       const eb=$('edit-chats-btn');if(eb){eb.classList.remove('active');eb.textContent=t('editChats');}
-      $('app').classList.remove('active','chat-open');$('story-viewer').classList.remove('visible');
+            $('app').classList.remove('active','chat-open');$('story-viewer').classList.remove('visible');
       $('login').style.display='flex';$('username').value='';$('password').value='';$('password-confirm').value='';$('stories-bar').innerHTML='';
+      
+            // ВОЗВРАЩАЕМ СТАТИЧНЫЙ ЛОГОТИП
+      const targetText = document.querySelector('.login-sendit-logo span');
+      if (targetText) targetText.style.opacity = '1';
+      
+      // ЗАПУСКАЕМ ЗАСТАВКУ (она сама скроется через 2.5с)
       hideSplash();
       return;
-    }
-    state.uid=user.uid;
+      
+      return;
+    }   state.uid=user.uid;
     loadLocalProfiles();
     let profile=null;
     for(let i=0;i<3;i++){const snap=await getDoc(doc(db,'users',user.uid));if(snap.exists()){profile=snap.data();break;}await new Promise(r=>setTimeout(r,100));}
@@ -1512,15 +1507,36 @@ function initAuthListener(){
     state.profiles[state.uid]={uid:state.uid,nickname:state.nickname,displayName:state.profile.displayName,avatar:(state.profile.displayName||state.nickname||'?')[0].toUpperCase(),avatarData:state.profile.avatarData||null,lastSeen:0,online:true,blockedUsers:state.blockedUsers};
     const eb=$('edit-chats-btn');if(eb){eb.classList.remove('active');eb.textContent=t('editChats');eb.setAttribute('data-i18n','editChats');}
     state.editChatsMode=false;
-    $('login').style.display='none';$('app').classList.add('active');renderMeBar();
-    startHeartbeat();
-    listenToMyContacts();listenToDirectMessages();listenToMyGroups();listenToStories();renderChatList();
-    hideSplash();
+    $('login').style.display='none';
+
+const appEl=$('app');
+appEl.classList.add('active');
+appEl.classList.add('ready');            // ← ключевой фикс
+
+// Принудительно прячем splash (он уже мог отработать для экрана логина)
+const spEl=document.getElementById('splash');
+if(spEl){
+  spEl.style.pointerEvents='none';
+  spEl.style.backgroundColor='transparent';
+  spEl.classList.add('hide');
+  spEl.style.display='none';
+}
+document.body.classList.add('splash-done');
+
+// Возвращаем статичный логотип Sendit на место (его скрывал splash)
+const targetText=document.querySelector('.login-sendit-logo span');
+if(targetText)targetText.style.opacity='1';
+
+renderMeBar();
+startHeartbeat();
+listenToMyContacts();listenToDirectMessages();listenToMyGroups();listenToStories();renderChatList();
+
+// hideSplash() можно оставить — благодаря _splashHidden он теперь no-op,
+// а если логин произошёл раньше 2.5с, его отложенный таймер отработает в «else»-ветку без вреда.
+hideSplash();
   });
 }
-function renderMeBar(){
-  updateNavAvatar();
-}
+function renderMeBar(){updateNavAvatar();}
 function openProfileModal(){
   tempAvatar=state.profile.avatarData;tempMusic=state.profile.music||null;
   $('prof-name').value=state.profile.displayName;$('prof-bio').value=state.profile.bio||'';
@@ -1563,16 +1579,25 @@ async function openUserProfile(uid){
   const modal=$('user-profile-modal');if(!modal)return;
   currentViewedProfileUid = uid;
   updateUserProfileBlockUI(uid);
-  $('up-avatar').innerHTML='<span>?</span>';
-  $('up-name').textContent='...';
-  $('up-nickname').textContent='—';
-  $('up-last-seen').textContent='';
-  $('up-bio-container').style.display='none';
-  $('up-bio').textContent='';
-  $('up-channel').style.display='none';
-  $('up-music').style.display='none';
-  const audio=$('up-music-audio');audio.pause();audio.src='';
-  $('up-stories-grid').innerHTML='';
+  const upAvatar = $('up-avatar');
+  const upName = $('up-name');
+  const upNickname = $('up-nickname');
+  const upBio = $('up-bio');
+  const upChannel = $('up-channel');
+  const upMusic = $('up-music');
+  const upStoriesGrid = $('up-stories-grid');
+  const upMessage = $('up-message');
+  const upBlockBtn = $('up-block-btn');
+  const upEditBtn = $('up-edit-btn');
+  if(upAvatar) upAvatar.innerHTML='<span>?</span>';
+  if(upName) upName.textContent='...';
+  if(upNickname) upNickname.textContent='—';
+  if(upBio){ upBio.textContent=''; upBio.style.display='none'; }
+  if(upChannel) upChannel.style.display='none';
+  if(upMusic) upMusic.style.display='none';
+  const audio = $('up-music-audio');
+  if(audio){ audio.pause(); audio.src=''; }
+  if(upStoriesGrid) upStoriesGrid.innerHTML='';
   document.querySelectorAll('.modal.visible').forEach(m=>m.classList.remove('visible'));
   modal.classList.add('visible');
   try{
@@ -1583,33 +1608,29 @@ async function openUserProfile(uid){
     const local=state.localProfiles[uid];
     const dn=local?.displayName||d.displayName||d.nickname||'?';
     const avData=local?.avatarData!==undefined?local.avatarData:d.avatarData;
-    
     const isSelf = uid === state.uid;
-    const msgBtn=$('up-message');if(msgBtn)msgBtn.style.display=isSelf?'none':'flex';
-    const blockBtn=$('up-block-btn');if(blockBtn)blockBtn.style.display=isSelf?'none':'flex';
-    const editBtn=$('up-edit-btn');
-    if(editBtn) editBtn.style.display = isSelf ? 'none' : 'flex';
-    
-    if(avData)$('up-avatar').innerHTML=`<img src="${escapeHtml(avData)}" alt="">`;
-    else $('up-avatar').textContent=dn[0].toUpperCase();
-    
-    $('up-name').textContent=dn;
-    $('up-nickname').textContent='@'+(d.nickname||'?');
-    
+    if(upMessage) upMessage.style.display=isSelf?'none':'flex';
+    if(upBlockBtn) upBlockBtn.style.display=isSelf?'none':'flex';
+    if(upEditBtn) upEditBtn.style.display=isSelf?'none':'flex';
+    if(avData) upAvatar.innerHTML=`<img src="${escapeHtml(avData)}" alt="">`;
+    else upAvatar.textContent=dn[0].toUpperCase();
+    upName.textContent=dn;
+    upNickname.textContent='@'+(d.nickname||'?');
     if(d.bio){
-      $('up-bio').textContent=d.bio;
-      $('up-bio-container').style.display='flex';
+      upBio.textContent=d.bio;
+      upBio.style.display='block';
+    } else {
+      upBio.textContent='';
+      upBio.style.display='none';
     }
-    
     if(d.musicData&&d.musicName){
       $('up-music-name').textContent=d.musicName;
       audio.src=d.musicData;
-      $('up-music').style.display='flex';
+      upMusic.style.display='flex';
     }
-    
     if(d.channelId&&d.channelName){
       $('up-channel-name').textContent=d.channelName;
-      $('up-channel').style.display='flex';
+      upChannel.style.display='flex';
       $('up-channel-btn').onclick=(e)=>{
         e.stopPropagation();
         audio.pause();
@@ -1617,17 +1638,15 @@ async function openUserProfile(uid){
         if(state.groups[d.channelId])openChat(d.channelId,'group');
         else toast(t('errNotSubscribed'),'error');
       };
-    }else{
-      $('up-channel').style.display='none';
+    } else {
+      upChannel.style.display='none';
     }
-    
-    $('up-message').onclick=(e)=>{
+    upMessage.onclick=(e)=>{
       e.stopPropagation();
       audio.pause();
       modal.classList.remove('visible');
       openChat(uid,'user');
     };
-    
     renderUserProfileStories(uid);
     updateUserProfileBlockUI(uid);
   }catch(e){console.error(e);toast(t('errProfileLoad'),'error');modal.classList.remove('visible');}
@@ -1715,7 +1734,6 @@ function updateUserProfileBlockUI(uid){
   const icon=$('up-block-icon');
   if(!btn||!txt)return;
   if(!uid||currentViewedProfileUid!==uid)return;
-  
   const {iBlocked}=getBlockStatus(uid);
   if(iBlocked){
     btn.dataset.action='unblock';
@@ -1737,7 +1755,13 @@ async function sendMessage(){
   if(!ensureCanSendInCurrentChat())return;
   const{db,collection,addDoc,serverTimestamp}=window.fb;
   const data={fromUid:state.uid,content:{type:'text',text},time:serverTimestamp(),reactions:{},replyTo:state.replyTo||null};
-  if(state.currentChatType==='group')data.toGroupId=state.currentChat;else data.toUid=state.currentChat;
+  if(state.currentChatType==='group'){
+    const g=state.groups[state.currentChat];
+    data.toGroupId=state.currentChat;
+    data.groupMemberUids=g?(g.memberUids||[]):[state.uid];
+  }else{
+    data.toUid=state.currentChat;
+  }
   try{await addDoc(collection(db,'messages'),data);input.value='';input.style.height='auto';clearReply();updateSendBtnState();}
   catch(e){console.error(e);toast(t('errSendFailed'),'error');}
 }
@@ -1746,7 +1770,13 @@ async function sendFileContent(content){
   if(!ensureCanSendInCurrentChat())return;
   const{db,collection,addDoc,serverTimestamp}=window.fb;
   const data={fromUid:state.uid,content,time:serverTimestamp(),reactions:{},replyTo:state.replyTo||null};
-  if(state.currentChatType==='group')data.toGroupId=state.currentChat;else data.toUid=state.currentChat;
+  if(state.currentChatType==='group'){
+    const g=state.groups[state.currentChat];
+    data.toGroupId=state.currentChat;
+    data.groupMemberUids=g?(g.memberUids||[]):[state.uid];
+  }else{
+    data.toUid=state.currentChat;
+  }
   try{await addDoc(collection(db,'messages'),data);clearReply();}
   catch(e){
     console.error(e);
@@ -1940,6 +1970,7 @@ function openChat(id,type){
   const app=$('app');if(app)app.classList.add('chat-open');
   updateScrollButton();
   setNavActive('nav-chats');
+  syncModalState();
   if(currentChatProfileUnsub){currentChatProfileUnsub();currentChatProfileUnsub=null;}
   if(type==='user'&&window.fb){
     const{db,doc,onSnapshot}=window.fb;
@@ -2307,8 +2338,9 @@ function setNavActive(id) {
   const target = $(id);
   if (target) target.classList.add('active');
 }
-on('tab-login','click',()=>setAuthMode('login'));
-on('tab-register','click',()=>setAuthMode('register'));
+on('auth-toggle-btn','click',() => {
+  setAuthMode(authMode === 'login' ? 'register' : 'login');
+});
 on('auth-submit','click',()=>authMode==='login'?handleLogin():handleRegister());
 on('username','keydown',e=>{if(e.key==='Enter'){const p=$('password');if(p)p.focus();}});
 on('password','keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(authMode==='login')handleLogin();else{const pc=$('password-confirm');if(pc)pc.focus();}}});
@@ -2510,7 +2542,8 @@ async function publishStory(){
   const btn=$('story-create-publish');if(btn){btn.disabled=true;btn.textContent='...';}
   try{
     const sc=$('story-caption');
-    await addDoc(collection(db,'stories'),{authorUid:state.uid,type:state.pendingStoryMedia.type,dataUrl:state.pendingStoryMedia.dataUrl,caption:sc?sc.value.trim():'',createdAt:serverTimestamp(),reactions:{}});
+    const visibleTo=[state.uid,...state.contactUids];
+    await addDoc(collection(db,'stories'),{authorUid:state.uid,type:state.pendingStoryMedia.type,dataUrl:state.pendingStoryMedia.dataUrl,caption:sc?sc.value.trim():'',createdAt:serverTimestamp(),reactions:{},visibleTo:visibleTo});
     state.pendingStoryMedia=null;const m=$('story-create-modal');if(m)m.classList.remove('visible');toast(t('okStoryPublished'),'success');
   }catch(e){console.error(e);toast(t('errPublishStory'),'error');}
   finally{if(btn){btn.disabled=false;btn.textContent=t('publish');}}
@@ -2574,7 +2607,7 @@ document.addEventListener('click',e=>{
 on('viewer-close','click',closeViewer);
 on('viewer','click',e=>{if(e.target.id==='viewer')closeViewer();});
 on('search','input',renderChatList);
-on('back-btn','click',()=>{const a=$('app');if(a)a.classList.remove('chat-open');});
+on('back-btn','click',()=>{const a=$('app');if(a)a.classList.remove('chat-open'); syncModalState();});
 const backBtn=$('back-btn');
 if(backBtn&&window.innerWidth<=768)backBtn.style.display='block';
 on('scroll-to-bottom','click',scrollToBottom);
@@ -2590,6 +2623,7 @@ function closeAllModalsForNav() {
 on('nav-chats','click',()=>{
   closeAllModalsForNav();
   const a=$('app');if(a)a.classList.remove('chat-open');
+  syncModalState();
   const upm=$('user-profile-modal');if(upm)upm.classList.remove('visible');
   setNavActive('nav-chats');
 });
@@ -2635,28 +2669,23 @@ function syncModalState() {
       if (upm && upm.classList.contains('visible')) activeNav = 'nav-profile';
     }
   }
-  const app = $('app');
-  const isInChat = !!(app && app.classList.contains('chat-open'));
+  const appEl = $('app');
+  const isAppActive = !!(appEl && appEl.classList.contains('active'));
+  const isSplashDone = document.body.classList.contains('splash-done');
+  const isChatOpen = !!(appEl && appEl.classList.contains('chat-open'));
   const isMobile = window.innerWidth <= 768;
-  const shouldHide = isMobile && isInChat && !hasActiveModal;
-  const key = `${shouldHide}|${activeNav}`;
+  const showMenu = isAppActive && isSplashDone && !(isMobile && isChatOpen);
+  const key = `${activeNav}|${showMenu}|${hasActiveModal}|${isAppActive}|${isSplashDone}|${isChatOpen}`;
   if (key === _lastSyncKey) return;
   _lastSyncKey = key;
   document.body.classList.toggle('modal-open', hasActiveModal);
   const menu = $('mobile-bottom-nav');
   if (menu) {
-    if (shouldHide) {
-      menu.style.setProperty('display', 'none', 'important');
-      menu.style.setProperty('visibility', 'hidden', 'important');
-      menu.style.setProperty('opacity', '0', 'important');
-      menu.style.setProperty('pointer-events', 'none', 'important');
-    } else {
-      menu.style.removeProperty('display');
-      menu.style.removeProperty('visibility');
-      menu.style.removeProperty('opacity');
-      menu.style.removeProperty('pointer-events');
-      menu.style.setProperty('z-index', '2147483647', 'important');
-    }
+    menu.style.setProperty('display', showMenu ? 'flex' : 'none', 'important');
+    menu.style.setProperty('visibility', showMenu ? 'visible' : 'hidden', 'important');
+    menu.style.setProperty('opacity', showMenu ? '1' : '0', 'important');
+    menu.style.setProperty('pointer-events', showMenu ? 'auto' : 'none', 'important');
+    menu.style.setProperty('z-index', '2147483647', 'important');
   }
   setNavActive(activeNav);
 }
@@ -2667,7 +2696,6 @@ new MutationObserver(syncModalState).observe(document.body, {
 });
 window.addEventListener('resize', syncModalState);
 window.addEventListener('orientationchange', syncModalState);
-syncModalState();
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'){
     document.querySelectorAll('.modal.visible').forEach(m=>m.classList.remove('visible'));
@@ -2732,14 +2760,12 @@ on('lp-save','click',()=>{
   state.localProfiles[uid].displayName=name;
   state.localProfiles[uid].avatarData=tempLocalAvatar;
   saveLocalProfiles();
-  
   const p=state.profiles[uid];
   if(p){
     p.displayName=name;
     p.avatarData=tempLocalAvatar;
     p.avatar=name[0].toUpperCase();
   }
-  
   rebuildUsersList();
   renderChatList();
   if(state.currentChat===uid&&state.currentChatType==='user'){
@@ -2751,7 +2777,6 @@ on('lp-save','click',()=>{
     if(tempLocalAvatar)$('up-avatar').innerHTML=`<img src="${escapeHtml(tempLocalAvatar)}" alt="">`;
     else $('up-avatar').textContent=name[0].toUpperCase();
   }
-  
   $('local-profile-modal').classList.remove('visible');
   currentLocalProfileUid=null;
   toast(t('okSaved'),'success');
